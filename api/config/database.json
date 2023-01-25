@@ -1,0 +1,11 @@
+{
+    "dev": {
+      "driver": "pg",
+      "user": "postgres",
+      "password": "1ronM0use",
+      "host": "localhost",
+      "database": "dawn-dev",
+      "port": "5432",
+      "schema": "occ"
+    }
+  }

@@ -1,0 +1,39 @@
+{
+  "name": "akash-notify-api",
+  "version": "0.1.4",
+  "main": "dist/index.js",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "tsc",
+    "prestart": "yarn run build",
+    "start": "node .",
+    "dev": "nodemon src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate:up": "db-migrate --config config/database.json up dev"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/node": "*",
+    "@types/pg": "^8.6.4",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {
+    "@akashnetwork/akashjs": "^0.1.1",
+    "db-migrate": "^0.11.13",
+    "db-migrate-pg": "^1.2.2",
+    "fastify": "^3.29.0",
+    "fastify-cors": "^6.0.2",
+    "pg": "^8.7.3"
+  },
+  "eslintConfig": {
+    "rules": {
+      "@typescript-eslint/switch-exhaustiveness-check": "warn"
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    }
+  }
+}

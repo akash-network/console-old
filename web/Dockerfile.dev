@@ -1,0 +1,14 @@
+FROM node:18
+ARG BUILD_CONTEXT
+# Create app directory
+WORKDIR /usr/src/app
+
+COPY ./$BUILD_CONTEXT/ .
+COPY yarn.lock .
+
+RUN yarn install
+
+EXPOSE 3000
+EXPOSE 4040
+
+CMD ["yarn", "start"]

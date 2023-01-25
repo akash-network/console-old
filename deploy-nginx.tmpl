@@ -1,0 +1,46 @@
+version: "2.0"
+
+services:
+  nginx:
+    image: beevelop/nginx-basic-auth
+    expose:
+      - port: 80
+        as: 80
+        accept:
+          - {{ .Env.URI }}
+        to:
+          - global: true
+    env:
+      - 'HTPASSWD={{ .Env.HTPASSWD }}'
+      - 'FORWARD_PORT={{ .Env.PORT }}'
+      - 'FORWARD_HOST={{ .Env.HOST }}'
+
+profiles:
+  compute:
+    nginx:
+      resources:
+        cpu:
+          units: 2
+        memory:
+          size: 2Gi
+        storage:
+          size: 1Gi
+
+  placement:
+    dcloud:
+      attributes:
+        host: akash
+        datacenter: equinix-metal-ewr1
+      signedBy:
+        anyOf:
+          - "akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63"
+      pricing:
+        nginx:
+          denom: uakt
+          amount: 1500
+
+deployment:
+  nginx:
+    dcloud:
+      profile: nginx
+      count: 1

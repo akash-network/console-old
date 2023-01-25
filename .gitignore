@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+.vscode
+*-lock.json
+.idea/
+.yarn/
+.terraform/
+.terraform.lock.hcl
+service-account.json

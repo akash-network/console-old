@@ -1,0 +1,19 @@
+{
+    "scripts": {
+        "dev": "concurrently --kill-others \"yarn dev:web\" \"yarn dev:proxy\"",
+        "dev:web": "yarn workspace web start",
+        "build:web": "yarn workspace web build",
+        "dev:proxy": "yarn workspace proxy start",
+        "preversion": "node scripts/version.js && git add */package.json"
+    },
+    "private": true,
+    "workspaces": [
+        "api",
+        "proxy",
+        "web"
+    ],
+    "dependencies": {
+        "concurrently": "^7.2.1"
+    },
+    "version": "0.1.238"
+}

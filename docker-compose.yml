@@ -1,0 +1,54 @@
+version: "3.9"
+services:
+  # Web service
+
+  web:
+    build:
+      context: ./
+      dockerfile: web/Dockerfile.dev
+      args:
+        - BUILD_CONTEXT=web
+    ports:
+      - "3000:3000"
+      - "4040:4040"
+    volumes:
+      - ./web/src:/usr/src/app/src
+
+  # Proxy server
+
+  proxy:
+    build:
+      context: ./
+      dockerfile: proxy/Dockerfile.dev
+      args:
+        - BUILD_CONTEXT=proxy
+    ports:
+      - "3005:3005"
+    volumes:
+      - ./proxy/src:/usr/src/app/src
+# volumes:
+#   exclude:
+
+#   API Server, disabled for now
+#   api:
+#     build: ./api
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - ./api:/usr/src/app
+#       - ./api/npm_override/akashjs:/usr/src/app/node_modules/@akashnetwork/akashjs
+#     environment:
+#       DB_HOST: "db"
+#       DB_PORT: 5432
+#       DB_NAME: "dawn-dev"
+#   db:
+#     image: postgres:14.1-alpine
+#     ports:
+#       - "5432:5432"
+#     environment:
+#       POSTGRES_PASSWORD: 1ronM0use
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data
+# volumes:
+#   pgdata:
+#     driver: local

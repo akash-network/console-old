@@ -1,0 +1,76 @@
+import React from 'react';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import { EventsTable } from '../EventsTable';
+import { Logs } from '../Logs';
+import { Leases } from '../Leases';
+
+interface DeploymentTabProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+const DeploymentTab: React.FC<DeploymentTabProps> = (props) => {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 0 }}>
+          <>{children}</>
+        </Box>
+      )}
+    </div>
+  );
+};
+
+function tabProps(i: number) {
+  return {
+    id: `deployment-tab-${i}`,
+    'aria-controls': `deployment-tabpanel-${i}`,
+  };
+}
+
+export interface DeploymentEventsProps {
+  dseq: string;
+  lease: any;
+  leaseStatus: any;
+}
+
+export const DeploymentEvents: React.FC<DeploymentEventsProps> = (props) => {
+  const { dseq, lease } = props;
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (e: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  return (
+    <Box sx={{ width: '100%', p: 0 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={value} onChange={handleChange} aria-label="deployment event tabs">
+          <Tab label="Events" {...tabProps(0)} />
+          <Tab label="Logs" {...tabProps(1)} />
+          <Tab label="Leases" {...tabProps(2)} />
+        </Tabs>
+      </Box>
+      <DeploymentTab value={value} index={0}>
+        <EventsTable lease={lease} />
+      </DeploymentTab>
+      <DeploymentTab value={value} index={1}>
+        <Logs lease={lease} />
+      </DeploymentTab>
+      <DeploymentTab value={value} index={2}>
+        <Leases dseq={dseq} lease={lease} />
+      </DeploymentTab>
+    </Box>
+  );
+};

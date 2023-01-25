@@ -1,0 +1,111 @@
+name: Production
+
+on:
+  workflow_dispatch:
+
+env:
+  AKASH_HOME: /home/runner/.akash
+  AKASH_NODE: https://rpc.akash.forbole.com:443
+  AKASH_GAS: auto
+  AKASH_GAS_ADJUSTMENT: 1.15
+  AKASH_GAS_PRICES: 0.025uakt
+  AKASH_SIGN_MODE: amino-json
+  AKASH_CHAIN_ID: akashnet-2
+  AKASH_FROM: AKASH_GITHUB_RUNNER
+  AKASH_KEYRING_BACKEND: test
+  AKASH_PROVIDER: akash1q7spv2cw06yszgfp4f9ed59lkka6ytn8g4tkjf
+  AKASH_DSEQ: 8490137
+  AKASH_PROXY_DSEQ: 8490141
+
+jobs:  
+  publish-on-akash:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: installing toolset
+        run: sudo apt install wget curl jq
+
+      - name: Install Akash CLI
+        shell: bash
+        run: |-
+          wget https://github.com/ovrclk/provider-services/releases/download/v0.1.0/provider-services_linux_amd64.deb -O akash.deb
+          sudo dpkg -i akash.deb
+          sudo ln -s "$(which provider-services)" "$(dirname $(which provider-services))"/akash
+
+      - name: import key
+        shell: bash
+        run: |-
+          echo "${{ secrets.AKASH_WALLET_KEY }}" > key.key
+          echo "${{ secrets.AKASH_WALLET_KEY_PASSWORD }}" | akash keys import AKASH_GITHUB_RUNNER key.key
+
+      - name: import certificate
+        shell: bash
+        run: echo "${{ secrets.AKASH_DEPLOY_CERTIFICATE }}" > ${{env.AKASH_HOME}}/$(akash keys show AKASH_GITHUB_RUNNER --output=json | jq -r ".address").pem
+
+      - name: get latest tag
+        run: |-
+          git fetch --prune --unshallow
+          git remote update
+          echo "LATEST_TAG=$(git describe --abbrev=0 --tags)" >> $GITHUB_ENV
+
+      ####
+      ## Deploy the web front end
+      ####
+      - name: Akash Update SDL - web
+        uses: ovrclk/akash-ghaction-templated-sdl@v1
+        with:
+          TEMPLATE_PATH: "deploy-web.tmpl"
+          OUT_PATH: "deploy.yaml"
+        env:
+          TAG: ${{env.LATEST_TAG}}
+          DEPLOY_PROFILE: web
+          PORT: 3000
+          IMAGE: console
+          MEMORY: 8Gi
+          URI1: staging-console.akash.network
+          URI2: console-demo.akash.network
+
+      - name: Print web front end SDL
+        run: cat deploy.yaml
+
+      - name: Akash on Github Actions Update Deploy - web
+        uses: ovrclk/akash-ghaction-updatedeploy@main
+        with:
+          AKASH_DSEQ: ${{env.AKASH_DSEQ}}
+          AKASH_PROVIDER: ${{env.AKASH_PROVIDER}}
+          AKASH_NODE: ${{env.AKASH_NODE}}
+
+      - name: query deployment - web
+        run: |-
+          akash lease-status --node ${{env.AKASH_NODE}} --dseq ${{env.AKASH_DSEQ}} --from ${{env.AKASH_FROM}} --provider ${{env.AKASH_PROVIDER}} --keyring-backend test
+
+      ####
+      ## Deploy the proxy
+      ####
+      - name: Akash Update SDL - proxy
+        uses: ovrclk/akash-ghaction-templated-sdl@v1
+        with:
+          TEMPLATE_PATH: "deploy-proxy.tmpl"
+          OUT_PATH: "deploy.yaml"
+        env:
+          DEPLOY_PROFILE: proxy
+          TAG: ${{env.LATEST_TAG}}
+          PORT: 3005
+          IMAGE: console-proxy
+          MEMORY: 2Gi
+          URI: staging-console-proxy.akash.network
+
+      - name: Print proxy SDL
+        run: cat deploy.yaml
+
+      - name: Akash on Github Actions Update Deploy - proxy
+        uses: ovrclk/akash-ghaction-updatedeploy@main
+        with:
+          AKASH_DSEQ: ${{env.AKASH_PROXY_DSEQ}}
+          AKASH_PROVIDER: ${{env.AKASH_PROVIDER}}
+          AKASH_NODE: ${{env.AKASH_NODE}}
+
+      - name: query deployment - proxy
+        run: |-
+          akash lease-status --node ${{env.AKASH_NODE}} --dseq ${{env.AKASH_PROXY_DSEQ}} --from ${{env.AKASH_FROM}} --provider ${{env.AKASH_PROVIDER}} --keyring-backend test

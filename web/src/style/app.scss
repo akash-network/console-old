@@ -1,0 +1,304 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * @license
+ *
+ * Font Family: Satoshi
+ * Designed by: Deni Anggara
+ * URL: https://www.fontshare.com/fonts/satoshi
+ * © 2022 Indian Type Foundry
+ *
+ * Font Styles:
+ * Satoshi Variable(Variable font)
+ * Satoshi Variable Italic(Variable font)
+ * Satoshi Light
+ * Satoshi Light Italic
+ * Satoshi Regular
+ * Satoshi Italic
+ * Satoshi Medium
+ * Satoshi Medium Italic
+ * Satoshi Bold
+ * Satoshi Bold Italic
+ * Satoshi Black
+ * Satoshi Black Italic
+ *
+*/
+
+/**
+* This is a variable font
+* You can control variable axes as shown below:
+* font-variation-settings: 'wght' 900.0;
+*
+* available axes:
+
+* 'wght' (range from 300.0 to 900.0)
+
+*/
+
+body,
+html {
+    background-color: #f4f5f8 !important;
+    font-family: Satoshi-Regular, system-ui, sans-serif;
+}
+
+@font-face {
+    font-family: "Satoshi-Variable";
+    src: url("../assets/fonts/Satoshi-Variable.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-Variable.woff") format("woff"),
+        url("../assets/fonts/Satoshi-Variable.ttf") format("truetype");
+    font-weight: 300 900;
+    font-display: block;
+    font-style: normal;
+}
+
+/**
+  * This is a variable font
+  * You can control variable axes as shown below:
+  * font-variation-settings: 'wght' 900.0;
+  *
+  * available axes:
+  
+  * 'wght' (range from 300.0 to 900.0)
+  
+  */
+
+@font-face {
+    font-family: "Satoshi-VariableItalic";
+    src: url("../assets/fonts/Satoshi-VariableItalic.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-VariableItalic.woff") format("woff"),
+        url("../assets/fonts/Satoshi-VariableItalic.ttf") format("truetype");
+    font-weight: 300 900;
+    font-display: block;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "Satoshi-Light";
+    src: url("../assets/fonts/Satoshi-Light.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-Light.woff") format("woff"),
+        url("../assets/fonts/Satoshi-Light.ttf") format("truetype");
+    font-weight: 300;
+    font-display: block;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Satoshi-LightItalic";
+    src: url("../assets/fonts/Satoshi-LightItalic.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-LightItalic.woff") format("woff"),
+        url("../assets/fonts/Satoshi-LightItalic.ttf") format("truetype");
+    font-weight: 300;
+    font-display: block;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "Satoshi-Regular";
+    src: url("../assets/fonts/Satoshi-Regular.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-Regular.woff") format("woff"),
+        url("../assets/fonts/Satoshi-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-display: block;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Satoshi-Italic";
+    src: url("../assets/fonts/Satoshi-Italic.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-Italic.woff") format("woff"),
+        url("../assets/fonts/Satoshi-Italic.ttf") format("truetype");
+    font-weight: 400;
+    font-display: block;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "Satoshi-Medium";
+    src: url("../assets/fonts/Satoshi-Medium.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-Medium.woff") format("woff"),
+        url("../assets/fonts/Satoshi-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-display: block;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Satoshi-MediumItalic";
+    src: url("../assets/fonts/Satoshi-MediumItalic.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-MediumItalic.woff") format("woff"),
+        url("../assets/fonts/Satoshi-MediumItalic.ttf") format("truetype");
+    font-weight: 500;
+    font-display: block;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "Satoshi-Bold";
+    src: url("../assets/fonts/Satoshi-Bold.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-Bold.woff") format("woff"),
+        url("../assets/fonts/Satoshi-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-display: block;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Satoshi-BoldItalic";
+    src: url("../assets/fonts/Satoshi-BoldItalic.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-BoldItalic.woff") format("woff"),
+        url("../assets/fonts/Satoshi-BoldItalic.ttf") format("truetype");
+    font-weight: 700;
+    font-display: block;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "Satoshi-Black";
+    src: url("../assets/fonts/Satoshi-Black.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-Black.woff") format("woff"),
+        url("../assets/fonts/Satoshi-Black.ttf") format("truetype");
+    font-weight: 900;
+    font-display: block;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Satoshi-BlackItalic";
+    src: url("../assets/fonts/Satoshi-BlackItalic.woff2") format("woff2"),
+        url("../assets/fonts/Satoshi-BlackItalic.woff") format("woff"),
+        url("../assets/fonts/Satoshi-BlackItalic.ttf") format("truetype");
+    font-weight: 900;
+    font-display: block;
+    font-style: italic;
+}
+
+.akt-card {
+    /* Auto layout */
+    display: flex;
+    flex-direction: column;
+
+    padding: 0 24px;
+    gap: 24px;
+    background: #f4f5f8;
+    border-radius: 24px;
+}
+
+.akt-card-frame {
+    /* Grey 90 */
+    padding: 24px 24px 32px;
+    background: #232323;
+    border-radius: 16px;
+    color: #ffffff;
+
+    /* Inside auto layout */
+
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+a {
+    color: #fa5757;
+}
+
+.console-container {
+    margin-left: 4rem;
+    margin-top: 4rem;
+}
+
+.bg-pink {
+    background-color: hotpink !important;
+}
+
+#drawer_side_nav {
+    margin-left: -63px;
+}
+
+#icon_button_open_side_nav {
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+
+#icon_button_open_side_nav:hover {
+    border-radius: 8px;
+    border: 1px solid #f0f1f4;
+    background-color: #ffffff;
+}
+
+#button_close_side_nav {
+    width: 38px;
+    height: 40px;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    margin-top: -6px;
+}
+
+#button_close_side_nav:hover {
+    border-radius: 8px;
+    border: 1px solid #f0f1f4;
+}
+
+#link_new_deployment,
+#link_my_deployments,
+#link_settings,
+#link_help {
+    width: 100%;
+    margin-top: 4px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+
+#link_new_deployment:hover,
+#link_my_deployments:hover,
+#link_settings:hover,
+#link_help:hover {
+    border: 1px solid #f0f1f4;
+}
+
+#link_help {
+    margin-bottom: 24px;
+}
+
+#button_close_side_nav:hover * {
+    fill: #6b7280;
+}
+
+#link_my_deployments:hover * {
+    color: #111827;
+    stroke: #6b7280;
+}
+
+#link_settings:hover * {
+    color: #111827;
+    stroke: #6b7280;
+}
+
+#link_help:hover * {
+    color: #111827;
+    stroke: #6b7280;
+}
+
+.selected-active {
+    background: #f1f3f9;
+    border: 1px solid #f0f1f4;
+    border-radius: 8px;
+}
+
+.selected-inactive:hover {
+    border: 1px solid #f0f1f4;
+    border-radius: 8px;
+}
+
+.element-invisible {
+    display: none;
+}
+
+.element-visible {
+    display: block;
+}

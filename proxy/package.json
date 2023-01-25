@@ -1,0 +1,39 @@
+{
+    "name": "proxy",
+    "version": "0.1.238",
+    "main": "index.js",
+    "license": "MIT",
+    "private": true,
+    "dependencies": {
+        "@akashnetwork/fastify-mtls-proxy": "^1.1.2",
+        "@fastify/cors": "^7.0.0",
+        "@fastify/reply-from": "^7.0.1",
+        "@types/jest": "^27.5.1",
+        "axios": "^0.27.2",
+        "end-of-stream": "^1.4.4",
+        "fastify": "^3.29.0",
+        "fastify-plugin": "^3.0.1",
+        "http2": "^3.3.7",
+        "jest": "^28.1.0",
+        "pump": "^3.0.0",
+        "semver": "^7.3.7",
+        "ts-jest": "^28.0.3",
+        "ts-node": "^10.8.0",
+        "tsc-watch": "^5.0.3",
+        "typescript": "^4.7.4",
+        "undici": "^5.4.0",
+        "ws": "^8.7.0"
+    },
+    "devDependencies": {
+        "@types/end-of-stream": "^1.4.1",
+        "@types/pump": "^1.1.1",
+        "@types/semver": "^7.3.9",
+        "@types/ws": "^8.5.3"
+    },
+    "scripts": {
+        "start": "node ./src/index.js",
+        "dev": "nodemon ./src/index.ts",
+        "dev-server": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./src/index.js\"",
+        "build": "tsc"
+    }
+}

@@ -1,0 +1,34 @@
+version: "2.0"
+
+services:
+  {{ .Env.DEPLOY_PROFILE }}:
+    image: ghcr.io/ovrclk/{{ .Env.IMAGE }}:{{ .Env.TAG }}
+    expose:
+      - port: {{ .Env.PORT }}
+        as: 80
+        to:
+          - global: true
+
+profiles:
+  compute:
+    {{ .Env.DEPLOY_PROFILE }}:
+      resources:
+        cpu:
+          units: 2
+        memory:
+          size: {{ .Env.MEMORY }}
+        storage:
+          size: 1Gi
+
+  placement:
+    dcloud:
+      pricing:
+        {{ .Env.DEPLOY_PROFILE }}:
+          denom: uakt
+          amount: 1000
+
+deployment:
+  {{ .Env.DEPLOY_PROFILE }}:
+    dcloud:
+      profile: {{ .Env.DEPLOY_PROFILE }}
+      count: 1
