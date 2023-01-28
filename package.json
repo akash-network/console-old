@@ -8,7 +8,6 @@
     },
     "private": true,
     "workspaces": [
-        "api",
         "proxy",
         "web"
     ],
