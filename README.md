@@ -1,11 +1,11 @@
 # Akash Console - Web UI based deployment tool for Akash Network
 
-Akash Console is an easy to use deployment tool for deploying workloads on to Akash Network providers. It is an alternative to the Command Line Interface (CLI) for less technial users. Akash Console can be run as a hosted service or locally (for development). Overclock Labs (creators of Akash Network) run an instance of Akash Console at https://console-demo.akash.network/. This is currently behind a user auth while it is in beta. Please join our discord server to request access if you would like to be a beta tester. The user auth will be removed, once Console becomes Generally Available (GA).
+Akash Console is an easy to use deployment tool for deploying workloads on to Akash Network providers. It is an alternative to the Command Line Interface (CLI) for less technical users. Akash Console can be run as a hosted service or locally (for development). Overclock Labs (creators of Akash Network) run an instance of Akash Console at https://console-demo.akash.network/. This is currently behind a user auth while it is in beta. Please join our discord server to request access if you would like to be a beta tester. The user auth will be removed, once Console becomes Generally Available (GA).
 
 If you would like to contribute to Akash Console, here are some ways to do so:
 
 1. Beta test and report issues
-2. Run it locally (instructions below) to get acquianted with the application
+2. Run it locally (instructions below) to get acquainted with the application
 3. Join the Clients SIG (community/sig-clients) meeting to learn about issues or features you can help build
 
 ## Microservices Architecture
