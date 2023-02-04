@@ -10,7 +10,7 @@ export const fetchSdlList: QueryFunction<any, [string, { folderName: string }]> 
   const octokit = new Octokit({});
 
   const repository = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}/metadata.json', {
-    owner: 'ovrclk',
+    owner: 'akash-network',
     repo: 'deploy-templates',
     path: folderName,
   });
