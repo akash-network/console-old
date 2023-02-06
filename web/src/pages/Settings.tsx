@@ -44,6 +44,44 @@ const queryCertificates = (query: any) => {
   return Promise.resolve([]);
 }
 
+type SortableCertificate = { available: boolean, current: boolean, certificate: { state: string }, serial: string };
+
+const byCertificateStatus = (
+  a: SortableCertificate,
+  b: SortableCertificate
+) => {
+  // always put the active certificate on top
+  if (a.current) {
+    return -1;
+  }
+
+  // send revoked certificates to the bottom of the list
+  const aState = a.certificate.state;
+  const bState = b.certificate.state;
+
+  if (aState === 'revoked' && bState !== 'revoked') {
+    return 1;
+  } else if (bState === 'revoked' && aState !== 'revoked') {
+    return -1;
+  }
+
+  // bubble available certificates to the top of the list
+  if (a.available && !b.available) {
+    return -1;
+  } else if (b.available && !a.available) {
+    return 1;
+  }
+
+  // bubble available certificates to the top of the list
+  if (a.available && !b.available) {
+    return -1;
+  } else if (b.available && !a.available) {
+    return 1;
+  }
+
+  return a.serial > b.serial ? 1 : -1;
+}
+
 type FieldInfo<T> = {
   title: string,
   subtitle: string,
@@ -54,7 +92,7 @@ type FieldInfo<T> = {
 const Settings: React.FC<{}> = () => {
   const keplr = useRecoilValue(keplrState);
   const [currentActiveCertificate, setCurrentActiveCertificate] = useRecoilState(activeCertificate);
-  const [certificatesList, setCertificatesList] = React.useState<TLSCertificate[]>([]);
+  const [certificatesList, setCertificatesList] = React.useState<(SortableCertificate & TLSCertificate)[]>([]);
   const [currentCertificate, setCurrentCertificate] = React.useState<any>({});
   const [showAll, setShowAll] = React.useState(false);
   const [network] = React.useState('akashnet-2');
@@ -71,7 +109,7 @@ const Settings: React.FC<{}> = () => {
     [keplr?.accounts[0]?.address]
   );
 
-  const { data: certificates } = useQuery(['certificates', keplr?.accounts[0]?.address], queryCertificates);
+  const { data: certificates, refetch } = useQuery(['certificates', keplr?.accounts[0]?.address], queryCertificates);
 
   // This function is cashed here, and also it forbid clicking outside the Dialog which confuses me a lot
   const onCloseDialog = React.useCallback(
@@ -94,13 +132,17 @@ const Settings: React.FC<{}> = () => {
   const handleCreateCertificate = React.useCallback(async () => {
     setShowProgress(true);
     await createAndBroadcastCertificate(rpcEndpoint, keplr);
-    window.location.reload();
+    refetch();
+    setCreateOpen(false);
   }, [keplr]);
 
   const handleRevokeCertificate = React.useCallback(async () => {
     setShowProgress(true);
     await broadcastRevokeCertificate(rpcEndpoint, keplr, revokeCert);
-    window.location.reload();
+    refetch();
+    setRevokeOpen(false);
+    setShowProgress(false);
+    setRevokeCert("")
   }, [keplr, revokeCert]);
 
   React.useEffect(() => {
@@ -134,8 +176,10 @@ const Settings: React.FC<{}> = () => {
         });
       }
     }
+
     setCertificatesList(result);
-  }, [keplr?.accounts[0]?.address, currentActiveCertificate]);
+
+  }, [keplr?.accounts[0]?.address, currentActiveCertificate, certificates]);
 
   const activateCertificate = useCallback(
     (index: number) => {
@@ -228,73 +272,76 @@ const Settings: React.FC<{}> = () => {
           </SettingsField>
 
           {/* no certificates - new user */}
-          {certificatesList.length > 0 ? null : (
+          {certificatesList.length < 1 && (
             <Alert severity="error" variant="filled">
               You don't have any certificates. You must generate a new certificate to deploy.
             </Alert>
           )}
+
           {/* no current valid certificate */}
-          {certificatesList.length &&
-            currentCertificate?.current &&
-            currentCertificate?.certificate?.state === 'valid' ? null : (
-            <Alert severity="error" variant="filled">
-              You don't have a valid certificate. You must generate a new certificate to deploy.
-            </Alert>
-          )}
+          {certificatesList.length > 0 &&
+            currentCertificate?.certificate?.state !== 'valid' && (
+              <Alert severity="error" variant="filled">
+                You don't have a valid certificate. You must generate a new certificate to deploy.
+              </Alert>
+            )
+          }
 
           {certificatesList.length > 0
-            ? certificatesList.map((d: any, i: number) => {
-              if (!showAll) {
-                // eslint-disable-next-line array-callback-return
-                if (d.certificate.state === 'revoked') return;
-              }
-              return (
-                <SettingsField key={i}>
-                  <SettingsCertificateCard>
-                    <div className="flex items-center">
-                      <div className="flex mr-6">
-                        <span className="text-base font-bold text-[#111827] mr-2">Cert:</span>
-                        <Address address={d.certificate.cert} />
-                      </div>
-                      <div className="flex">
-                        <span className="text-base font-bold text-[#111827] mr-2">Pubkey:</span>
-                        <Address address={d.certificate.pubkey} />
-                        {d.available ? 'Available' : 'Unavailable'}
-                      </div>
-                      <div className="ml-6 text-[#FA5757]">
-                        {d.current ? <div>Current</div> : null}
-                      </div>
-                      <div className="grow">{/* spacer */}</div>
-                      <div className="border-r w-[106px] mr-2">
-                        {d.certificate.state === 'revoked' ? (
-                          <DoDisturbOffIcon style={{ color: '#C9CACD' }} />
-                        ) : (
-                          <CheckCircleIcon style={{ color: '#C9CACD' }} />
+            ? certificatesList
+              .sort(byCertificateStatus)
+              .map((d: any, i: number) => {
+                if (!showAll) {
+                  // eslint-disable-next-line array-callback-return
+                  if (d.certificate.state === 'revoked') return;
+                }
+                return (
+                  <SettingsField key={i}>
+                    <SettingsCertificateCard>
+                      <div className="flex items-center">
+                        <div className="flex mr-6">
+                          <span className="text-base font-bold text-[#111827] mr-2">Cert:</span>
+                          <Address address={d.certificate.cert} />
+                        </div>
+                        <div className="flex">
+                          <span className="text-base font-bold text-[#111827] mr-2">Pubkey:</span>
+                          <Address address={d.certificate.pubkey} />
+                          {d.available ? 'Available' : 'Unavailable'}
+                        </div>
+                        <div className="ml-6 text-[#FA5757]">
+                          {d.current ? <div>Current</div> : null}
+                        </div>
+                        <div className="grow">{/* spacer */}</div>
+                        <div className="border-r w-[106px] mr-2">
+                          {d.certificate.state === 'revoked' ? (
+                            <DoDisturbOffIcon style={{ color: '#C9CACD' }} />
+                          ) : (
+                            <CheckCircleIcon style={{ color: '#C9CACD' }} />
+                          )}
+                          <span className="ml-2">{d.certificate.state}</span>
+                        </div>
+                        {d.certificate.state === 'valid' && (
+                          <div className="w-20">
+                            <Button
+                              onClick={() => {
+                                setRevokeCert(d.serial);
+                                setRevokeOpen(true);
+                              }}
+                            >
+                              Revoke
+                            </Button>
+                          </div>
                         )}
-                        <span className="ml-2">{d.certificate.state}</span>
+                        {d.available && (
+                          <div className="w-20">
+                            <Button onClick={() => activateCertificate(d.index)}>Activate</Button>
+                          </div>
+                        )}
                       </div>
-                      {d.certificate.state === 'valid' && (
-                        <div className="w-20">
-                          <Button
-                            onClick={() => {
-                              setRevokeCert(d.serial);
-                              setRevokeOpen(true);
-                            }}
-                          >
-                            Revoke
-                          </Button>
-                        </div>
-                      )}
-                      {d.available && (
-                        <div className="w-20">
-                          <Button onClick={() => activateCertificate(d.index)}>Activate</Button>
-                        </div>
-                      )}
-                    </div>
-                  </SettingsCertificateCard>
-                </SettingsField>
-              );
-            })
+                    </SettingsCertificateCard>
+                  </SettingsField>
+                );
+              })
             : null}
         </SettingsCard>
       </Grid>
