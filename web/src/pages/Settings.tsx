@@ -72,13 +72,6 @@ const byCertificateStatus = (
     return 1;
   }
 
-  // bubble available certificates to the top of the list
-  if (a.available && !b.available) {
-    return -1;
-  } else if (b.available && !a.available) {
-    return 1;
-  }
-
   return a.serial > b.serial ? 1 : -1;
 }
 
