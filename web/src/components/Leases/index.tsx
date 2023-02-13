@@ -11,11 +11,24 @@ import { DeploymentMissing } from '../SdlConfiguration/DeploymentMissing';
 interface LeaseProps {
   dseq: string;
   lease: any;
+  status: any; // TODO: fix type
 }
 
 type LabeledValue = { label: string; value: any };
 
-export const Leases: React.FC<LeaseProps> = ({ dseq, lease }) => {
+function formatPorts(services: Record<string, Array<{ externalPort: string, port: string, host: string }>> | undefined) {
+  if (services) {
+    return Object.values(services)
+      .map((service) => (
+        service.map(rule => `${rule.externalPort}: ${rule.port}`)
+      ))
+      .join("");
+  }
+
+  return "";
+}
+
+export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus }) => {
   const [providerDetails, setProviderDetails] = React.useState<Array<LabeledValue>>([]);
   const [status, setStatus] = React.useState<Array<LabeledValue>>([]);
   const [, setCapabilities] = React.useState<Array<LabeledValue>>([]);
@@ -38,6 +51,7 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease }) => {
         if (attributes) {
           const _attributes = {} as any;
           const _capabilities = [] as any;
+
           for (const attribute of attributes) {
             if (attribute.key.includes('capabilities')) {
               _capabilities.push({ key: attribute.key, value: attribute.value });
@@ -45,6 +59,7 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease }) => {
               _attributes[attribute.key] = attribute.value;
             }
           }
+
           setProviderDetails([
             { label: 'Name', value: _attributes?.organization },
             { label: 'Region', value: _attributes?.region },
@@ -60,6 +75,7 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease }) => {
             { label: 'Data Center', value: _attributes?.data_center },
             { label: 'Generation', value: _attributes?.generation },
             { label: 'Host URI', value: provider?.provider?.hostUri },
+            { label: 'Forwarded Ports', value: formatPorts(leaseStatus?.forwarded_ports) }
           ]);
           setNetwork([
             { label: 'Network Download', value: _attributes?.network_download },
