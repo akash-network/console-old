@@ -14,15 +14,17 @@ import {
   initialValues,
   InitialValuesProps,
   SdlConfigurationType,
+  SDLSpec,
 } from '../components/SdlConfiguration/settings';
 import { Icon } from '../components/Icons';
 import { isError } from '../_helpers/types';
+import { PreflightCheck } from './PreflightCheck';
 
 const CustomApp: React.FC = () => {
   const navigate = useNavigate();
   const keplr = useRecoilValue(keplrState);
   const [deploymentId, setDeploymentId] = React.useState<{ owner: string; dseq: string }>();
-  const { dseq } = useParams();
+  const { intentId, dseq } = useParams();
   const [sdl, setSdl] = useRecoilState(deploymentSdl);
   const [progressVisible, setProgressVisible] = useState(false);
   const [cardMessage, setCardMessage] = useState('');
@@ -34,15 +36,24 @@ const CustomApp: React.FC = () => {
   const { state } = useLocation();
 
   useEffect(() => {
-    if (dseq) {
+    if (intentId && !dseq) {
+      setActiveStep({ currentCard: 2 })
+    } else if (dseq) {
       setDeploymentId({
         owner: keplr.accounts[0].address,
         dseq,
       });
-      setActiveStep({ currentCard: 2 });
+      setActiveStep({ currentCard: 3 });
       return;
     }
-  }, [dseq, keplr]);
+  }, [dseq, intentId, keplr]);
+
+  const handlePreflight = (intentId: string, sdl: SDLSpec | undefined) => {
+    if (sdl) {
+      navigate(`/new-deployment/custom-sdl/${intentId}`, { state: { sdl } });
+    }
+
+  }
 
   const acceptBid = async (bidId: any) => {
     setProgressVisible(true);
@@ -117,14 +128,19 @@ const CustomApp: React.FC = () => {
                       <Button variant="outlined" onClick={() => showSdlReview(true)}>
                         <span className="mr-2">Review SDL</span> <Icon type="edit" />
                       </Button>
-                      <Button variant="contained" onClick={() => submitForm()}>
+                      <Button variant="contained" onClick={() => handlePreflight('preflight-check', values.sdl)}>
                         Create Deployment
                       </Button>
                     </DeploymentAction>
                   )}
                 />
               )}
-              {!progressVisible && activeStep.currentCard === 2 && deploymentId && (
+
+              {!progressVisible && activeStep.currentCard === 2 && intentId === 'preflight-check' && (
+                <PreflightCheck />
+              )}
+
+              {!progressVisible && activeStep.currentCard === 3 && deploymentId && (
                 <Keplr>
                   <SelectProvider
                     deploymentId={deploymentId}
