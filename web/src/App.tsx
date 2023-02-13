@@ -42,12 +42,8 @@ const AppRouter = () => {
               <Route path=":folderName/" element={<DeploymentStepper />} />
               <Route path=":folderName/:templateId" element={<DeploymentStepper />} />
               <Route path=":folderName/:templateId/:intentId" element={<DeploymentStepper />} />
-              <Route
-                path="custom-sdl"
-                element={
-                  <CustomApp />
-                }
-              />
+              <Route path="custom-sdl" element={<CustomApp />} />
+              <Route path="custom-sdl/:intentId" element={<CustomApp />} />
             </Route>
             <Route
               path="configure-deployment/:dseq/"
