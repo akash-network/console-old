@@ -46,7 +46,7 @@ export interface DeploymentEventsProps {
 }
 
 export const DeploymentEvents: React.FC<DeploymentEventsProps> = (props) => {
-  const { dseq, lease } = props;
+  const { dseq, lease, leaseStatus } = props;
   const [value, setValue] = React.useState(0);
 
   const handleChange = (e: React.SyntheticEvent, newValue: number) => {
@@ -69,7 +69,7 @@ export const DeploymentEvents: React.FC<DeploymentEventsProps> = (props) => {
         <Logs lease={lease} />
       </DeploymentTab>
       <DeploymentTab value={value} index={2}>
-        <Leases dseq={dseq} lease={lease} />
+        <Leases dseq={dseq} lease={lease} status={leaseStatus} />
       </DeploymentTab>
     </Box>
   );
