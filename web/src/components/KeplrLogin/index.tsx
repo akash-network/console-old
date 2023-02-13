@@ -25,7 +25,7 @@ export default function Keplr(props: KeplrProps) {
 
       {/* Modal to install Keplr Chrome extension */}
       <Dialog onClose={handleClose} open={isOpen}>
-        <DialogTitle>Install Keplr Wallet Extension for Chrome</DialogTitle>
+        <DialogTitle>Please install Keplr Wallet Extension</DialogTitle>
         <List sx={{ pt: 0 }}>
           <ListItem>
             <ListItemAvatar>
@@ -34,10 +34,10 @@ export default function Keplr(props: KeplrProps) {
             <a
               className="ml-3"
               target="_blank"
-              href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap"
+              href="https://www.keplr.app/download"
               onClick={handleClose}
             >
-              <ListItemText primary="View it in the Chrome Web Store" />
+              <ListItemText primary="Download Keplr extension" />
             </a>
           </ListItem>
         </List>
