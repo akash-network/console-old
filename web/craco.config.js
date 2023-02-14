@@ -20,11 +20,7 @@ module.exports = {
             },
           },
         ],
-      }),
-      // TODO: If we need to add access token or other env pls uncomment and add them here
-      // new webpack.EnvironmentPlugin({
-      //   GITHUB_ACCESS_TOKEN: "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"
-      // })
+      })
     ],
     configure: {
       externals: {
