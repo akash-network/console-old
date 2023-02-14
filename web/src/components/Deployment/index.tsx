@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { Alert, Button, Grid, Stack, Tooltip } from '@mui/material';
 import { DeploymentEvents } from '../DeploymentEvents';
 import { fetchDeployment } from '../../recoil/api';
-import { keplrState } from '../../recoil/atoms';
+import { activeCertificate, keplrState } from '../../recoil/atoms';
 import { formatCurrency } from '../../_helpers/formatter-currency';
 import { flattenObject } from '../../_helpers/flatten-object';
 import fetchPriceAndMarketCap from '../../recoil/api/akt';
@@ -34,6 +34,7 @@ const Deployment: React.FC<any> = () => {
   const leaseStatus = useLeaseStatus(lease?.lease);
   const deploymentIncomplete = deployment?.deployment?.state === 1 && !lease;
   const [refresh, setRefresh] = React.useState(false);
+  const certificate = useRecoilValue(activeCertificate);
 
   const applicationCache = dseq
     ? localStorage.getItem(dseq)
@@ -184,197 +185,203 @@ const Deployment: React.FC<any> = () => {
     application !== null && deployment?.deployment?.state === 1 ? Link : Tooltip;
 
   return (
-    <Grid container spacing={2} style={{ maxWidth: '90vw', width: '90vw', margin: 'auto' }}>
-      <Grid item xs={4}>
-        <DeploymentCard>
-          <div className="flex mb-4">
-            <div className="text-2xl font-bold">
-              {appName} <span className="text-[#adadad] ml-2">{`(${dseq})`}</span>
+    <Stack>
+      {certificate.$type === 'Invalid Certificate' && <Alert severity="warning" variant="filled">
+        You don't have a valid certificate. This is required to view the details of your lease.
+        You can create one <Link className="text-[#ffffff] font-bold" to="/settings">here</Link>.
+      </Alert>}
+      <Grid container spacing={2} style={{ maxWidth: '90vw', width: '90vw', margin: 'auto' }}>
+        <Grid item xs={4}>
+          <DeploymentCard>
+            <div className="flex mb-4">
+              <div className="text-2xl font-bold">
+                {appName} <span className="text-[#adadad] ml-2">{`(${dseq})`}</span>
+              </div>
             </div>
-          </div>
-          <DeploymentSectionWrapper>
-            {endpoints.length > 0 ? (
-              <a href={'http://' + endpoints[0].value} target="_blank" rel="noreferrer">
-                {endpoints[0].value}
-              </a>
-            ) : null}
-          </DeploymentSectionWrapper>
-          <DeploymentSectionWrapper style={{ borderBottom: 'none' }}>
-            <div className="p-3 text-lg font-bold">Actions</div>
-            {deployment?.deployment && deploymentIncomplete &&
-              <Button
-                fullWidth
-                variant="outlined"
-                color="secondary"
-                aria-label="update deployment"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                startIcon={<Icon type="redeploy" />}
-                onClick={onCompleteDeployment}
-                sx={{
-                  justifyContent: 'left',
-                  gap: '10px',
-                  backgroundColor: '#FFFFFF',
-                  color: '#374151',
-                  border: '1px solid #D1D5DB',
-                  marginBottom: '12px',
-                }}
-              >
-                Complete Deployment
-              </Button>
-            }
-            {deployment?.deployment && !deploymentIncomplete && (
-              <React.Fragment>
-                {/* deployment?.state is 1 if it is in active state. It should be that state === 2 is in-active but i am not 100% sure */}
-                <ConditionalLinkUpdate
-                  title={
-                    deployment?.deployment?.state !== 1
-                      ? 'It is not allowed to update closed deployment'
-                      : "This SDL is deployed with another tool and can't be updated from here"
-                  }
-                  placement="top"
-                  to={`update-deployment`}
+            <DeploymentSectionWrapper>
+              {endpoints.length > 0 ? (
+                <a href={'http://' + endpoints[0].value} target="_blank" rel="noreferrer">
+                  {endpoints[0].value}
+                </a>
+              ) : null}
+            </DeploymentSectionWrapper>
+            <DeploymentSectionWrapper style={{ borderBottom: 'none' }}>
+              <div className="p-3 text-lg font-bold">Actions</div>
+              {deployment?.deployment && deploymentIncomplete &&
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="secondary"
+                  aria-label="update deployment"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  startIcon={<Icon type="redeploy" />}
+                  onClick={onCompleteDeployment}
+                  sx={{
+                    justifyContent: 'left',
+                    gap: '10px',
+                    backgroundColor: '#FFFFFF',
+                    color: '#374151',
+                    border: '1px solid #D1D5DB',
+                    marginBottom: '12px',
+                  }}
                 >
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    color="secondary"
-                    aria-label="update deployment"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    startIcon={<Icon type="update" />}
-                    sx={{
-                      justifyContent: 'left',
-                      gap: '10px',
-                      backgroundColor: '#FFFFFF',
-                      color: '#374151',
-                      border: '1px solid #D1D5DB',
-                      marginBottom: '12px',
-                    }}
+                  Complete Deployment
+                </Button>
+              }
+              {deployment?.deployment && !deploymentIncomplete && (
+                <React.Fragment>
+                  {/* deployment?.state is 1 if it is in active state. It should be that state === 2 is in-active but i am not 100% sure */}
+                  <ConditionalLinkUpdate
+                    title={
+                      deployment?.deployment?.state !== 1
+                        ? 'It is not allowed to update closed deployment'
+                        : "This SDL is deployed with another tool and can't be updated from here"
+                    }
+                    placement="top"
+                    to={`update-deployment`}
                   >
-                    Update Deployment
-                  </Button>
-                </ConditionalLinkUpdate>
-                <ConditionalLinkReDeploy
-                  title="This SDL is deployed with another tool and can't be re-deployed from here"
-                  placement="top"
-                  to={`re-deploy`}
-                >
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    color="secondary"
-                    aria-label="re-deploy"
-                    startIcon={<Icon type="redeploy" />}
-                    sx={{
-                      justifyContent: 'left',
-                      gap: '10px',
-                      backgroundColor: '#FFFFFF',
-                      color: '#374151',
-                      border: '1px solid #D1D5DB',
-                      marginBottom: '12px',
-                    }}
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      color="secondary"
+                      aria-label="update deployment"
+                      aria-controls="menu-appbar"
+                      aria-haspopup="true"
+                      startIcon={<Icon type="update" />}
+                      sx={{
+                        justifyContent: 'left',
+                        gap: '10px',
+                        backgroundColor: '#FFFFFF',
+                        color: '#374151',
+                        border: '1px solid #D1D5DB',
+                        marginBottom: '12px',
+                      }}
+                    >
+                      Update Deployment
+                    </Button>
+                  </ConditionalLinkUpdate>
+                  <ConditionalLinkReDeploy
+                    title="This SDL is deployed with another tool and can't be re-deployed from here"
+                    placement="top"
+                    to={`re-deploy`}
                   >
-                    Re-Deploy
-                  </Button>
-                </ConditionalLinkReDeploy>
-                <CloneDeploymentButton
-                  icon="clone"
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      color="secondary"
+                      aria-label="re-deploy"
+                      startIcon={<Icon type="redeploy" />}
+                      sx={{
+                        justifyContent: 'left',
+                        gap: '10px',
+                        backgroundColor: '#FFFFFF',
+                        color: '#374151',
+                        border: '1px solid #D1D5DB',
+                        marginBottom: '12px',
+                      }}
+                    >
+                      Re-Deploy
+                    </Button>
+                  </ConditionalLinkReDeploy>
+                  <CloneDeploymentButton
+                    icon="clone"
+                    wallet={keplr}
+                    deployment={deployment.deployment}
+                    style={{ marginBottom: 12 }}
+                  >
+                    Clone Deployment
+                  </CloneDeploymentButton>
+                </React.Fragment>
+              )}
+              {deployment?.deployment && deployment?.deployment?.state === 1 && (
+                <CloseDeploymentButton
+                  icon="trash"
                   wallet={keplr}
                   deployment={deployment.deployment}
                   style={{ marginBottom: 12 }}
-                >
-                  Clone Deployment
-                </CloneDeploymentButton>
-              </React.Fragment>
-            )}
-            {deployment?.deployment && deployment?.deployment?.state === 1 && (
-              <CloseDeploymentButton
-                icon="trash"
-                wallet={keplr}
-                deployment={deployment.deployment}
-                style={{ marginBottom: 12 }}
-                onDelete={
-                  () => setRefresh(true)
-                }>
-                Delete Deployment
-              </CloseDeploymentButton>
-            )}
-          </DeploymentSectionWrapper>
-          <DeploymentSectionWrapper>
-            <div className="p-3 text-lg font-bold">Info</div>
-            {info.map((obj: any, i: number) => (
-              <DeploymentInfo key={i}>
-                {obj.label === 'Account' ? (
-                  <>
-                    <div>{obj.label}:</div>
-                    <Address address={obj.value} />
-                  </>
-                ) : (
-                  <>
-                    <div>{obj.label}:</div>
-                    <div className="font-medium">{obj.value}</div>
-                  </>
-                )}
-              </DeploymentInfo>
-            ))}
-          </DeploymentSectionWrapper>
-          <DeploymentSectionWrapper style={{ borderBottom: 'none' }}>
-            <div className="p-3 text-lg font-bold">Cost/Lease</div>
-            {costLease.map((obj: any, i: number) => (
-              <DeploymentInfo key={i}>
-                {obj.label === 'Alert' ? (
-                  <Alert severity="warning" variant="filled" style={{ width: '100%' }}>
-                    {obj.value}
-                  </Alert>
-                ) : (
-                  <>
-                    {obj.label === 'Provider' ? (
-                      <>
-                        <div>{obj.label}:</div>
-                        <Address address={obj.value} />
-                      </>
-                    ) : (
-                      <>
-                        <div>{obj.label}:</div>
-                        <div className="font-medium">{obj.value}</div>
-                      </>
-                    )}
-                  </>
-                )}
-              </DeploymentInfo>
-            ))}
-            {deployment?.deployment && (
-              <FundDeploymentButton
-                icon="money"
-                deployment={deployment.deployment}
-                wallet={keplr}
-              >
-                Add Funds
-              </FundDeploymentButton>
-            )}
-          </DeploymentSectionWrapper>
-          <DeploymentSectionWrapper style={{ borderBottom: 'none' }}>
-            <div className="p-3 text-lg font-bold">Endpoints</div>
-            <Stack
-              spacing={2}
-              sx={{ minHeight: '72px', marginBottom: '12px', paddingLeft: '12px' }}
-            >
-              {endpoints.map((obj: any, i: number) => (
-                <a key={i} href={`http://${obj.value}`} target="_blank" rel="noreferrer">
-                  {obj.value}
-                </a>
+                  onDelete={
+                    () => setRefresh(true)
+                  }>
+                  Delete Deployment
+                </CloseDeploymentButton>
+              )}
+            </DeploymentSectionWrapper>
+            <DeploymentSectionWrapper>
+              <div className="p-3 text-lg font-bold">Info</div>
+              {info.map((obj: any, i: number) => (
+                <DeploymentInfo key={i}>
+                  {obj.label === 'Account' ? (
+                    <>
+                      <div>{obj.label}:</div>
+                      <Address address={obj.value} />
+                    </>
+                  ) : (
+                    <>
+                      <div>{obj.label}:</div>
+                      <div className="font-medium">{obj.value}</div>
+                    </>
+                  )}
+                </DeploymentInfo>
               ))}
-            </Stack>
-          </DeploymentSectionWrapper>
-        </DeploymentCard>
+            </DeploymentSectionWrapper>
+            <DeploymentSectionWrapper style={{ borderBottom: 'none' }}>
+              <div className="p-3 text-lg font-bold">Cost/Lease</div>
+              {costLease.map((obj: any, i: number) => (
+                <DeploymentInfo key={i}>
+                  {obj.label === 'Alert' ? (
+                    <Alert severity="warning" variant="filled" style={{ width: '100%' }}>
+                      {obj.value}
+                    </Alert>
+                  ) : (
+                    <>
+                      {obj.label === 'Provider' ? (
+                        <>
+                          <div>{obj.label}:</div>
+                          <Address address={obj.value} />
+                        </>
+                      ) : (
+                        <>
+                          <div>{obj.label}:</div>
+                          <div className="font-medium">{obj.value}</div>
+                        </>
+                      )}
+                    </>
+                  )}
+                </DeploymentInfo>
+              ))}
+              {deployment?.deployment && (
+                <FundDeploymentButton
+                  icon="money"
+                  deployment={deployment.deployment}
+                  wallet={keplr}
+                >
+                  Add Funds
+                </FundDeploymentButton>
+              )}
+            </DeploymentSectionWrapper>
+            <DeploymentSectionWrapper style={{ borderBottom: 'none' }}>
+              <div className="p-3 text-lg font-bold">Endpoints</div>
+              <Stack
+                spacing={2}
+                sx={{ minHeight: '72px', marginBottom: '12px', paddingLeft: '12px' }}
+              >
+                {endpoints.map((obj: any, i: number) => (
+                  <a key={i} href={`http://${obj.value}`} target="_blank" rel="noreferrer">
+                    {obj.value}
+                  </a>
+                ))}
+              </Stack>
+            </DeploymentSectionWrapper>
+          </DeploymentCard>
+        </Grid>
+        <Grid item xs={8}>
+          <DeploymentEventsCard>
+            {dseq && lease ? <DeploymentEvents dseq={dseq} lease={lease} leaseStatus={leaseStatus} /> : null}
+          </DeploymentEventsCard>
+        </Grid>
       </Grid>
-      <Grid item xs={8}>
-        <DeploymentEventsCard>
-          {dseq && lease ? <DeploymentEvents dseq={dseq} lease={lease} leaseStatus={leaseStatus} /> : null}
-        </DeploymentEventsCard>
-      </Grid>
-    </Grid >
+    </Stack>
   );
 };
 
