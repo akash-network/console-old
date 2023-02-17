@@ -11,6 +11,10 @@ const app = fastify({
 app.register(cors, {});
 app.register(plugin, {});
 
+app.get('/status', (req, res) => {
+  res.send({ status: 'online' });
+});
+
 app.listen({ port: 3005, host: '0.0.0.0' }, (err, address) => {
   if (err) {
     console.error(err);
