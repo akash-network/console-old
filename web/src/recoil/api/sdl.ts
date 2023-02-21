@@ -46,6 +46,13 @@ export const templateList = [
     description: "An RPC Node that runs on the Cosmos Blockchain",
   },
   {
+    id: "kava",
+    name: "kava",
+    logo: templateIcons.kava,
+    title: "Kava",
+    description: "An RPC Node that runs on the Kava Blockchain",
+  },
+  {
     id: "chia",
     name: "chia",
     logo: templateIcons.chia,
