@@ -27,10 +27,10 @@ export interface KeplrWallet {
   file?: string;
 }
 
-export const rpcEndpointBase = 'http://rpc.ny.akash.farm/token/TBWM93ZB';
+export const rpcEndpointBase = 'https://rpc.ny.akash.farm/token/TBWM93ZB';
 export const rpcEndpointURL = new URL(rpcEndpointBase);
 export const rpcProxyEndpoint = (
-  `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${rpcEndpointURL.port || "80"}${rpcEndpointURL.pathname}`
+  `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${rpcEndpointURL.port || "443"}${rpcEndpointURL.pathname}`
 );
 export const rpcEndpoint = rpcEndpointBase;
 
