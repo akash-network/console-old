@@ -25,7 +25,6 @@ const PlusSign = () => <img src={PlusIcon} alt="Plus Icon" />
 const TrashIcon = () => <img src={Trash} alt="Trash Icon" />
 
 const validateStorage = (value: any) => {
-  debugger;
   let error;
   let strippedValue = value?.slice(0, -2);
   if (strippedValue && strippedValue <= 0) {
@@ -35,7 +34,6 @@ const validateStorage = (value: any) => {
 }
 
 const validateStorageData = (value: any) => {
-  debugger;
   let error;
   if (!value) {
     error = "This value can't be blank";

@@ -50,8 +50,6 @@ import { QueryFunction } from 'react-query';
 export const defaultInitialDeposit = 5000000;
 
 export const fetchDeployment = async (owner: string, dseq: string) => {
-  // @fix : rpcEndpoint: change to envar
-  const rpcEndpoint = 'https://rpc.akash.forbole.com:443/';
   const rpc = await getRpc(rpcEndpoint);
   const client = new DeploymentClient(rpc);
 

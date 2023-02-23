@@ -7,7 +7,6 @@ import {
   loadActiveCertificate,
 } from './api';
 
-import { fetchSdlList } from './api/sdl';
 import { AccountData, CosmosClient, OfflineSigner } from '@cosmjs/launchpad';
 import { fetchRpcNodeStatus } from './api/rpc';
 import { proxyURL } from './api/mtls';
@@ -28,7 +27,14 @@ export interface KeplrWallet {
   file?: string;
 }
 
-export const rpcEndpoint = 'https://rpc.akash.forbole.com:443/';
+export const rpcEndpointBase = 'http://rpc.ny.akash.farm/token/TBWM93ZB';
+export const rpcEndpointURL = new URL(rpcEndpointBase);
+export const rpcProxyEndpoint = (
+  `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${rpcEndpointURL.port || "80"}${rpcEndpointURL.pathname}`
+);
+export const rpcEndpoint = rpcEndpointBase;
+
+console.log(rpcEndpointURL)
 
 export const appVersion = atom({
   key: 'appVersion',
@@ -49,7 +55,7 @@ export const keplrState = atom<KeplrWallet>({
 export const rpcState = atom({
   key: 'rpcState',
   default: {
-    proxyEndpoint: `${proxyURL}upstream/https/rpc.akash.forbole.com/443`,
+    proxyEndpoint: rpcProxyEndpoint,
     currentRPC: '',
     rpcs: [],
   },
