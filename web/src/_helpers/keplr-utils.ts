@@ -1,5 +1,5 @@
 import { SigningCosmosClient } from '@cosmjs/launchpad';
-import { KeplrWallet } from '../recoil/atoms';
+import { KeplrWallet, rpcEndpoint } from '../recoil/atoms';
 
 const initalState = {
   accounts: [],
@@ -30,7 +30,7 @@ export const getKeplr = async (): Promise<KeplrWallet> => {
 
     // Initialize the gaia api with the offline signer that is injected by Keplr extension.
     const cosmJS = new SigningCosmosClient(
-      'https://rpc.akash.forbole.com:443',
+      rpcEndpoint,
       accounts[0].address,
       offlineSigner
     );
