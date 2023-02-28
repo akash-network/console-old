@@ -46,7 +46,7 @@ export function useLeaseStatus(lease: Lease) {
         (response) => response.json(),
         (err) => {
           console.error(err);
-          setTimeout(refreshLeaseStatus, 1000);
+          setTimeout(refreshLeaseStatus, 5000);
         }
       )
       .then((data) => setLeaseStatus(data as LeaseStatus))

@@ -1,25 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Box, Button, Card, Stack, Tooltip } from '@mui/material';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useFormikContext } from 'formik';
-import { activeCertificate, keplrState, rpcEndpoint } from '../recoil/atoms';
+import { activeCertificate, certificateList, keplrState, rpcEndpoint } from '../recoil/atoms';
 import { getAccountBalance } from '../recoil/api/bank';
-import { createAndBroadcastCertificate, loadActiveCertificate } from '../recoil/api';
+import { createAndBroadcastCertificate } from '../recoil/api';
 import { Icon } from '../components/Icons';
 import Delayed from '../components/Delayed';
 import { Text, Title } from '../components/Text';
 import { uaktToAKT } from '../_helpers/lease-calculations';
-import { getKeplr } from '../_helpers/keplr-utils';
 import { useWallet } from '../hooks/useWallet';
 
 export const PreflightCheck: React.FC<{}> = () => {
   const [hasKeplr, setHasKeplr] = React.useState(false);
-  const [keplr, setKeplr] = useRecoilState(keplrState);
+  const [keplr,] = useRecoilState(keplrState);
   const [balance, setBalance] = React.useState(0);
   const { submitForm } = useFormikContext();
   const [certificate, setCertificate] = useRecoilState(activeCertificate);
+  const accountCertificates = useRecoilValue(certificateList(keplr.accounts[0].address));
   const wallet = useWallet();
+  const [isValidCert, setIsValidCert] = React.useState(false);
+
+  React.useEffect(() => {
+    const activeCert = accountCertificates.certificates.find((cert: any) => {
+      const pubKey = Buffer.from(cert.certificate.pubkey, 'base64').toString('ascii');
+      return certificate.$type === 'TLS Certificate' && certificate.publicKey === pubKey;
+    });
+
+    setIsValidCert(activeCert && activeCert.certificate.state === 'valid');
+  }, [certificate, accountCertificates]);
 
   React.useEffect(() => {
     if (window.keplr) {
@@ -165,7 +175,7 @@ export const PreflightCheck: React.FC<{}> = () => {
 
             {/* Check Certificate */}
             <Stack sx={{ width: '100%', marginBottom: '16px' }} spacing={0}>
-              {certificate.$type === 'Invalid Certificate' && (
+              {!isValidCert && (
                 <PreflightCheckItem>
                   <div className="flex mb-2">
                     <Icon type="alert" />
@@ -188,7 +198,7 @@ export const PreflightCheck: React.FC<{}> = () => {
                   <Text size={14}>In order to deploy you will need to create a certificate.</Text>
                 </PreflightCheckItem>
               )}
-              {certificate.$type === 'TLS Certificate' ? (
+              {isValidCert ? (
                 <PreflightCheckItem>
                   <div className="flex">
                     <Icon type="checkVerified" />
