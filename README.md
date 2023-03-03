@@ -37,7 +37,7 @@ yarn install
 ```
 <p align="center">
  <video width="520" height="340" controls>
-  <source src="_docs/console-dev-setup.mov" type="video/mp4">
+  <source src="_docs/console-dev-setup.mp4" type="video/mp4">
  </video>
 </p>
 
