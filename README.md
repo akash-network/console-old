@@ -32,8 +32,8 @@ Then checkout, build and run Console
 ```
 git clone https://github.com/akash-network/console.git
 cd console
-yarn dev
 yarn install
+yarn dev
 ```
 
 https://user-images.githubusercontent.com/19495789/222617645-6b2daa48-6b41-4082-98a7-8f7b55ae295c.mp4
