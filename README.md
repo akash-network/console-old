@@ -3,7 +3,7 @@
 Akash Console is an easy to use deployment tool for deploying workloads on to Akash Network providers. It is an alternative to the Command Line Interface (CLI). Akash Console can be run as a hosted service or locally (for development). Overclock Labs (creators of Akash Network) run an instance of Akash Console at https://console.akash.network/.
 
 <p align="center">
-  <img src="_doc/../_docs/dev-readme-screencap.png" width="300">
+  <img src="_doc/../_docs/dev-readme-screencap.png" width="700">
 </p>
 
 ## Contributing
@@ -35,11 +35,8 @@ cd console
 yarn dev
 yarn install
 ```
-<p align="center">
- <video width="520" height="340" controls>
-  <source src="_docs/console-dev-setup.mp4" type="video/mp4">
- </video>
-</p>
+
+https://user-images.githubusercontent.com/19495789/222617645-6b2daa48-6b41-4082-98a7-8f7b55ae295c.mp4
 
 
 Note for MacOS
