@@ -1,35 +1,21 @@
-# Akash Console - Web UI based deployment tool for Akash Network
+# Akash Console - Web UI deployment tool for Akash Network
 
 Akash Console is an easy to use deployment tool for deploying workloads on to Akash Network providers. It is an alternative to the Command Line Interface (CLI). Akash Console can be run as a hosted service or locally (for development). Overclock Labs (creators of Akash Network) run an instance of Akash Console at https://console.akash.network/.
 
+<p align="center">
+  <img src="_doc/../_docs/dev-readme-screencap.png" width="300">
+</p>
+
+## Contributing
+
 If you would like to contribute to Akash Console, here are some ways to do so:
 
-1. Beta test and report issues
-2. Run it locally (instructions below) to get acquainted with the application
-3. Join the Clients SIG (community/sig-clients) meeting to learn about issues or features you can help build
+1. Beta test the [public facing app](https://console.akash.network/) and [report issues](https://github.com/akash-network/console/issues).
+2. Run it locally (instructions below) to get acquainted with the application.
+3. Review the list of good first issues at https://github.com/akash-network/console/contribute and comment on one that you wish to work on.
+4. Join the [Akash Networks Clients SIG](https://github.com/akash-network/community/tree/main/sig-clients) meetings to learn about other issues or features you can help build.
 
-## Microservices Architecture
-
-This repository is broken 3 into microservices.
-
-* api (not in use currently)
-* proxy server (handles RPC and Provider handoff)
-* front end client
-
-## Dev Environment Setup
-
-To reduce friction, `docker-compose.yml` is provided. simply begin development using:
-
-```bash
-docker-compose up
-```
-
-`src/` directories in each project have been volume mounted. In most instances the docker image does not need to be rebuilt. But there are currently some scenarios where that may need to happen.
-
-* proxy server changes
-* web changes outside of src/
-
-## Development Dependencies
+## Running it locally
 
 Please ensure you have the below set of dependencies installed on your workstation:
 
@@ -38,40 +24,25 @@ Please ensure you have the below set of dependencies installed on your workstati
 * concurrently (7.2.2)
 * craco (6.4.4)
 
-Install dependencies by running
+You can install dependencies by running
 ```
 npm install -g yarn concurrently craco
 ```
-
-## Workspaces
-
-this project uses `yarn workspace` to manage the monorepo. Benefits include module resolution across all workspaces, and collapsed `node_modules/` directory across these uses. For the most part projects are `atomic` however, a single `yarn.lock` file is present for all modules resolved.
-
-local development can be done using workspaces.
-
-Install dependencies
-
-```bash
+Then checkout, build and run Console
+```
+git clone https://github.com/akash-network/console.git
+cd console
+yarn dev
 yarn install
 ```
+<p align="center">
+ <video width="520" height="340" controls>
+  <source src="_docs/console-dev-setup.mov" type="video/mp4">
+ </video>
+</p>
 
-Start all microserves, and launch the `create-react-app` dev server.
 
-```bash
-yarn dev
-```
-
-### Working with Workspaces
-
-workspaces function as a typical yarn command. The only difference is prefixing the command with the workspace you are interacting inside. example of adding a module to the workspace `web`
-
-```bash
-yarn workspace web add module@module
-```
-
-the root `package.json` defines the workspaces, root scripts and shared modules. 
-
-## Note for MacOS
+Note for MacOS
 
 If you see errors regarding port 5000 being in use, this is due to AirPlay
 using the port. You can disable this service in the MacOS Sharing settings.
