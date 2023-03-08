@@ -90,7 +90,7 @@ export default function SelectProvider(
     <Box className="flex items-center justify-between mb-2 w-100">
       <Title className="text-lg font-bold">Select a Provider</Title>
       <div className="flex items-center gap-2">
-        <Button
+        {/* <Button
           style={{
             height: "30px",
             backgroundColor: "white",
@@ -103,7 +103,7 @@ export default function SelectProvider(
           onClick={() => refetch()}
         >
           Refresh
-        </Button>
+        </Button> */}
         <WordSwitch
           on="Only Audited"
           off="All"
