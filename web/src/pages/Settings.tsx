@@ -10,6 +10,7 @@ import {
   Grid,
   Paper,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import styled from '@emotion/styled';
@@ -240,11 +241,19 @@ const Settings: React.FC<{}> = () => {
 
               {obj.title === 'Certificates' ? (
                 <div className="flex-none mb-2">
-                  <Button disabled={!keplr.isSignedIn} variant="outlined"
-                          title={keplr.isSignedIn ? "Generate new certificate" : "Connect your wallet first"}
-                          onClick={() => setCreateOpen(true)}>
-                    Generate New Certificate
-                  </Button>
+                  {keplr.isSignedIn ?
+                    <Button variant="outlined"
+                            onClick={() => setCreateOpen(true)}>
+                      Generate New Certificate
+                    </Button> :
+                    <Tooltip title="Connect wallet first">
+                      <span>
+                        <Button disabled variant="outlined"
+                              onClick={() => setCreateOpen(true)}>
+                          Generate New Certificate
+                        </Button>
+                      </span>
+                    </Tooltip>}
                 </div>
               ) : (
                 <div className="flex-none mb-2">{obj.value}</div>
