@@ -240,7 +240,9 @@ const Settings: React.FC<{}> = () => {
 
               {obj.title === 'Certificates' ? (
                 <div className="flex-none mb-2">
-                  <Button variant="outlined" onClick={() => setCreateOpen(true)}>
+                  <Button disabled={!keplr.isSignedIn} variant="outlined"
+                          title={keplr.isSignedIn ? "Generate new certificate" : "Connect your wallet first"}
+                          onClick={() => setCreateOpen(true)}>
                     Generate New Certificate
                   </Button>
                 </div>
