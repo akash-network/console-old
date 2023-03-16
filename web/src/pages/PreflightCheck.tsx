@@ -20,7 +20,7 @@ export const PreflightCheck: React.FC<{}> = () => {
   const [balance, setBalance] = React.useState(0);
   const { submitForm, values } = useFormikContext();
   const [certificate, setCertificate] = useRecoilState(activeCertificate);
-  const accountCertificates = useRecoilValue(certificateList(keplr.accounts[0].address));
+  const accountCertificates = useRecoilValue(certificateList(keplr?.accounts[0]?.address));
   const wallet = useWallet();
   const [isValidCert, setIsValidCert] = React.useState(false);
   const sdl = (values as { sdl: SDLSpec }).sdl;
