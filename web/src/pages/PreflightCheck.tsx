@@ -11,16 +11,29 @@ import Delayed from '../components/Delayed';
 import { Text, Title } from '../components/Text';
 import { uaktToAKT } from '../_helpers/lease-calculations';
 import { useWallet } from '../hooks/useWallet';
+import { ManifestVersion } from '../_helpers/deployments-utils';
+import { SDLSpec } from '../components/SdlConfiguration/settings';
 
 export const PreflightCheck: React.FC<{}> = () => {
   const [hasKeplr, setHasKeplr] = React.useState(false);
   const [keplr,] = useRecoilState(keplrState);
   const [balance, setBalance] = React.useState(0);
-  const { submitForm } = useFormikContext();
+  const { submitForm, values } = useFormikContext();
   const [certificate, setCertificate] = useRecoilState(activeCertificate);
   const accountCertificates = useRecoilValue(certificateList(keplr.accounts[0].address));
   const wallet = useWallet();
   const [isValidCert, setIsValidCert] = React.useState(false);
+  const sdl = (values as { sdl: SDLSpec }).sdl;
+  const [manifestVersion, setManifestVersion] = React.useState<Uint8Array>();
+
+  React.useEffect(() => {
+    try {
+      ManifestVersion(sdl).then(setManifestVersion);
+    } catch (e) {
+      console.warn("Could not compute manifest version: ", e);
+      setManifestVersion(undefined);
+    }
+  }, [sdl])
 
   React.useEffect(() => {
     const activeCert = accountCertificates.certificates.find((cert: any) => {
@@ -166,6 +179,36 @@ export const PreflightCheck: React.FC<{}> = () => {
                     <Icon type="checkVerified" />
                     <Title size={14} className="pl-2">
                       Wallet Funds Sufficient
+                    </Title>
+                    <div className="grow">{/* spacer - do not remove */}</div>
+                  </div>
+                </PreflightCheckItem>
+              ) : null}
+            </Stack>
+
+            {/* Validate SDL */}
+            <Stack sx={{ width: '100%', marginBottom: '16px' }} spacing={0}>
+              {manifestVersion === undefined && (
+                <PreflightCheckItem>
+                  <div className="flex mb-2">
+                    <Icon type="alert" />
+                    <Title size={14} className="pl-2">
+                      Invalid SDL
+                    </Title>
+                    <div className="grow">{/* spacer - do not remove */}</div>
+                  </div>
+                  <Text size={14}>
+                    SDL could not be validated. Please double-check and ensure all values are correct.
+                    {manifestVersion}
+                  </Text>
+                </PreflightCheckItem>
+              )}
+              {manifestVersion !== undefined ? (
+                <PreflightCheckItem>
+                  <div className="flex">
+                    <Icon type="checkVerified" />
+                    <Title size={14} className="pl-2">
+                      SDL is Valid
                     </Title>
                     <div className="grow">{/* spacer - do not remove */}</div>
                   </div>
