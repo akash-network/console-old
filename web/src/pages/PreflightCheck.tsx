@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 import { Box, Button, Card, Stack, Tooltip } from '@mui/material';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { useFormikContext } from 'formik';
-import { activeCertificate, certificateList, keplrState, rpcEndpoint } from '../recoil/atoms';
+import { activeCertificate, keplrState, rpcEndpoint } from '../recoil/atoms';
 import { getAccountBalance } from '../recoil/api/bank';
 import { createAndBroadcastCertificate } from '../recoil/api';
 import { Icon } from '../components/Icons';
@@ -13,6 +13,8 @@ import { uaktToAKT } from '../_helpers/lease-calculations';
 import { useWallet } from '../hooks/useWallet';
 import { ManifestVersion } from '../_helpers/deployments-utils';
 import { SDLSpec } from '../components/SdlConfiguration/settings';
+import { queryCertificates } from '../recoil/queries';
+import { useQuery } from 'react-query';
 
 export const PreflightCheck: React.FC<{}> = () => {
   const [hasKeplr, setHasKeplr] = React.useState(false);
@@ -20,7 +22,10 @@ export const PreflightCheck: React.FC<{}> = () => {
   const [balance, setBalance] = React.useState(0);
   const { submitForm, values } = useFormikContext();
   const [certificate, setCertificate] = useRecoilState(activeCertificate);
-  const accountCertificates = useRecoilValue(certificateList(keplr?.accounts[0]?.address));
+  const { data: accountCertificates } = useQuery(
+    ['certificates', keplr?.accounts[0]?.address],
+    queryCertificates
+  );
   const wallet = useWallet();
   const [isValidCert, setIsValidCert] = React.useState(false);
   const sdl = (values as { sdl: SDLSpec }).sdl;
