@@ -41,12 +41,14 @@ export const PreflightCheck: React.FC<{}> = () => {
   }, [sdl])
 
   React.useEffect(() => {
-    const activeCert = accountCertificates.certificates.find((cert: any) => {
-      const pubKey = Buffer.from(cert.certificate.pubkey, 'base64').toString('ascii');
-      return certificate.$type === 'TLS Certificate' && certificate.publicKey === pubKey;
-    });
+    if (accountCertificates && accountCertificates.certificates) {
+      const activeCert = accountCertificates.certificates.find((cert: any) => {
+        const pubKey = Buffer.from(cert.certificate.pubkey, 'base64').toString('ascii');
+        return certificate.$type === 'TLS Certificate' && certificate.publicKey === pubKey;
+      });
 
-    setIsValidCert(activeCert && activeCert.certificate.state === 'valid');
+      setIsValidCert(activeCert && activeCert.certificate.state === 'valid');
+    }
   }, [certificate, accountCertificates]);
 
   React.useEffect(() => {
