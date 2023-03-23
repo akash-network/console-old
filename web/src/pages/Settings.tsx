@@ -25,7 +25,6 @@ import {
   TLSCertificate,
   broadcastRevokeCertificate,
   createAndBroadcastCertificate,
-  fetchCertificates,
   getAvailableCertificates,
   getCertificateByIndex,
   saveActiveSerial,
@@ -34,16 +33,8 @@ import { AntSwitch } from '../components/Switch/AntSwitch';
 import { Address } from '../components/Address';
 import { useQuery } from 'react-query';
 import { useWallet } from "../hooks/useWallet";
-
-const queryCertificates = (query: any) => {
-  const { queryKey: [, owner] } = query;
-
-  if (owner !== undefined) {
-    return fetchCertificates({ owner }, rpcEndpoint);
-  }
-
-  return Promise.resolve([]);
-}
+import { queryCertificates } from '../recoil/queries';
+import { CertificateResponse, QueryCertificatesResponse } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/query';
 
 type SortableCertificate = { available: boolean, current: boolean, certificate: { state: string }, serial: string };
 
@@ -130,14 +121,14 @@ const Settings: React.FC<{}> = () => {
 
   const handleCreateCertificate = React.useCallback(async () => {
     setShowProgress(true);
-    await createAndBroadcastCertificate(rpcEndpoint, keplr);
+    await createAndBroadcastCertificate(rpcEndpoint(), keplr);
     refetch();
     setCreateOpen(false);
   }, [keplr]);
 
   const handleRevokeCertificate = React.useCallback(async () => {
     setShowProgress(true);
-    await broadcastRevokeCertificate(rpcEndpoint, keplr, revokeCert);
+    await broadcastRevokeCertificate(rpcEndpoint(), keplr, revokeCert);
     refetch();
     setRevokeOpen(false);
     setShowProgress(false);
@@ -151,7 +142,9 @@ const Settings: React.FC<{}> = () => {
       return;
     }
 
-    for (const cert of certificates.certificates) {
+    const certificateList = (QueryCertificatesResponse.toJSON(certificates) as any).certificates;
+
+    for (const cert of certificateList) {
       const pubKey = Buffer.from(cert.certificate.pubkey, 'base64').toString('ascii');
 
       if (currentActiveCertificate.$type === 'TLS Certificate'
@@ -248,7 +241,7 @@ const Settings: React.FC<{}> = () => {
                 <div className="flex-none mb-2">
                   {wallet.isConnected ?
                     <Button variant="outlined"
-                            onClick={() => setCreateOpen(true)}>
+                      onClick={() => setCreateOpen(true)}>
                       Generate New Certificate
                     </Button> :
                     <Button variant="contained" onClick={handleConnectWallet}>

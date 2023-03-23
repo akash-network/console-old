@@ -56,7 +56,7 @@ export default function useDeploymentData(owner: string) {
     (lease: any) => {
       if (certificate.$type === 'TLS Certificate') {
         // console.log('fetching status for lease', lease);
-        return lease && fetchLeaseStatus(lease, certificate);
+        return lease && fetchLeaseStatus(lease);
       }
     },
     [certificate]

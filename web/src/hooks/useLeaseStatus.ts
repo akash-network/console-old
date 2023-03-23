@@ -56,7 +56,7 @@ export function useLeaseStatus(lease: Lease) {
     if (lease?.leaseId) {
       const { provider } = lease.leaseId;
 
-      fetchProviderInfo({ owner: provider }, rpcEndpoint)
+      fetchProviderInfo({ owner: provider }, rpcEndpoint())
         .then(response => setProviderInfo(response?.provider));
     }
   }, [lease])

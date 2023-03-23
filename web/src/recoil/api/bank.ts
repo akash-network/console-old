@@ -4,7 +4,7 @@ import { getRpc } from '@akashnetwork/akashjs/build/rpc';
 import { rpcEndpoint } from "../atoms";
 
 export async function getAccountBalance(address: string) {
-  const rpc = await getRpc(rpcEndpoint);
+  const rpc = await getRpc(rpcEndpoint());
   const client = new BankClient(rpc);
   const request = await client.Balance({
     address: address,

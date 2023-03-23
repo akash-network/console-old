@@ -6,13 +6,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { providerInfo } from '../../recoil/atoms';
-import { useRecoilValue } from 'recoil';
 import { watchLeaseEvents } from '../../recoil/api';
 import { QueryLeaseResponse } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/query';
+import { useQuery } from 'react-query';
+import { queryProviderInfo } from '../../recoil/queries';
 
 export const EventsTable: React.FC<{ lease: any }> = ({ lease }) => {
-  const provider = useRecoilValue(providerInfo(lease?.lease?.leaseId?.provider));
+  const { data: provider } = useQuery(['providerInfo', lease?.lease?.leaseId?.provider], queryProviderInfo);
   const [rows, setRows] = useState<any[]>([]);
   const address = (lease as QueryLeaseResponse).lease?.leaseId?.owner;
 

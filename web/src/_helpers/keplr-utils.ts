@@ -30,7 +30,7 @@ export const getKeplr = async (): Promise<KeplrWallet> => {
 
     // Initialize the gaia api with the offline signer that is injected by Keplr extension.
     const cosmJS = new SigningCosmosClient(
-      rpcEndpoint,
+      rpcEndpoint(),
       accounts[0].address,
       offlineSigner
     );

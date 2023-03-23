@@ -4,13 +4,13 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import List from '@mui/material/List';
 import Checkbox from '@mui/material/Checkbox';
-import { providerInfo } from '../../recoil/atoms';
-import { useRecoilValue } from 'recoil';
 import { watchLeaseLogs } from '../../recoil/api';
 import { QueryLeaseResponse } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/query';
+import { useQuery } from 'react-query';
+import { queryProviderInfo } from '../../recoil/queries';
 
 export const Logs: React.FC<any> = ({ lease }) => {
-  const provider = useRecoilValue(providerInfo(lease?.lease?.leaseId?.provider));
+  const { data: provider } = useQuery(['providerInfo', lease?.lease?.leaseId?.provider], queryProviderInfo);
   const address = (lease as QueryLeaseResponse).lease?.leaseId?.owner;
   const [logs, setLogs] = useState<any[]>([]);
   const [autoScrollWithOutput, setAutoScrollWithOutput] = useState(false);
