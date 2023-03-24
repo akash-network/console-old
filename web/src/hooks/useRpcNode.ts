@@ -23,5 +23,5 @@ export function useRpcNode() {
   return [
     getRpcNode,
     setRpcNode
-  ];
+  ] as [typeof getRpcNode, typeof setRpcNode];
 }
