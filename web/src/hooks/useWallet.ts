@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { KeplrWallet, keplrState, showKeplrWindow } from "../recoil/atoms";
+import { keplrState, showKeplrWindow } from "../recoil/atoms";
 import { getKeplr } from "../_helpers/keplr-utils";
 
 export function useWallet() {

@@ -79,6 +79,7 @@ const BidAuditBadges: React.FC<BidAuditBadgesProps> = ({ bid }) => {
         if (isValidAuditor(provider.auditor)) {
           return auditors[provider.auditor];
         }
+        else return null;
       })
       .map((auditor, idx) => {
         return auditor && <BadgeBox key={`auditor-${idx}`}>{auditor?.logo()}</BadgeBox>;

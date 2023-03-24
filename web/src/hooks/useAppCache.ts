@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SDLSpec } from '../components/SdlConfiguration/settings';
 
 type Application = {

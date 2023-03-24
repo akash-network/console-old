@@ -7,7 +7,6 @@ import { muiTheme } from './style/mui-theme';
 import { RecoilRoot } from 'recoil';
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "./queryClient";
-import { ReactQueryDevtools } from "react-query/devtools";
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement as HTMLElement);

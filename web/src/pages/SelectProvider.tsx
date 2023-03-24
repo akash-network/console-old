@@ -1,12 +1,11 @@
 import React, { ChangeEventHandler, useState } from 'react';
-import { Box, Button, Divider, Stack } from '@mui/material';
+import { Box, Divider, Stack } from '@mui/material';
 import { Bid as BidCard } from '../components/Bid';
 import { fetchBidsList } from '../recoil/api';
 import { Bid } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/bid';
 import styled from '@emotion/styled';
 import Loading from '../components/Loading';
 import { useQuery } from "react-query";
-import CachedIcon from '@mui/icons-material/Cached';
 import { WordSwitch } from "../components/Switch/WordSwitch";
 import { Timer } from "../components/Timer";
 import { PlaceholderCard } from '../components/PlaceholderCard';
@@ -50,7 +49,7 @@ export default function SelectProvider(
     deploymentId
   }: SelectProviderProps): JSX.Element {
 
-  const { data: bids, refetch } = useQuery(
+  const { data: bids } = useQuery(
     ["bids", deploymentId],
     () => fetchBidsList(deploymentId, rpcEndpoint)
       .then((resp) => resp.bids

@@ -119,14 +119,3 @@ const WalletDeployButtonDescription = styled.p`
   color: #3d4148;
 `;
 
-const Recommended = styled.div`
-  font-family: 'Satoshi-Regular', sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 16px;
-  color: #991B1B;
-  background: #FEE2E2;
-  border-radius: 10px;
-  padding: 2px 10px;
-`;
