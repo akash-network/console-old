@@ -260,6 +260,9 @@ a {
 #link_help:hover {
     border: 1px solid #f0f1f4;
 }
+.block_default_hover:hover {
+    border: none !important;
+}
 
 #link_help {
     margin-bottom: 24px;
