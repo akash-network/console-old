@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { Avatar, Box, Button, Stack } from '@mui/material';
+import { Avatar, Button, Stack } from '@mui/material';
 import { WalletDeployButtons } from '../components/WalletDeployButton';
 import axios from 'axios';
 import yaml from 'js-yaml';
