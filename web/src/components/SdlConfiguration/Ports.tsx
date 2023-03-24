@@ -1,7 +1,7 @@
 import React from "react";
 import { Field, FieldArray } from "formik";
 import styled from "@emotion/styled";
-import { FormControl, Grid, IconButton, MenuItem, Select, Stack } from "@mui/material";
+import { FormControl, IconButton, MenuItem, Select, Stack } from "@mui/material";
 import { ErrorMessageComponent } from "../ErrorMessage";
 import PlusIcon from "../../assets/images/plus-icon.svg";
 import Trash from "../../assets/images/icon-trash.svg";

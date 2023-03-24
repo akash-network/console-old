@@ -20,7 +20,7 @@ import {
   SDLSpec
 } from "../components/SdlConfiguration/settings";
 import logging from "../logging";
-import { Manifest, ManifestVersion } from "../_helpers/deployments-utils";
+import { ManifestVersion } from "../_helpers/deployments-utils";
 import useAppCache from "../hooks/useAppCache";
 import { isError } from "../_helpers/types";
 

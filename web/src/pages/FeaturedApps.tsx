@@ -3,12 +3,10 @@ import styled from '@emotion/styled';
 import { Template } from '../components/Template';
 import { Button } from '@mui/material';
 import { css } from "@emotion/react";
-import Light from "../assets/images/light.svg";
 import { templateList } from "../recoil/api/sdl";
 import Document from "../assets/images/document.svg";
 import { SdlEditor } from "../components/SdlConfiguration/SdllEditor";
 
-const LightIcon = () => <img src={Light} alt="Light Icon" />
 const DocumentIcon = () => <img src={Document} alt="Document Icon" />
 
 export interface FeaturedAppsProps {
