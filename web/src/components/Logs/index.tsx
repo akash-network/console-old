@@ -60,7 +60,7 @@ export const Logs: React.FC<any> = ({ lease }) => {
   };
 
   return (
-    <div>
+    <div style={{position: "absolute", width: "100%", height: "66%"}}>
       <div className="p-2 text-xl font-bold">Application Logs</div>
       <LogsWrapper>
         <ul>
@@ -94,6 +94,7 @@ const LogsWrapper = styled.div`
   padding: 12px;
   background-color: black;
   width: 100%;
+  height: 100%,
   max-height: 65vh;
   overflow-x: scroll;
   overflow-y: scroll;

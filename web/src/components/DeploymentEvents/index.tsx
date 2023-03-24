@@ -21,12 +21,11 @@ const DeploymentTab: React.FC<DeploymentTabProps> = (props) => {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
+      style={{height: "100%", position: "relative"}}
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 0 }}>
           <>{children}</>
-        </Box>
       )}
     </div>
   );
@@ -54,7 +53,7 @@ export const DeploymentEvents: React.FC<DeploymentEventsProps> = (props) => {
   };
 
   return (
-    <Box sx={{ width: '100%', p: 0 }}>
+    <Box sx={{ width: '100%', height: '100%', p: 0, position: "relative"}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="deployment event tabs">
           <Tab label="Events" {...tabProps(0)} />
