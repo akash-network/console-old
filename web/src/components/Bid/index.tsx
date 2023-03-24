@@ -7,9 +7,9 @@ import { Address } from '../Address';
 import { formatCurrency } from '../../_helpers/formatter-currency';
 import { getAvgCostPerMonth } from '../../_helpers/lease-calculations';
 import { useNavigate } from 'react-router-dom';
-import moultireLogo from "../../assets/images/moultire-logo.svg";
-import ovrclkLogo from "../../assets/images/overclk-logo.svg";
-import { Hashicon } from "@emeraldpay/hashicon-react";
+import moultireLogo from '../../assets/images/moultire-logo.svg';
+import ovrclkLogo from '../../assets/images/overclk-logo.svg';
+import { Hashicon } from '@emeraldpay/hashicon-react';
 import { fetchProviderAttributes, fetchProviderInfo } from '../../recoil/api/providers';
 import { useQuery } from 'react-query';
 import { Bid as TBid } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/bid';
@@ -33,66 +33,69 @@ const auditors = {
 };
 
 type BidAuditTagProps = {
-  bid: TBid,
+  bid: TBid;
 };
 
 const BidAuditTag: React.FC<BidAuditTagProps> = ({ bid }) => {
-  const { data: attributes } = useQuery(
-    ['providerAttributes', bid.bidId?.provider],
-    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint)
+  const { data: attributes } = useQuery(['providerAttributes', bid.bidId?.provider], () =>
+    fetchProviderAttributes({ owner: bid.bidId?.provider || '' }, rpcEndpoint)
   );
 
   const isAudited = (attributes?.providers?.length || 0) > 0;
 
-  return <>
-    {
-      isAudited && (
+  return (
+    <>
+      {isAudited && (
         <Chip
           variant="filled"
           label="Audited"
           color="success"
           size="small"
-          sx={{ marginLeft: "auto", marginRight: "10px", padding: "2px" }}
+          sx={{ marginLeft: 'auto', marginRight: '10px', padding: '2px' }}
         />
-      )
-    }
-  </>;
-}
+      )}
+    </>
+  );
+};
 
 type BidAuditBadgesProps = {
   bid: TBid;
-}
+};
 
 const isValidAuditor = (id: string): id is keyof typeof auditors => {
   return auditors.hasOwnProperty(id);
-}
+};
 
 const BidAuditBadges: React.FC<BidAuditBadgesProps> = ({ bid }) => {
-  const { data: attributes } = useQuery(
-    ['providerAttributes', bid.bidId?.provider],
-    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint)
+  const { data: attributes } = useQuery(['providerAttributes', bid.bidId?.provider], () =>
+    fetchProviderAttributes({ owner: bid.bidId?.provider || '' }, rpcEndpoint)
   );
 
-  return <>{
-    attributes?.providers
-      ?.map((provider) => {
-        if (isValidAuditor(provider.auditor)) {
-          return auditors[provider.auditor];
-        }
-      })
-      .map((auditor, idx) => {
-        return auditor && <BadgeBox key={`auditor-${idx}`}>{auditor?.logo()}</BadgeBox>;
-      })
-  }</>;
-}
+  return (
+    <>
+      {attributes?.providers
+        ?.map((provider) => {
+          if (isValidAuditor(provider.auditor)) {
+            return auditors[provider.auditor];
+          }
+          return null;
+        })
+        .map((auditor, idx) => {
+          return auditor && <BadgeBox key={`auditor-${idx}`}>{auditor?.logo()}</BadgeBox>;
+        })}
+    </>
+  );
+};
 
 type BidProps = BidCardProps;
 
 export const Bid: React.FC<BidProps> = (props) => {
-  return <Suspense fallback={<></>}>
-    <BidCard {...props} />
-  </Suspense>
-}
+  return (
+    <Suspense fallback={<></>}>
+      <BidCard {...props} />
+    </Suspense>
+  );
+};
 
 export interface BidCardProps {
   bid: TBid;
@@ -108,14 +111,12 @@ export const BidCard: React.FC<BidCardProps> = ({ bid, ...props }) => {
 
   const providerId = bid.bidId?.provider;
 
-  const { data: provider } = useQuery(
-    ['provider', providerId],
-    () => fetchProviderInfo({ owner: providerId || "" }, rpcEndpoint)
-  )
+  const { data: provider } = useQuery(['provider', providerId], () =>
+    fetchProviderInfo({ owner: providerId || '' }, rpcEndpoint)
+  );
 
-  const { data: attributes } = useQuery(
-    ['providerAttributes', bid.bidId?.provider],
-    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint)
+  const { data: attributes } = useQuery(['providerAttributes', bid.bidId?.provider], () =>
+    fetchProviderAttributes({ owner: bid.bidId?.provider || '' }, rpcEndpoint)
   );
 
   const akt = useRecoilValue(aktMarketCap);
@@ -193,88 +194,88 @@ export const BidCard: React.FC<BidCardProps> = ({ bid, ...props }) => {
 
 const formatProviderName = (uri: string | undefined) => {
   if (typeof uri !== 'string') {
-    return "";
+    return '';
   }
 
   const parsed = new URL(uri);
   return parsed.hostname;
-}
+};
 
 const BidWrapper = styled.div<{ checked?: boolean }>`
-        width: 400px;
-        box-sizing: border-box;
-        padding: 32px;
-        background: #ffffff;
-        border: 1px solid ${(props) => (props.checked ? '#FA5757' : '#B7C1CF')};
-        box-shadow: ${(props) => (props.checked ? '0 16px 16px rgba(58, 69, 98, 0.16)' : 'none')};
-        border-radius: 16px;
-        flex: none;
-        order: 0;
-        flex-grow: 0;
-        cursor: pointer;
+  width: 400px;
+  box-sizing: border-box;
+  padding: 32px;
+  background: #ffffff;
+  border: 1px solid ${(props) => (props.checked ? '#FA5757' : '#B7C1CF')};
+  box-shadow: ${(props) => (props.checked ? '0 16px 16px rgba(58, 69, 98, 0.16)' : 'none')};
+  border-radius: 16px;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  cursor: pointer;
 
-        &:hover {
-          border: 1px solid #fa5757;
+  &:hover {
+    border: 1px solid #fa5757;
   }
-        `;
+`;
 
 const BidHeader = styled.div`
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        `;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
 
 const HashNameAndHost = styled.div`
-        display: flex;
-        align-items: center;
-        column-gap: 20px;
-        padding: 10px 0;
-        border-bottom: 1px solid #e5e7eb;
-        `;
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e7eb;
+`;
 
 const BidCost = styled.div`
-        padding: 10px 0;
-        `;
+  padding: 10px 0;
+`;
 const BidDetail = styled.div`
-        display: flex;
-        border-top: 1px solid #e5e7eb;
-        padding: 12px 0;
-        `;
+  display: flex;
+  border-top: 1px solid #e5e7eb;
+  padding: 12px 0;
+`;
 
 const BidValue = styled.div`
-        font-family: 'Satoshi-Regular', serif;
-        font-style: normal;
-        font-weight: 700;
-        font-size: 20px;
-        line-height: 26px;
-        color: #111827;
-        `;
+  font-family: 'Satoshi-Regular', serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 26px;
+  color: #111827;
+`;
 
 const BadgeBox = styled(Box)`
-        border: 1px solid #ebedf3;
-        border-radius: 4px;
-        height: 24px;
-        width: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        `;
+  border: 1px solid #ebedf3;
+  border-radius: 4px;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const BidLabel = styled.p`
-        margin-right: auto;
-        padding: 0;
-        `;
+  margin-right: auto;
+  padding: 0;
+`;
 
 const HashName = styled.p`
-        font-family: 'Satoshi-Regular', serif;
-        font-style: normal;
-        font-weight: 700;
-        font-size: 18px;
-        line-height: 24px;
-        color: #111827;
-        margin-bottom: 6px;
-        width: 300px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        `;
+  font-family: 'Satoshi-Regular', serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 24px;
+  color: #111827;
+  margin-bottom: 6px;
+  width: 300px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;

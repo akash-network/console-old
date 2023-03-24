@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { Avatar, Box, Button, Stack } from '@mui/material';
+import { Avatar, Button, Stack } from '@mui/material';
 import { WalletDeployButtons } from '../components/WalletDeployButton';
 import axios from 'axios';
 import yaml from 'js-yaml';
@@ -9,12 +9,12 @@ import { fetchSdlList, templateList } from '../recoil/api/sdl';
 import { Template } from '../components/SdlConfiguration/settings';
 import { useQuery } from 'react-query';
 import { ButtonTemplate } from '../components/Button';
-import SocialIcon from "../components/Icons/SocialIcon";
+import SocialIcon from '../components/Icons/SocialIcon';
 
 type SocialNetwork = {
-  socialNetwork: string,
-  url: string
-}
+  socialNetwork: string;
+  url: string;
+};
 
 export interface SelectAppProps {
   folderName: string;
@@ -81,12 +81,7 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
     <Stack className="items-center">
       <SdlWrapper>
         <SdlIntro>
-          {folderName && template && (
-            <Avatar
-              src={template.logo}
-              alt="Logo"
-            />
-          )}
+          {folderName && template && <Avatar src={template.logo} alt="Logo" />}
           <SdlInformation>
             <SdlInformationTitle>{directoryConfig?.title.name}</SdlInformationTitle>
             <SdlInformationDescription>
@@ -122,7 +117,7 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
                 })}
             </TypologyWrapper>
             <DeployButton
-              variant='contained'
+              variant="contained"
               disabled={!selectedSdl}
               onClick={() => onNextButtonClick(selectedSdl.title.toLowerCase())}
             >

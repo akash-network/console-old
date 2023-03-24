@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { KeplrWallet, keplrState, showKeplrWindow } from "../recoil/atoms";
-import { getKeplr } from "../_helpers/keplr-utils";
+import { useEffect } from 'react';
+import { useRecoilState } from 'recoil';
+import { keplrState, showKeplrWindow } from '../recoil/atoms';
+import { getKeplr } from '../_helpers/keplr-utils';
 
 export function useWallet() {
   const [keplr, setKeplr] = useRecoilState(keplrState);
@@ -41,7 +41,7 @@ export function useWallet() {
       localStorage.setItem('walletConnected', 'false');
       setKeplr({
         isSignedIn: false,
-        accounts: []
+        accounts: [],
       });
     }
   };

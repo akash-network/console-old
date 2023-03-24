@@ -1,55 +1,51 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
-import { truncate } from "lodash";
-import CheckedImage from "../../assets/images/checkmark-red.svg";
-import { Template } from "../SdlConfiguration/settings";
+import { truncate } from 'lodash';
+import React from 'react';
+import CheckedImage from '../../assets/images/checkmark-red.svg';
+import { Template } from '../SdlConfiguration/settings';
 
 export interface WalletDeployButtonProps {
-  selected: Template | undefined
-  typology: Template
-  onButtonSelect: (template: Template) => void
-  index: number
+  selected: Template | undefined;
+  typology: Template;
+  onButtonSelect: (template: Template) => void;
+  index: number;
 
-  [key: string]: any
+  [key: string]: any;
 }
 
-export const WalletDeployButtons: React.FC<WalletDeployButtonProps> = (
-  {
-    selected,
-    typology,
-    onButtonSelect,
-    index,
-    ...field
-  }) => {
+export const WalletDeployButtons: React.FC<WalletDeployButtonProps> = ({
+  selected,
+  typology,
+  onButtonSelect,
+  index,
+  ...field
+}) => {
   return (
     <Box
       sx={{
-        width: "100%"
-      }}>
+        width: '100%',
+      }}
+    >
       <WalletDeployButtonWrapper
         checked={selected?.title === typology.title}
         onClick={() => onButtonSelect(typology)}
       >
         <WalletDeployHeadline>
-          <WalletDeployButtonTitle>
-            {typology.title}
-          </WalletDeployButtonTitle>
+          <WalletDeployButtonTitle>{typology.title}</WalletDeployButtonTitle>
           {selected?.title === typology.title && (
             <WalletCheckmarkButton
               id={typology.title}
               src={CheckedImage}
               checked={selected.title === typology.title}
-              onChange={({ currentTarget }) =>
-                onButtonSelect(typology)
-              }
+              onChange={({ currentTarget }) => onButtonSelect(typology)}
             />
           )}
         </WalletDeployHeadline>
         <WalletDeployButtonDescription>
           {truncate(typology.description, {
-            'length': 200,
-            'separator': '...'
+            length: 200,
+            separator: '...',
           })}
         </WalletDeployButtonDescription>
       </WalletDeployButtonWrapper>
@@ -70,8 +66,7 @@ const WalletDeployButtonWrapper = styled.div<{ checked?: boolean }>`
 
   background: #ffffff;
   border: ${(props) => (props.checked ? '1px solid #F43F5E' : '1px solid #B7C1CF')};
-  box-shadow: ${(props) =>
-    props.checked ? '0px 1px 2px 0px #0000000D' : 'none'};
+  box-shadow: ${(props) => (props.checked ? '0px 1px 2px 0px #0000000D' : 'none')};
   border-radius: 8px;
   flex: none;
   order: 0;
@@ -117,16 +112,4 @@ const WalletDeployButtonDescription = styled.p`
   align-items: center;
   letter-spacing: 0.015em;
   color: #3d4148;
-`;
-
-const Recommended = styled.div`
-  font-family: 'Satoshi-Regular', sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 16px;
-  color: #991B1B;
-  background: #FEE2E2;
-  border-radius: 10px;
-  padding: 2px 10px;
 `;

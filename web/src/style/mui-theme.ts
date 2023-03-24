@@ -1,4 +1,4 @@
-import { createTheme, PaletteOptions } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 
 export const muiTheme = createTheme({
   components: {
@@ -11,7 +11,7 @@ export const muiTheme = createTheme({
           borderRadius: '6px',
           textTransform: 'none',
           '&:hover': {
-            backgroundColor: "#ED4E4E",
+            backgroundColor: '#ED4E4E',
           },
         },
         outlined: {
@@ -22,7 +22,7 @@ export const muiTheme = createTheme({
           border: '1px solid #D1D5DB',
           textTransform: 'none',
           '&:hover': {
-            backgroundColor: "#F4F5F8",
+            backgroundColor: '#F4F5F8',
             border: '1px solid #D1D5DB',
           },
         },
@@ -35,9 +35,9 @@ export const muiTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: '#f9fafb',
-        }
-      }
-    }
+        },
+      },
+    },
   },
   typography: {
     fontFamily: 'Satoshi-Variable',
@@ -45,13 +45,13 @@ export const muiTheme = createTheme({
     h1: {
       fontWeight: '400',
       fontSize: '14px',
-      lineHeight: '20px'
+      lineHeight: '20px',
     },
 
     h2: {
       fontWeight: '400',
       fontSize: '14px',
-      lineHeight: '20px'
+      lineHeight: '20px',
     },
 
     h3: {
@@ -74,7 +74,6 @@ export const muiTheme = createTheme({
       lineHeight: '20px',
       color: '#6B7280',
     },
-
   },
   palette: {
     success: {
@@ -90,7 +89,7 @@ export const muiTheme = createTheme({
     secondary: {
       main: '#c088cf',
       dark: '#b65fcd',
-      light: "#FEE2E2",
+      light: '#FEE2E2',
       contrastText: '#000',
     },
     info: {
