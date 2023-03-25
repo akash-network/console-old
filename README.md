@@ -12,7 +12,7 @@ If you would like to contribute to Akash Console, here are some ways to do so:
 
 1. Beta test the [public facing app](https://console.akash.network/) and [report issues](https://github.com/akash-network/console/issues).
 2. Run it locally (instructions below) to get acquainted with the application.
-3. Review the list of good first issues at https://github.com/akash-network/console/contribute and comment on one that you wish to work on.
+3. Review the list of issues at https://github.com/akash-network/console/issues and comment on one that you wish to work on.
 4. Join the [Akash Networks Clients SIG](https://github.com/akash-network/community/tree/main/sig-clients) meetings to learn about other issues or features you can help build.
 
 ## Running it locally
