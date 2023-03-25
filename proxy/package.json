@@ -1,6 +1,6 @@
 {
     "name": "proxy",
-    "version": "0.1.256",
+    "version": "0.1.257",
     "main": "index.js",
     "license": "MIT",
     "private": true,
