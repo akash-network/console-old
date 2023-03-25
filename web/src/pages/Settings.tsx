@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  Input,
   Paper,
   Stack,
   Typography,
@@ -25,7 +26,6 @@ import {
   TLSCertificate,
   broadcastRevokeCertificate,
   createAndBroadcastCertificate,
-  fetchCertificates,
   getAvailableCertificates,
   getCertificateByIndex,
   saveActiveSerial,
@@ -34,16 +34,9 @@ import { AntSwitch } from '../components/Switch/AntSwitch';
 import { Address } from '../components/Address';
 import { useQuery } from 'react-query';
 import { useWallet } from "../hooks/useWallet";
-
-const queryCertificates = (query: any) => {
-  const { queryKey: [, owner] } = query;
-
-  if (owner !== undefined) {
-    return fetchCertificates({ owner }, rpcEndpoint);
-  }
-
-  return Promise.resolve([]);
-}
+import { queryCertificates } from '../recoil/queries';
+import { QueryCertificatesResponse } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/query';
+import { useRpcNode } from '../hooks/useRpcNode';
 
 type SortableCertificate = { available: boolean, current: boolean, certificate: { state: string }, serial: string };
 
@@ -97,6 +90,7 @@ const Settings: React.FC<{}> = () => {
   const [showProgress, setShowProgress] = React.useState(false);
   const [fields, setFields] = React.useState<FieldInfo<string | TLSCertificate>[]>([]);
   const [optInto, setOptInto] = useRecoilState(optIntoAnalytics);
+  const [getRpcNode, setRpcNode] = useRpcNode();
   const wallet = useWallet();
 
   const handleConnectWallet = (): void => {
@@ -130,14 +124,14 @@ const Settings: React.FC<{}> = () => {
 
   const handleCreateCertificate = React.useCallback(async () => {
     setShowProgress(true);
-    await createAndBroadcastCertificate(rpcEndpoint, keplr);
+    await createAndBroadcastCertificate(rpcEndpoint(), keplr);
     refetch();
     setCreateOpen(false);
   }, [keplr]);
 
   const handleRevokeCertificate = React.useCallback(async () => {
     setShowProgress(true);
-    await broadcastRevokeCertificate(rpcEndpoint, keplr, revokeCert);
+    await broadcastRevokeCertificate(rpcEndpoint(), keplr, revokeCert);
     refetch();
     setRevokeOpen(false);
     setShowProgress(false);
@@ -151,7 +145,16 @@ const Settings: React.FC<{}> = () => {
       return;
     }
 
-    for (const cert of certificates.certificates) {
+    // TODO: figure out why this throws an exception for some certs
+    let certificateList: any[] = [];
+    try {
+      certificateList = (QueryCertificatesResponse.toJSON(certificates) as any).certificates;
+    } catch (e) {
+      console.error(e, certificates);
+      return;
+    }
+
+    for (const cert of certificateList) {
       const pubKey = Buffer.from(cert.certificate.pubkey, 'base64').toString('ascii');
 
       if (currentActiveCertificate.$type === 'TLS Certificate'
@@ -221,6 +224,12 @@ const Settings: React.FC<{}> = () => {
       </Grid>
       <Grid item xs={10}>
         <SettingsCard>
+          <SettingsField>
+            <div className="text-base font-bold text-[#111827]">RPC Endpoint</div>
+            <div className="flex-none">
+              <SettingOptionText initialValue={getRpcNode()} onChange={setRpcNode} />
+            </div>
+          </SettingsField>
           {fields.map((obj: any, i: number) => (
             <SettingsField key={i}>
               <div className="flex-none">
@@ -242,13 +251,11 @@ const Settings: React.FC<{}> = () => {
                 ) : null}
               </div>
 
-              <div className="grow">{/* spacer */}</div>
-
               {obj.title === 'Certificates' ? (
                 <div className="flex-none mb-2">
                   {wallet.isConnected ?
                     <Button variant="outlined"
-                            onClick={() => setCreateOpen(true)}>
+                      onClick={() => setCreateOpen(true)}>
                       Generate New Certificate
                     </Button> :
                     <Button variant="contained" onClick={handleConnectWallet}>
@@ -256,7 +263,7 @@ const Settings: React.FC<{}> = () => {
                     </Button>}
                 </div>
               ) : (
-                <div className="flex-none mb-2">{obj.value}</div>
+                <div className="flex-none">{obj.value}</div>
               )}
             </SettingsField>
           ))}
@@ -430,6 +437,26 @@ const Settings: React.FC<{}> = () => {
 
 export default Settings;
 
+const SettingOptionText = (props: { initialValue: string; onChange: (newVal: string) => void }) => {
+  const updateValue = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    props.onChange(e.target.value);
+  }, [props.onChange]);
+
+  return <div>
+    <SettingsInput defaultValue={props.initialValue} onChange={updateValue}></SettingsInput>
+  </div>;
+};
+
+const SettingsInput = styled.input`
+        width: 24rem;
+        padding: 10px 16px;
+        border: 1px solid #D7D7D7;
+        border-radius: 6px;
+        font-weight: 500;
+        border: 1px solid #d7d7d7;
+        text-align: right;
+        `;
+
 const SettingsCard = styled(Paper)`
         padding: 24px;
         text-align: left;
@@ -439,6 +466,8 @@ const SettingsCard = styled(Paper)`
 
 const SettingsField = styled.div`
         display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: 16px 0 16px;
         border-bottom: 1px solid gainsboro;
         `;

@@ -1,12 +1,12 @@
 import React from 'react';
-import { useRecoilValue } from 'recoil';
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import { providerInfo } from '../../recoil/atoms';
 import { DeploymentMissing } from '../SdlConfiguration/DeploymentMissing';
+import { queryProviderInfo } from '../../recoil/queries';
+import { useQuery } from 'react-query';
 
 interface LeaseProps {
   dseq: string;
@@ -37,7 +37,7 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus 
   const [details, setDetails] = React.useState<Array<LabeledValue>>([]);
   const [capacity, setCapacity] = React.useState<Array<LabeledValue>>([]);
   const [, setInfo] = React.useState<Array<LabeledValue>>([]);
-  const provider = useRecoilValue(providerInfo(lease?.lease?.leaseId?.provider));
+  const { data: provider } = useQuery(['providerInfo', lease?.lease?.leaseId?.provider], queryProviderInfo)
   const attributes = provider?.provider?.attributes as any;
 
   const applicationCache = localStorage.getItem(dseq);

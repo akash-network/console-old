@@ -1,23 +1,14 @@
 import { atom, AtomEffect, atomFamily, RecoilLoadable } from 'recoil';
 import pkg from '../../package.json';
 import {
-  fetchCertificates,
-  fetchDeployment,
-  fetchLeaseStatus,
   loadActiveCertificate,
 } from './api';
 
 import { AccountData, CosmosClient, OfflineSigner } from '@cosmjs/launchpad';
-import { fetchRpcNodeStatus } from './api/rpc';
 import { proxyURL } from './api/mtls';
-import {
-  fetchAuditorAttributes,
-  fetchProviderAttributes,
-  fetchProviderInfo,
-  fetchProvidersList,
-} from './api/providers';
 import fetchPriceAndMarketCap from './api/akt';
 import { SDLSpec } from '../components/SdlConfiguration/settings';
+import { getRpcNode } from '../hooks/useRpcNode';
 
 export interface KeplrWallet {
   accounts: AccountData[];
@@ -27,14 +18,16 @@ export interface KeplrWallet {
   file?: string;
 }
 
+// Deprecated. Use getRpcNode instead.
 export const rpcEndpointBase = 'https://rpc.ny.akash.farm/token/TBWM93ZB';
 export const rpcEndpointURL = new URL(rpcEndpointBase);
 export const rpcProxyEndpoint = (
   `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${rpcEndpointURL.port || "443"}${rpcEndpointURL.pathname}`
 );
-export const rpcEndpoint = rpcEndpointBase;
 
-console.log(rpcEndpointURL)
+// Located in this file for backwards compatibility
+// TODO: Move to a more appropriate location
+export const rpcEndpoint = getRpcNode;
 
 export const appVersion = atom({
   key: 'appVersion',
@@ -52,6 +45,7 @@ export const keplrState = atom<KeplrWallet>({
   },
 });
 
+// TODO: Don't think this is used anymore. Validate and remove if so.
 export const rpcState = atom({
   key: 'rpcState',
   default: {
@@ -59,40 +53,6 @@ export const rpcState = atom({
     currentRPC: '',
     rpcs: [],
   },
-});
-
-export const deploymentInfo = atomFamily({
-  key: 'DeploymentInfo',
-  default: (deploymentId: { owner: string; dseq: string }) =>
-    RecoilLoadable.of(fetchDeployment(deploymentId.owner, deploymentId.dseq)),
-});
-
-export const leaseStatus = atomFamily({
-  key: 'LeaseStatus',
-  default: (params: string) => {
-    const { leaseId, certificate } = JSON.parse(params);
-    return RecoilLoadable.of(fetchLeaseStatus(leaseId, certificate));
-  },
-});
-
-export const providerList = atomFamily({
-  key: 'Providers',
-  default: () => RecoilLoadable.of(fetchProvidersList(rpcEndpoint)),
-});
-
-export const providerInfo = atomFamily({
-  key: 'ProviderInfo',
-  default: (owner: string) => RecoilLoadable.of(fetchProviderInfo({ owner }, rpcEndpoint)),
-});
-
-export const certificateList = atomFamily({
-  key: 'Certificates',
-  default: (owner: string) => RecoilLoadable.of(fetchCertificates({ owner }, rpcEndpoint)),
-});
-
-export const rpcNodeStatus = atom({
-  key: 'RpcNodeStatus',
-  default: RecoilLoadable.of(fetchRpcNodeStatus(rpcEndpoint)),
 });
 
 export const deploymentSdl = atom<SDLSpec | undefined>({
@@ -133,16 +93,6 @@ export const myDeployments = atom({
   key: 'myDeployments',
   default: {},
   effects: [localStorageEffect('my_deployments')],
-});
-
-export const providerAttributes = atomFamily({
-  key: 'providerAttributes',
-  default: (owner: string) => RecoilLoadable.of(fetchProviderAttributes({ owner }, rpcEndpoint)),
-});
-
-export const auditorAttributes = atomFamily({
-  key: 'auditorAttributes',
-  default: (auditor: string) => RecoilLoadable.of(fetchAuditorAttributes({ auditor }, rpcEndpoint)),
 });
 
 export const showKeplrWindow = atom({

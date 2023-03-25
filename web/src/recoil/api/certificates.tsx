@@ -74,7 +74,7 @@ export const fetchCertificates = async (filter: CertificateFilter, rpcEndpoint: 
   const client = new QueryClientImpl(rpc);
   const response = await client.Certificates(request);
 
-  return QueryCertificatesResponse.toJSON(response) as any;
+  return response;
 }
 
 export const getActiveSerial = (walletId: string) => {

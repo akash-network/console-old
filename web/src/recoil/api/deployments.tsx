@@ -26,6 +26,7 @@ import { leaseEventsPath, leaseStatusPath, serviceLogsPath, submitManifestPath }
 import { KeplrWallet, rpcEndpoint } from '../atoms';
 import {
   Lease,
+  LeaseID,
   MsgCreateLease,
 } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/lease';
 import { loadActiveCertificate, TLSCertificate } from './certificates';
@@ -50,7 +51,7 @@ import { QueryFunction } from 'react-query';
 export const defaultInitialDeposit = 5000000;
 
 export const fetchDeployment = async (owner: string, dseq: string) => {
-  const rpc = await getRpc(rpcEndpoint);
+  const rpc = await getRpc(rpcEndpoint());
   const client = new DeploymentClient(rpc);
 
   const request = QueryDeploymentRequest.fromJSON({
@@ -102,11 +103,11 @@ export const fetchDeploymentList: QueryFunction<
       state,
       dseq,
     };
-    const deploymentCount = await fetchDeploymentCount({ owner: filters.owner }, rpcEndpoint);
+    const deploymentCount = await fetchDeploymentCount({ owner: filters.owner }, rpcEndpoint());
     if (deploymentCount > 100) {
       pagination.limit = deploymentCount;
     }
-    const rpc = await getRpc(rpcEndpoint);
+    const rpc = await getRpc(rpcEndpoint());
     const client = new DeploymentClient(rpc);
 
     return client.Deployments(QueryDeploymentsRequest.fromPartial({ pagination, filters }));
@@ -128,7 +129,7 @@ export const fetchLeaseListActive: QueryFunction<
 >
   = async (params) => {
     const [, { owner }] = params.queryKey;
-    const rpc = await getRpc(rpcEndpoint);
+    const rpc = await getRpc(rpcEndpoint());
     const client = new MarketClient(rpc);
 
     return client.Leases(
@@ -140,23 +141,25 @@ export const fetchLeaseListActive: QueryFunction<
   };
 
 export const fetchLease = async (params: { owner: string, dseq: string }) => {
-  const rpc = await getRpc(rpcEndpoint);
+  const rpc = await getRpc(rpcEndpoint());
   const client = new MarketClient(rpc);
 
   return client.Leases(QueryLeasesRequest.fromPartial({ filters: params }));
 };
 
-export const fetchLeaseStatus = async (lease: any, cert: TLSCertificate) => {
-  if (!lease || !lease.leaseId) return;
+export const fetchLeaseStatus = async (lease: Lease) => {
+  const cert = await loadActiveCertificate();
 
-  const leaseId = {
-    dseq: lease.leaseId.dseq.low,
-    gseq: lease.leaseId.gseq,
-    oseq: lease.leaseId.oseq,
-  }
+  if (!lease || !lease.leaseId || cert.$type !== 'TLS Certificate') return;
+
+  const leaseId = LeaseID.toJSON(lease.leaseId) as {
+    dseq: string,
+    gseq: string,
+    oseq: string,
+  };
 
   const url = leaseStatusPath(leaseId);
-  const rpc = await getRpc(rpcEndpoint);
+  const rpc = await getRpc(rpcEndpoint());
   const client = new ProviderClient(rpc);
   const request = QueryProviderRequest.fromPartial({
     owner: lease.leaseId.provider,
@@ -248,7 +251,7 @@ export async function fundDeployment(
 
   if (!signer || !deploymentId) return;
 
-  const client = await getMsgClient(rpcEndpoint, signer);
+  const client = await getMsgClient(rpcEndpoint(), signer);
   const amount = {
     denom: 'uakt',
     amount: quantity.toString(),
@@ -278,7 +281,7 @@ export async function closeDeployment(wallet: KeplrWallet, deployment: Deploymen
 
   if (!signer || !deploymentId) return;
 
-  const client = await getMsgClient(rpcEndpoint, signer);
+  const client = await getMsgClient(rpcEndpoint(), signer);
   const msg = {
     typeUrl: getTypeUrl(MsgCloseDeployment),
     value: MsgCloseDeployment.fromPartial({
@@ -292,13 +295,13 @@ export async function closeDeployment(wallet: KeplrWallet, deployment: Deploymen
 export async function createDeployment(wallet: KeplrWallet, sdl: any) {
   const [account] = wallet.accounts;
   const signer = wallet.offlineSigner;
-  const status = await fetchRpcNodeStatus(rpcEndpoint);
+  const status = await fetchRpcNodeStatus(rpcEndpoint());
 
   if (!signer) {
     return Promise.reject("Unable to initialize signing client");
   }
 
-  const client = await getMsgClient(rpcEndpoint, signer);
+  const client = await getMsgClient(rpcEndpoint(), signer);
 
   const groups = DeploymentGroups(sdl);
   const ver = await ManifestVersion(sdl);
@@ -339,7 +342,7 @@ export async function updateDeployment(wallet: KeplrWallet, deploymentId: any, s
     return Promise.reject('Unable to initialize signing client');
   };
 
-  const client = await getMsgClient(rpcEndpoint, signer);
+  const client = await getMsgClient(rpcEndpoint(), signer);
   const ver = await ManifestVersion(sdl);
 
   const msg = {
@@ -364,7 +367,7 @@ export async function createLease(wallet: KeplrWallet, bidId: BidID) {
 
   if (!signer || !bidId) return;
 
-  const client = await getMsgClient(rpcEndpoint, signer);
+  const client = await getMsgClient(rpcEndpoint(), signer);
   const msg = {
     typeUrl: getTypeUrl(MsgCreateLease),
     value: MsgCreateLease.fromJSON({
@@ -374,7 +377,7 @@ export async function createLease(wallet: KeplrWallet, bidId: BidID) {
 
   return client.signAndBroadcast(account.address, [msg], 'auto', 'Create lease for deployment')
     .then(async () => {
-      const rpc = await getRpc(rpcEndpoint);
+      const rpc = await getRpc(rpcEndpoint());
       const queryClient = new MarketClient(rpc);
       const qmsg = QueryLeaseRequest.fromJSON({ id: bidId });
 
@@ -393,7 +396,7 @@ export async function sendManifest(address: string, lease: Lease, sdl: any) {
     return Promise.reject('No certificate available');
   }
 
-  const rpc = await getRpc(rpcEndpoint);
+  const rpc = await getRpc(rpcEndpoint());
   const client = new ProviderClient(rpc);
   const request = QueryProviderRequest.fromPartial({
     owner: obj.leaseId.provider,

@@ -39,7 +39,7 @@ type BidAuditTagProps = {
 const BidAuditTag: React.FC<BidAuditTagProps> = ({ bid }) => {
   const { data: attributes } = useQuery(
     ['providerAttributes', bid.bidId?.provider],
-    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint)
+    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint())
   );
 
   const isAudited = (attributes?.providers?.length || 0) > 0;
@@ -70,7 +70,7 @@ const isValidAuditor = (id: string): id is keyof typeof auditors => {
 const BidAuditBadges: React.FC<BidAuditBadgesProps> = ({ bid }) => {
   const { data: attributes } = useQuery(
     ['providerAttributes', bid.bidId?.provider],
-    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint)
+    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint())
   );
 
   return <>{
@@ -111,12 +111,12 @@ export const BidCard: React.FC<BidCardProps> = ({ bid, ...props }) => {
 
   const { data: provider } = useQuery(
     ['provider', providerId],
-    () => fetchProviderInfo({ owner: providerId || "" }, rpcEndpoint)
+    () => fetchProviderInfo({ owner: providerId || "" }, rpcEndpoint())
   )
 
   const { data: attributes } = useQuery(
     ['providerAttributes', bid.bidId?.provider],
-    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint)
+    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint())
   );
 
   const akt = useRecoilValue(aktMarketCap);

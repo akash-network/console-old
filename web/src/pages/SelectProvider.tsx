@@ -49,9 +49,10 @@ export default function SelectProvider(
     deploymentId
   }: SelectProviderProps): JSX.Element {
 
+  // TODO: this should be moved into queries.ts
   const { data: bids } = useQuery(
     ["bids", deploymentId],
-    () => fetchBidsList(deploymentId, rpcEndpoint)
+    () => fetchBidsList(deploymentId, rpcEndpoint())
       .then((resp) => resp.bids
         .filter(resp => resp.bid !== undefined)
         .map(resp => resp.bid as Bid)),

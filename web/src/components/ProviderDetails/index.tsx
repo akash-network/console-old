@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { Button, Card, CardContent, Divider, Grid, Stack, Typography } from '@mui/material';
-import { useRecoilValue } from 'recoil';
-import { providerInfo } from '../../recoil/atoms';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { Address } from '../Address';
+import { queryProviderInfo } from '../../recoil/queries';
+import { useQuery } from 'react-query';
 
 export interface ProviderDetailsProps {
   providerId: string;
@@ -18,7 +18,8 @@ function attributeByName(attributes: any) {
 
 const ProviderDetails: React.FC<ProviderDetailsProps> = ({ providerId }) => {
   const navigate = useNavigate();
-  const { provider } = useRecoilValue(providerInfo(providerId));
+  const { data: response } = useQuery(['providerInfo', providerId], queryProviderInfo);
+  const provider = response?.provider;
 
   const attributes = useMemo(() => (
     provider?.attributes

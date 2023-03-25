@@ -15,6 +15,7 @@ import { ManifestVersion } from '../_helpers/deployments-utils';
 import { SDLSpec } from '../components/SdlConfiguration/settings';
 import { queryCertificates } from '../recoil/queries';
 import { useQuery } from 'react-query';
+import { Certificate_State } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/cert';
 
 export const PreflightCheck: React.FC<{}> = () => {
   const [hasKeplr, setHasKeplr] = React.useState(false);
@@ -47,7 +48,7 @@ export const PreflightCheck: React.FC<{}> = () => {
         return certificate.$type === 'TLS Certificate' && certificate.publicKey === pubKey;
       });
 
-      setIsValidCert(activeCert && activeCert.certificate.state === 'valid');
+      setIsValidCert(!!(activeCert && activeCert?.certificate?.state === Certificate_State.valid));
     }
   }, [certificate, accountCertificates]);
 
@@ -78,7 +79,7 @@ export const PreflightCheck: React.FC<{}> = () => {
   };
 
   const handleCreateCertificate = async () => {
-    const result = await createAndBroadcastCertificate(rpcEndpoint, keplr);
+    const result = await createAndBroadcastCertificate(rpcEndpoint(), keplr);
 
     if (result.code === 0 && result.certificate) {
       setCertificate(result.certificate);
