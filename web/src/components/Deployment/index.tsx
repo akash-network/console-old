@@ -411,6 +411,7 @@ const DeploymentCard = styled.div`
 `;
 
 const DeploymentEventsCard = styled.div`
+  height: 100%;
   background-color: white;
   padding: 0;
   border: 1px solid #e5e7eb;
