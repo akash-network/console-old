@@ -1,7 +1,23 @@
 import { proxyURL } from '../recoil/api/mtls';
 
+const storageKey = 'rpc_endpoint';
+const defaultRpcNode = 'https://rpc.ny.akash.farm/token/TBWM93ZB';
+
+function getRpcFromStorageOrDefault(defaultValue: string) {
+  const raw = localStorage.getItem(storageKey);
+  return raw ? raw : defaultValue;
+}
+
+function saveRpcToStorage(rpcNode: string) {
+  localStorage.setItem(storageKey, rpcNode);
+}
+
+function deleteRpcFromStorage() {
+  localStorage.removeItem(storageKey);
+}
+
 export const [getRpcNode, setRpcNode] = (() => {
-  let rpcNode = 'https://rpc.ny.akash.farm/token/TBWM93ZB';
+  let rpcNode = getRpcFromStorageOrDefault(defaultRpcNode);
 
   function get(proxy: Boolean = false): string {
     const rpcEndpointURL = new URL(rpcNode);
@@ -13,6 +29,7 @@ export const [getRpcNode, setRpcNode] = (() => {
 
   function set(value: string): Promise<string> {
     rpcNode = value;
+    saveRpcToStorage(rpcNode);
     return Promise.resolve(rpcNode);
   }
 

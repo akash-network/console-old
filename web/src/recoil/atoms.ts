@@ -8,6 +8,7 @@ import { AccountData, CosmosClient, OfflineSigner } from '@cosmjs/launchpad';
 import { proxyURL } from './api/mtls';
 import fetchPriceAndMarketCap from './api/akt';
 import { SDLSpec } from '../components/SdlConfiguration/settings';
+import { getRpcNode } from '../hooks/useRpcNode';
 
 export interface KeplrWallet {
   accounts: AccountData[];
@@ -17,12 +18,16 @@ export interface KeplrWallet {
   file?: string;
 }
 
+// Deprecated. Use getRpcNode instead.
 export const rpcEndpointBase = 'https://rpc.ny.akash.farm/token/TBWM93ZB';
 export const rpcEndpointURL = new URL(rpcEndpointBase);
 export const rpcProxyEndpoint = (
   `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${rpcEndpointURL.port || "443"}${rpcEndpointURL.pathname}`
 );
-export const rpcEndpoint = () => rpcEndpointBase;
+
+// Located in this file for backwards compatibility
+// TODO: Move to a more appropriate location
+export const rpcEndpoint = getRpcNode;
 
 export const appVersion = atom({
   key: 'appVersion',
@@ -40,6 +45,7 @@ export const keplrState = atom<KeplrWallet>({
   },
 });
 
+// TODO: Don't think this is used anymore. Validate and remove if so.
 export const rpcState = atom({
   key: 'rpcState',
   default: {
