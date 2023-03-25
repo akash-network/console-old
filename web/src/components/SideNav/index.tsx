@@ -51,11 +51,11 @@ export default function SideNav(props: any) {
 
   const handleConnectWallet = () => {
     wallet.connect();
-  }
+  };
 
   const handleDisconnectWallet = () => {
     wallet.disconnect();
-  }
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -82,21 +82,21 @@ export default function SideNav(props: any) {
             ))}
           </Breadcrumbs>
           <div className="grow">{/* flex grow spacer */}</div>
-          {
-            wallet.isConnected
-              ? <Button variant="outlined" onClick={handleDisconnectWallet}>
-                <Box marginRight="0.5rem">
-                  <Icon type='wallet' />
-                </Box>
-                Disconnect Wallet
-              </Button>
-              : <Button variant="outlined" onClick={handleConnectWallet}>
-                <Box marginRight="0.5rem">
-                  <Icon type='wallet' />
-                </Box>
-                Connect Wallet
-              </Button>
-          }
+          {wallet.isConnected ? (
+            <Button variant="outlined" onClick={handleDisconnectWallet}>
+              <Box marginRight="0.5rem">
+                <Icon type="wallet" />
+              </Box>
+              Disconnect Wallet
+            </Button>
+          ) : (
+            <Button variant="outlined" onClick={handleConnectWallet}>
+              <Box marginRight="0.5rem">
+                <Icon type="wallet" />
+              </Box>
+              Connect Wallet
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open} id="drawer_side_nav">
@@ -122,7 +122,7 @@ export default function SideNav(props: any) {
             paddingX="10px"
             paddingY="10px"
           >
-            <Link to="new-deployment" id="link_new_deployment">
+            <Link to="new-deployment" id="link_new_deployment" className="block_default_hover">
               <SideNavMenuItemRed>
                 <AddIcon style={{ color: '#F43F5E' }} />
                 <SideNavMenuItemLabel style={{ color: '#F43F5E' }}>
@@ -262,7 +262,7 @@ const Drawer = MuiStyled(MuiDrawer, {
   }),
   '& .MuiDrawer-paper:first-of-type': {
     boxShadow: '0px 0px 24px rgba(58, 60, 77, 0.24)',
-  }
+  },
 }));
 
 const IconWrapper = styled.div`
