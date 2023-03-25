@@ -10,7 +10,10 @@ import { useQuery } from 'react-query';
 import { queryProviderInfo } from '../../recoil/queries';
 
 export const Logs: React.FC<any> = ({ lease }) => {
-  const { data: provider } = useQuery(['providerInfo', lease?.lease?.leaseId?.provider], queryProviderInfo);
+  const { data: provider } = useQuery(
+    ['providerInfo', lease?.lease?.leaseId?.provider],
+    queryProviderInfo
+  );
   const address = (lease as QueryLeaseResponse).lease?.leaseId?.owner;
   const [logs, setLogs] = useState<any[]>([]);
   const [autoScrollWithOutput, setAutoScrollWithOutput] = useState(false);
@@ -60,9 +63,17 @@ export const Logs: React.FC<any> = ({ lease }) => {
   };
 
   return (
-    <div style={{position: "absolute", width: "100%", height: "66%"}}>
+    <div
+      style={{
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <div className="p-2 text-xl font-bold">Application Logs</div>
-      <LogsWrapper>
+      <LogsWrapper className='flex-1'>
         <ul>
           {logs.map((log: any, i: number) => (
             <LogList key={`log-line-${i}`}>
@@ -95,7 +106,6 @@ const LogsWrapper = styled.div`
   background-color: black;
   width: 100%;
   height: 100%,
-  max-height: 65vh;
   overflow-x: scroll;
   overflow-y: scroll;
 `;
