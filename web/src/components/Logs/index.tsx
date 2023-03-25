@@ -54,7 +54,7 @@ export const Logs: React.FC<any> = ({ lease }) => {
 
   useEffect(() => {
     if (autoScrollWithOutput) {
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
     }
   }, [logs, autoScrollWithOutput]);
 
