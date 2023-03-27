@@ -15,6 +15,8 @@ If you would like to contribute to Akash Console, here are some ways to do so:
 3. Review the list of issues at https://github.com/akash-network/console/issues and comment on one that you wish to work on.
 4. Join the [Akash Networks Clients SIG](https://github.com/akash-network/community/tree/main/sig-clients) meetings to learn about other issues or features you can help build.
 
+NOTE: If you need AKT for deployment, share your Keplr wallet ID in the comment for the specific issue and we'll drop you 10AKT to test with (should let you test deploys 100s of times)
+
 ## Running it locally
 
 Please ensure you have the below set of dependencies installed on your workstation:
