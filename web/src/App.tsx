@@ -30,6 +30,12 @@ const Welcome = () => {
   return <></>;
 };
 
+const Help = () => {
+  window.location.href = 'https://docs.akash.network/guides/deploy';
+
+  return <></>;
+};
+
 const AppRouter = () => {
   return (
     <Router>
@@ -89,6 +95,7 @@ const AppRouter = () => {
                 <Settings />
               }
             />
+            <Route path='help' element={<Help />}/>
           </Routes>
         </SideNav>
       </div>

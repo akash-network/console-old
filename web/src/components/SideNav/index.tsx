@@ -159,6 +159,8 @@ export default function SideNav(props: any) {
             </NavLink>
             <NavLink
               to="help"
+              target="_blank"
+              rel="noreferrer noopener"
               id="link_help"
               className={({ isActive }) => (isActive ? 'selected-active' : 'selected-inactive')}
             >
