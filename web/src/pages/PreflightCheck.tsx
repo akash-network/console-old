@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { Box, Button, Card, Stack, Tooltip } from '@mui/material';
+import { Box, Button, Card, Stack, Tooltip, CircularProgress } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { useFormikContext } from 'formik';
 import { activeCertificate, keplrState, rpcEndpoint } from '../recoil/atoms';
@@ -31,6 +31,8 @@ export const PreflightCheck: React.FC<{}> = () => {
   const [isValidCert, setIsValidCert] = React.useState(false);
   const sdl = (values as { sdl: SDLSpec }).sdl;
   const [manifestVersion, setManifestVersion] = React.useState<Uint8Array>();
+  const [loading, setLoading] = React.useState(false);
+  const [showVarifiedCert, setShowVarifiedCert] = React.useState(false);
 
   React.useEffect(() => {
     try {
@@ -78,11 +80,19 @@ export const PreflightCheck: React.FC<{}> = () => {
     }
   };
 
+  React.useEffect(() => {
+    if(showVarifiedCert){
+      setIsValidCert(true);
+    }
+  }, [showVarifiedCert]);
+
   const handleCreateCertificate = async () => {
+    setLoading(true);
     const result = await createAndBroadcastCertificate(rpcEndpoint(), keplr);
 
     if (result.code === 0 && result.certificate) {
       setCertificate(result.certificate);
+      setShowVarifiedCert(true);
     }
   };
 
@@ -231,7 +241,7 @@ export const PreflightCheck: React.FC<{}> = () => {
                   <div className="flex mb-2">
                     <Icon type="alert" />
                     <Title size={14} className="pl-2">
-                      Missing Certificate
+                      {loading ? 'Please wait, creating certificate...' : 'Missing Certificate'}
                     </Title>
                     <div className="grow">{/* spacer - do not remove */}</div>
                     <PreflightActionButton onClick={handleCreateCertificate}>
@@ -246,7 +256,7 @@ export const PreflightCheck: React.FC<{}> = () => {
                       </div>
                     </Tooltip>
                   </div>
-                  <Text size={14}>In order to deploy you will need to create a certificate.</Text>
+                  <Text size={14}>{loading ? <div className="flex justify-center"> <CircularProgress /> </div> : 'In order to deploy you will need to create a certificate.'}</Text>
                 </PreflightCheckItem>
               )}
               {isValidCert ? (
