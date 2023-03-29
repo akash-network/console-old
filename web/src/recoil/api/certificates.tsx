@@ -74,6 +74,12 @@ export const fetchCertificates = async (filter: CertificateFilter, rpcEndpoint: 
   const client = new QueryClientImpl(rpc);
   const response = await client.Certificates(request);
 
+  for (const cert of response.certificates) {
+    if (typeof cert?.certificate?.pubkey === 'object' && cert.certificate.pubkey.length === undefined) {
+      cert.certificate.pubkey = Uint8Array.from(Object.values(cert.certificate.pubkey as object));
+    }
+  }
+
   return response;
 }
 
