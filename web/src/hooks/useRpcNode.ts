@@ -11,10 +11,11 @@ function getRpcFromStorageOrDefault(defaultValue: string) {
 function saveRpcToStorage(rpcNode: string) {
   localStorage.setItem(storageKey, rpcNode);
 }
-
+/*
 function deleteRpcFromStorage() {
   localStorage.removeItem(storageKey);
 }
+*/
 
 export const [getRpcNode, setRpcNode] = (() => {
   let rpcNode = getRpcFromStorageOrDefault(defaultRpcNode);

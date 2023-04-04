@@ -26,6 +26,8 @@ import styled from '@emotion/styled';
 import { Image } from './Image';
 import { SdlConfigurationType } from './settings';
 import { FieldWrapper, Input, Label, LabelTitle } from './styling';
+import InfoIcon from '@mui/icons-material/Info';
+import Tooltip from '@mui/material/Tooltip';
 
 interface SdlConfigurationProps {
   actionItems: Function;
@@ -94,7 +96,22 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
             </DeploymentFormWrapper>
 
             <div>
-              <ConfigurationTitle>Configure services</ConfigurationTitle>
+              <ToolTipTitleWrapper>
+                <ConfigurationTitle>Configure services</ConfigurationTitle>
+                <Tooltip
+                  title="This is where you can specify various parameters (one per service) that make up your SDL file. The number and name of the services will vary depending on the application/ SDL"
+                  placement="right"
+                  
+                  sx={{
+                    fontSize: '25px',                   
+                    color: 'rgb(207, 205, 204)',
+                    padding: '4px',
+                    borderRadius: '4px',
+                  }}
+                >
+                  <InfoIcon />
+                </Tooltip>
+              </ToolTipTitleWrapper>
               {sdl.deployment &&
                 Object.keys(sdl.deployment)?.map((serviceName, index) => {
                   const placement = Object.keys(sdl.deployment[serviceName])[0];
@@ -117,7 +134,22 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                           <h1 className="font-medium ">Image</h1>
                           <Image currentProfile={serviceName} />
 
-                          <h1 className="font-medium ">Pricing</h1>
+                          <ToolTipTitleWrapper>
+                            <ConfigurationTitle>Pricing</ConfigurationTitle>
+                            <Tooltip
+                              title="The value you specify here is the maximum you would like to pay for the compute resources you are requesting for this service. uakt allows you to specify an amount that is a fraction of 1AKT"
+                              placement="right"
+                              
+                              sx={{
+                                fontSize: '25px',                   
+                                color: 'rgb(207, 205, 204)',
+                                padding: '4px',
+                                borderRadius: '4px',
+                              }}
+                            >
+                              <InfoIcon />
+                            </Tooltip>
+                          </ToolTipTitleWrapper>
                           <Pricing
                             profiles={profiles}
                             currentProfile={profile}
@@ -125,7 +157,22 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                             disabled={forbidEditing}
                           />
 
-                          <h1 className="font-medium ">Resources</h1>
+                          <ToolTipTitleWrapper>
+                              <ConfigurationTitle>Resources</ConfigurationTitle>
+                              <Tooltip
+                                title="This is where you specify how much CPU, memory and storage you would like to lease from the provider, to host your application."
+                                placement="right"
+                                
+                                sx={{
+                                  fontSize: '25px',                   
+                                  color: 'rgb(207, 205, 204)',
+                                  padding: '4px',
+                                  borderRadius: '4px',
+                                }}
+                              >
+                                <InfoIcon />
+                              </Tooltip>
+                          </ToolTipTitleWrapper>
                           <Cpu currentProfile={profile} disabled={forbidEditing} />
                           <Memory currentProfile={profile} disabled={forbidEditing} />
                           <Storage
@@ -213,6 +260,14 @@ const AppAccordion = styled(Accordion)`
 `;
 
 const ConfigurationTitle = styled.h1`
+  font-size: 17px;
+  font-weight: bold;
+  border-radius: 8px 8px 0 0;
+`;
+const ToolTipTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 24px;
   background: white;
   font-weight: bold;
