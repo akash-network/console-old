@@ -142,3 +142,13 @@ export interface SDLSpec {
     }
   };
 }
+
+// Quick and dirty type guard for SDL like objects
+export function isSDLSpec(sdl: unknown): sdl is SDLSpec {
+  const sdlSpec = sdl as SDLSpec;
+
+  return sdlSpec.version === "2.0" &&
+    typeof sdlSpec.services === "object" &&
+    typeof sdlSpec.profiles === "object" &&
+    typeof sdlSpec.deployment === "object";
+}
