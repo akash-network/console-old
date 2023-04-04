@@ -21,7 +21,7 @@ export const  HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({isOpen, onCl
           {
             type: 'card',
             title: 'Download Extension',
-            body: "To use Keplr wallet with the Overclock Console, install the Keplr browser plugin for your browser",
+            body: "To use Keplr wallet with Akash Console, install the Keplr browser plugin for your browser",
             link: 'https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap',
           },
 
@@ -51,7 +51,7 @@ export const  HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({isOpen, onCl
           {
             type: 'card',
             title: 'Akash Docs/ Wallet Setup',
-            body: "For a step-by-step instruction on all that, consult our documentation on topic here",
+            body: "For a step-by-step instruction on all that, consult our documentation here",
             link: 'https://docs.akash.network/tokens-and-wallets',
           },
         ]}

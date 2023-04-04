@@ -28,7 +28,7 @@ export const  HelpCenterSDL: React.FC<HelpCenterSDLProps> = ({isOpen, onClose}) 
           {
             type: 'card',
             title: 'View on Github',
-            body: "To see some sample SDL configurations. Check out this awesome akash repository. Each directory in the awesome akash repository contains a sample 'deploy-yami' SDL file that deploys a specific application on to-akash!",
+            body: "To see some sample SDL configurations, check out this awesome akash repository. Each directory in the awesome akash repository contains a sample 'deploy.yaml' SDL file that deploys a specific application on to-akash!",
             link: 'https://github.com/ovrclk/awesome-akash',
           },
         ]}
