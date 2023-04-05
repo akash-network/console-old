@@ -10,6 +10,7 @@ import { SdlConfigurationType } from '../components/SdlConfiguration/settings';
 import { useQuery } from 'react-query';
 import { fetchSdlList } from '../recoil/api/sdl';
 import { Icon } from '../components/Icons';
+import { isSDLSpec } from '../components/SdlConfiguration/settings';
 
 interface ConfigureAppProps {
   onNextButtonClick: any;
@@ -48,7 +49,12 @@ export const ConfigureApp: React.FC<ConfigureAppProps> = ({
       .get(template.url)
       .then((resp) => yaml.load(resp.data))
       .then((sdl) => {
-        form.setFieldValue('sdl', transformSdl(sdl));
+        if (isSDLSpec(sdl)) {
+          form.setFieldValue('sdl', transformSdl(sdl));
+        } else {
+          debugger;
+          // handle the error case
+        }
       });
   }, [directoryConfig, templateId, form]);
 

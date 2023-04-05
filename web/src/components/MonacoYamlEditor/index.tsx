@@ -24,6 +24,8 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
   }) => {
   const comment = "#Copy and paste your SDL here";
   const editorRef = useRef<HTMLDivElement>(null);
+  const [isEditorEmpty, setIsEditorEmpty] = React.useState(true);
+
   setDiagnosticsOptions({
     enableSchemaRequest: true,
     hover: true,
@@ -31,6 +33,11 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
     validate: true,
     format: true,
   });
+
+  function handleInput() {
+    setIsEditorEmpty(false);
+  }
+
   useEffect(() => {
     if (open && document.getElementById("editor")) {
       const existingModel = editor.getModel(modelUri);
@@ -70,6 +77,7 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
           borderRadius: 4
         }
       }}
+      onInput={handleInput}
     >
       <DialogTitle
         sx={{
@@ -98,13 +106,16 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
           <SaveAndCloseButton
             variant="outlined"
             size="small"
-            onClick={() => closeReviewModal()}
+            onClick={() => {
+              closeReviewModal()
+              setIsEditorEmpty(true);
+            }}
           >
             Cancel
           </SaveAndCloseButton>
         )}
 
-        <SaveAndCloseButton
+        {!isEditorEmpty && <SaveAndCloseButton
           variant="outlined"
           size="small"
           onClick={() => {
@@ -118,7 +129,7 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
           }}
         >
           {disabled ? "Close" : "Save & Close"}
-        </SaveAndCloseButton>
+        </SaveAndCloseButton>}
       </DialogActions>
     </EditorDialog>
   );
