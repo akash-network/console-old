@@ -1,4 +1,4 @@
-import { atom, AtomEffect, atomFamily, RecoilLoadable } from 'recoil';
+import { atom, AtomEffect, RecoilLoadable } from 'recoil';
 import pkg from '../../package.json';
 import {
   loadActiveCertificate,

@@ -1,5 +1,5 @@
-import React, { Suspense } from 'react';
-import { useRecoilValue } from 'recoil';
+import React, { Suspense, useCallback, useState} from 'react';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { startCase, toLower } from 'lodash';
 import { CSSObject, styled as MuiStyled, Theme } from '@mui/material/styles';
@@ -18,6 +18,9 @@ import { appVersion } from '../../recoil/atoms';
 import { Icon } from '../Icons';
 import { Button, Typography } from '@mui/material';
 import { useWallet } from '../../hooks/useWallet';
+import { HelpCenterSideHelp } from '../../components/HelpCenter/HelpCenterSideHelp';
+import { showKeplrWindow } from "../../recoil/atoms";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 export default function SideNav(props: any) {
   const { children } = props;
@@ -26,6 +29,12 @@ export default function SideNav(props: any) {
   const location = useLocation();
   const pathnames = location.pathname.split('/').filter((x) => x);
   const wallet = useWallet();
+  const [isHelpCenterOpen, setIsHelpCenterOpen] = useState(false);
+  const [, setShowKeplrPopup] = useRecoilState(showKeplrWindow);
+
+  const toggleHelpCenter = useCallback(() => {
+    setIsHelpCenterOpen((prevIsOpen : boolean) => !prevIsOpen);
+  }, []);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -57,6 +66,10 @@ export default function SideNav(props: any) {
     wallet.disconnect();
   };
 
+  const handleShowKeplrHelp = () => {
+       setShowKeplrPopup(true);
+  }
+
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar position="fixed" open={open} color="default">
@@ -83,19 +96,26 @@ export default function SideNav(props: any) {
           </Breadcrumbs>
           <div className="grow">{/* flex grow spacer */}</div>
           {wallet.isConnected ? (
-            <Button variant="outlined" onClick={handleDisconnectWallet}>
-              <Box marginRight="0.5rem">
-                <Icon type="wallet" />
-              </Box>
-              Disconnect Wallet
-            </Button>
+            <>
+              <Button variant="outlined" onClick={handleDisconnectWallet}>
+                <Box marginRight="0.5rem">
+                  <Icon type="wallet" />
+                </Box>
+                Disconnect Wallet
+              </Button>
+              <StyledHelpIcon onClick={handleShowKeplrHelp} />
+            </>
           ) : (
-            <Button variant="outlined" onClick={handleConnectWallet}>
-              <Box marginRight="0.5rem">
-                <Icon type="wallet" />
-              </Box>
-              Connect Wallet
-            </Button>
+            <>
+              <Button variant="outlined" onClick={handleConnectWallet}>
+                <Box marginRight="0.5rem">
+                  <Icon type="wallet" />
+                </Box>
+                Connect Wallet
+              </Button>
+              
+              <StyledHelpIcon onClick={handleShowKeplrHelp} />
+            </>
           )}
         </Toolbar>
       </AppBar>
@@ -157,20 +177,14 @@ export default function SideNav(props: any) {
                 <SideNavMenuItemLabel>Settings</SideNavMenuItemLabel>
               </SideNavMenuItem>
             </NavLink>
-            <NavLink
-              to="help"
-              target="_blank"
-              rel="noreferrer noopener"
-              id="link_help"
-              className={({ isActive }) => (isActive ? 'selected-active' : 'selected-inactive')}
-            >
-              <SideNavMenuItem>
-                <IconWrapper>
-                  <Icon type="help" />
-                </IconWrapper>
-                <SideNavMenuItemLabel>Help</SideNavMenuItemLabel>
-              </SideNavMenuItem>
-            </NavLink>
+
+            <SideNavMenuItem>
+              <IconWrapper onClick={toggleHelpCenter}>
+                <Icon  type="help" />
+              </IconWrapper>
+              <SideNavMenuItemLabel>Help</SideNavMenuItemLabel>
+            </SideNavMenuItem>
+
             <Typography
               style={{ marginLeft: 'auto' }}
               variant="caption"
@@ -186,6 +200,11 @@ export default function SideNav(props: any) {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         {children}
       </Box>
+      <HelpCenterSideHelp
+        isOpen={isHelpCenterOpen}
+        onClose={toggleHelpCenter}
+        
+      />
     </Box>
   );
 }
@@ -300,4 +319,11 @@ const SideNavMenuItemLabel = styled.span`
   font-weight: 500;
   font-size: 14px;
   color: #4b5563;
+`;
+
+const StyledHelpIcon = styled(HelpOutlineIcon)`
+  cursor: pointer;
+  font-size: 18px;
+  color: #717171;
+  margin-left: 10px;
 `;

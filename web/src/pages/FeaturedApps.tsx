@@ -6,6 +6,8 @@ import { css } from "@emotion/react";
 import { templateList } from "../recoil/api/sdl";
 import Document from "../assets/images/document.svg";
 import { SdlEditor } from "../components/SdlConfiguration/SdllEditor";
+import { HelpCenterSDL } from '../components/HelpCenter/HelpCenterSDL';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const DocumentIcon = () => <img src={Document} alt="Document Icon" />
 
@@ -24,6 +26,11 @@ export default function FeaturedApps(
   const [numberOfTemplates, setNumberOfTemplates] = useState(templateList.length);
   const [reviewSdl, showSdlReview] = useState(false);
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
+  const [isHelpCenterOpen, setIsHelpCenterOpen] = useState(false);
+
+  const toggleHelpCenter = useCallback(() => {
+    setIsHelpCenterOpen((prevIsOpen) => !prevIsOpen);
+  }, []);
 
   return (
     <div className="container akt-card">
@@ -32,6 +39,7 @@ export default function FeaturedApps(
           <PageTitle>
             Get started with a ready template or upload your own SDL
           </PageTitle>
+          <StyledHelpIcon onClick={toggleHelpCenter} />
         </PageTitleWrapper>
         <ImportSdlButton
           startIcon={<DocumentIcon />}
@@ -74,12 +82,17 @@ export default function FeaturedApps(
         closeReviewModal={closeReviewModal}
         callback={callback}
       />
+      <HelpCenterSDL
+        isOpen={isHelpCenterOpen}
+        onClose={toggleHelpCenter}
+      />
     </div>
   );
 }
 
 const PageTitleWrapper = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 const Divider = styled.div`
@@ -145,4 +158,10 @@ const ViewAllButton = styled(Button)`
 const ImportSdlButton = styled(Button)`
   ${GeneralButtonStyle};
   margin-top: 0;
+`;
+
+const StyledHelpIcon = styled(HelpOutlineIcon)`
+  cursor: pointer;
+  font-size: 18px;
+  color: #717171;
 `;
