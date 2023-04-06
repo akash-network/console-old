@@ -176,8 +176,9 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
           // const { submitForm } = useFormikContext();
           setProgressVisible(true);
           setCardMessage('Creating deployment');
+
           try {
-            const result = await createDeployment(keplr, value.sdl);
+            const result = await createDeployment(keplr, value.sdl, value.depositor);
             if (result && result.deploymentId) {
               setDeploymentId(result.deploymentId);
               setSdl(value.sdl);
