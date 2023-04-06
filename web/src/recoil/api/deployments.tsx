@@ -292,7 +292,7 @@ export async function closeDeployment(wallet: KeplrWallet, deployment: Deploymen
   return client.signAndBroadcast(account.address, [msg], 'auto', 'Close deployment');
 }
 
-export async function createDeployment(wallet: KeplrWallet, sdl: any) {
+export async function createDeployment(wallet: KeplrWallet, sdl: any, depositor: string | undefined = undefined) {
   const [account] = wallet.accounts;
   const signer = wallet.offlineSigner;
   const status = await fetchRpcNodeStatus(rpcEndpoint());
@@ -319,9 +319,9 @@ export async function createDeployment(wallet: KeplrWallet, sdl: any) {
         denom: 'uakt',
         amount: '5000000',
       },
-      // Version is actually a checksum of SDL yaml file converted
+      // Version is actually a checksum of manifest
       version: ver,
-      depositor: account.address,
+      depositor: depositor || account.address,
     }),
   };
 

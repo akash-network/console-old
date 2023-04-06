@@ -5,6 +5,7 @@ export interface InitialValuesProps {
   folderName?: string | undefined,
   appName: string,
   sdl: SDLSpec | undefined,
+  depositor: string | undefined,
 }
 
 export interface Template {
@@ -16,7 +17,8 @@ export interface Template {
 export const initialValues: InitialValuesProps = {
   folderName: undefined,
   appName: "",
-  sdl: undefined
+  sdl: undefined,
+  depositor: undefined,
 }
 
 export enum SdlConfigurationType {
