@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Avatar, Button, Stack } from '@mui/material';
-import { WalletDeployButtons } from '../components/WalletDeployButton';
 import axios from 'axios';
 import yaml from 'js-yaml';
-import { transformSdl } from '../_helpers/helpers';
-import { fetchSdlList, templateList } from '../recoil/api/sdl';
-import { Template } from '../components/SdlConfiguration/settings';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
+import { transformSdl } from '../_helpers/helpers';
 import { ButtonTemplate } from '../components/Button';
 import SocialIcon from "../components/Icons/SocialIcon";
+import { Template } from '../components/SdlConfiguration/settings';
+import { WalletDeployButtons } from '../components/WalletDeployButton';
+import { fetchSdlList, templateList } from '../recoil/api/sdl';
 
 type SocialNetwork = {
   socialNetwork: string,
@@ -102,13 +102,13 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
         {directoryConfig?.topology && (
           <React.Fragment>
             <Divider />
-            {directoryConfig?.topology.topologyList?.length > 1 && (
+            {directoryConfig?.topology.topologyList?.length >= 1 && (
               <SdlInformationTitle fontWeight={500}>
                 Choose from one of the available topology options
               </SdlInformationTitle>
             )}
             <TypologyWrapper>
-              {directoryConfig?.topology.topologyList?.length > 1 &&
+              {directoryConfig?.topology.topologyList?.length >= 1 &&
                 directoryConfig?.topology.topologyList?.map((typology: Template, index: number) => {
                   return (
                     <WalletDeployButtons
@@ -116,10 +116,12 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
                       typology={typology}
                       selected={selectedSdl}
                       index={index}
+                      length={directoryConfig.topology.topologyList.length}
                       onButtonSelect={selectTemplateAndFetchSdl}
                     />
                   );
-                })}
+                })} 
+                
             </TypologyWrapper>
             <DeployButton
               variant='contained'
