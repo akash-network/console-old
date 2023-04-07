@@ -5,6 +5,8 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/
 import { setDiagnosticsOptions } from "monaco-yaml";
 import yaml from "js-yaml";
 import ArrowRight from "../../assets/images/icon-right.svg";
+import { isSDLSpec } from '../SdlConfiguration/settings';
+import logging from '../../logging';
 
 // The uri is used for the schema file match.
 const modelUri = Uri.parse('a://b/foo.yaml');
@@ -119,13 +121,26 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
           variant="outlined"
           size="small"
           onClick={() => {
+            let sdl;
             if (!disabled) {
+              debugger;
               // @ts-ignore
               const valueFromEditor = editor.getModel(modelUri).getValue();
               // Here we transform yaml to JS Object and update the Formik
-              onSaveButtonClick(yaml.load(valueFromEditor));
+              sdl = yaml.load(valueFromEditor);
+              if(sdl !== null){
+                if(isSDLSpec(sdl)){
+                  onSaveButtonClick(sdl);
+                  closeReviewModal();
+                }
+                else{
+                  logging.error("Invalid SDL!!!");
+                }
+              }
+              else{
+                logging.error("Found Empty SDL!!!")
+              }
             }
-            closeReviewModal();
           }}
         >
           {disabled ? "Close" : "Save & Close"}
