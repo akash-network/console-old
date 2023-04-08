@@ -123,7 +123,6 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
           onClick={() => {
             let sdl;
             if (!disabled) {
-              debugger;
               // @ts-ignore
               const valueFromEditor = editor.getModel(modelUri).getValue();
               // Here we transform yaml to JS Object and update the Formik
