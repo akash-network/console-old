@@ -73,7 +73,6 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
       if (isSDLSpec(configuration)) {
         setFieldValue('sdl', transformSdl(configuration));
       } else {
-        debugger;
         // handle the error case
       }
     } catch (e) {

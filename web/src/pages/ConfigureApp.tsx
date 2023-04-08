@@ -52,7 +52,6 @@ export const ConfigureApp: React.FC<ConfigureAppProps> = ({
         if (isSDLSpec(sdl)) {
           form.setFieldValue('sdl', transformSdl(sdl));
         } else {
-          debugger;
           // handle the error case
         }
       });
