@@ -5,8 +5,8 @@ export function update<T>(transform: (input: string) => T) {
     <E extends { value: string },>(event: React.ChangeEvent<E>) => (
       callback(transform((event.target as E).value))
     )
-  )
-};
+  );
+}
 
 export const updateInt = update(parseInt);
 export const updateStr = update(x => x);

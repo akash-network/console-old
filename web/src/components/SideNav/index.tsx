@@ -19,7 +19,7 @@ import { Icon } from '../Icons';
 import { Button, Typography } from '@mui/material';
 import { useWallet } from '../../hooks/useWallet';
 import { HelpCenterSideHelp } from '../../components/HelpCenter/HelpCenterSideHelp';
-import { showKeplrWindow } from "../../recoil/atoms";
+import { showKeplrWindow } from '../../recoil/atoms';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 export default function SideNav(props: any) {
@@ -67,8 +67,8 @@ export default function SideNav(props: any) {
   };
 
   const handleShowKeplrHelp = () => {
-       setShowKeplrPopup(true);
-  }
+    setShowKeplrPopup(true);
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>

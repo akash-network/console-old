@@ -28,7 +28,7 @@ export const EventsTable: React.FC<{ lease: any }> = ({ lease }) => {
         message.data
           .text()
           .then(JSON.parse)
-          .then((log: string) => setRows((rows) => [...rows, log]))
+          .then((log: string) => setRows((rows) => [...rows, log]));
       }
     };
 

@@ -7,7 +7,7 @@ const initalState = {
   cosmosClient: undefined,
   isSignedIn: false,
   file: '_helpers/keplr-utils.ts',
-}
+};
 
 export const getKeplr = async (): Promise<KeplrWallet> => {
   if (!window.keplr) {
@@ -41,6 +41,6 @@ export const getKeplr = async (): Promise<KeplrWallet> => {
       cosmosClient: cosmJS,
       isSignedIn: true,
       file: '_helpers/keplr-utils.ts',
-    }
+    };
   }
 };

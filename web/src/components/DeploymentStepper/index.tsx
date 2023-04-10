@@ -97,12 +97,12 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
     createLease(keplr, bidId)
       .then(
         (lease) => {
-          logging.success("Create lease: successful");
+          logging.success('Create lease: successful');
 
           // if the user refreshed the page, the atom could be empty
           // if that's the case, used the stored version
           const cachedDetails = JSON.parse(
-            localStorage.getItem(`${lease?.leaseId?.dseq}`) || ""
+            localStorage.getItem(`${lease?.leaseId?.dseq}`) || ''
           );
           const _sdl = sdl
             ? sdl
@@ -113,14 +113,14 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
           }
         },
         (error) => {
-          logging.log(`Failed to create lease: ${error}`)
+          logging.log(`Failed to create lease: ${error}`);
           return null;
         }
       )
       .then(
         (result) => {
           if (result) {
-            logging.success("Manifest sending: successful");
+            logging.success('Manifest sending: successful');
             setDeploymentRefresh(true);
             navigate(`/my-deployments/${dseq}`);
           }
@@ -154,7 +154,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
       title = 'Error Create Deployment';
       message = 'An error occurred while trying to deploy.';
       if (error.message.includes('Query failed with (6)')) {
-        message = `There was an RPC error. This may happen during upgrades to the Akash Network.`;
+        message = 'There was an RPC error. This may happen during upgrades to the Akash Network.';
       }
     }
     setErrorTitle(title);
@@ -250,7 +250,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
                           selectFolder(folderName);
                         }}
                         callback={(sdl) =>
-                          navigate(`/new-deployment/custom-sdl`, { state: { sdl: sdl } })
+                          navigate('/new-deployment/custom-sdl', { state: { sdl: sdl } })
                         }
                         setFieldValue={setFieldValue}
                       />
@@ -284,7 +284,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
           );
         }}
       </Formik>
-      <Dialog open={open} onClose={handleClose} title={errorTitle || ""} message={errorMessage || ""} />
+      <Dialog open={open} onClose={handleClose} title={errorTitle || ''} message={errorMessage || ''} />
     </Box>
   );
 };

@@ -1,28 +1,28 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Formik } from "formik";
-import styled from "@emotion/styled";
+import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Formik } from 'formik';
+import styled from '@emotion/styled';
 import {
   CancelButton,
   SaveButton,
   UpdateDeploymentAction
-} from "../components/UpdateDeployment/styling";
-import { fetchDeployment, sendManifest, updateDeployment } from "../recoil/api";
-import { useRecoilValue } from "recoil";
-import { keplrState } from "../recoil/atoms";
-import { Button } from "@mui/material";
-import { css } from "@emotion/react";
-import { SdlConfiguration } from "../components/SdlConfiguration/SdlConfiguration";
+} from '../components/UpdateDeployment/styling';
+import { fetchDeployment, sendManifest, updateDeployment } from '../recoil/api';
+import { useRecoilValue } from 'recoil';
+import { keplrState } from '../recoil/atoms';
+import { Button } from '@mui/material';
+import { css } from '@emotion/react';
+import { SdlConfiguration } from '../components/SdlConfiguration/SdlConfiguration';
 import {
   initialValues,
   InitialValuesProps,
   SdlConfigurationType,
   SDLSpec
-} from "../components/SdlConfiguration/settings";
-import logging from "../logging";
-import { ManifestVersion } from "../_helpers/deployments-utils";
-import useAppCache from "../hooks/useAppCache";
-import { isError } from "../_helpers/types";
+} from '../components/SdlConfiguration/settings';
+import logging from '../logging';
+import { ManifestVersion } from '../_helpers/deployments-utils';
+import useAppCache from '../hooks/useAppCache';
+import { isError } from '../_helpers/types';
 
 const UpdateDeployment: React.FC<any> = () => {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ const UpdateDeployment: React.FC<any> = () => {
     fetchDeployment(keplr.accounts[0].address, dseq)
       .then(deploy => {
         setDeployment(deploy.deployment.deployment);
-        setLease(deploy?.leases?.leases[0].lease)
+        setLease(deploy?.leases?.leases[0].lease);
       });
   }, []);
 
@@ -90,7 +90,7 @@ const UpdateDeployment: React.FC<any> = () => {
             setCardMessage('Sending manifest');
 
             await sendManifest(keplr.accounts[0].address, lease, value.sdl)
-              .catch(error => logging.log(error))
+              .catch(error => logging.log(error));
 
             for (const [key,] of Object.entries(value.sdl.services)) {
               if (count === 0) {
@@ -98,7 +98,7 @@ const UpdateDeployment: React.FC<any> = () => {
                   image = value.sdl.services[key].image;
                 }
                 if (value.sdl.profiles.compute[key] && value.sdl.profiles.compute[key].resources) {
-                  let resources = value.sdl.profiles.compute[key].resources;
+                  const resources = value.sdl.profiles.compute[key].resources;
                   cpu = resources.cpu.units;
                   memory = resources.memory.size;
                   storage = resources.storage.size;
@@ -124,7 +124,7 @@ const UpdateDeployment: React.FC<any> = () => {
           // Here we need to check it error.message is "Request rejected" which mean user clicked reject button
           // or it could also happen that user didn't change anything and error is "Query failed with (6): rpc error: code..." 
           if (isError(error)) {
-            logging.error("UpdateDeployment.tsx" + error.message);
+            logging.error('UpdateDeployment.tsx' + error.message);
           }
           setProgressVisible(false);
           setCardMessage('');
@@ -157,8 +157,8 @@ const UpdateDeployment: React.FC<any> = () => {
         );
       }}
     </Formik>
-  )
-}
+  );
+};
 
 export default UpdateDeployment;
 

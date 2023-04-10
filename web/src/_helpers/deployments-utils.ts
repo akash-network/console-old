@@ -1,6 +1,6 @@
 // @ts-nocheck
-import axios from "axios";
-import { SDL } from "@akashnetwork/akashjs/build/sdl";
+import axios from 'axios';
+import { SDL } from '@akashnetwork/akashjs/build/sdl';
 
 export async function getCurrentHeight(apiEndpoint) {
   const response = await axios.get(`${apiEndpoint}/blocks/latest`);

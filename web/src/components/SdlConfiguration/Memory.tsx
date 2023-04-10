@@ -1,16 +1,16 @@
-import { Field } from "formik";
-import { MeasurementControl } from "../MeasurementControl";
-import React from "react";
-import { ErrorMessageComponent } from "../ErrorMessage";
-import { FieldWrapper } from "./styling";
+import { Field } from 'formik';
+import { MeasurementControl } from '../MeasurementControl';
+import React from 'react';
+import { ErrorMessageComponent } from '../ErrorMessage';
+import { FieldWrapper } from './styling';
 
 const validateMemory = (value: any) => {
   let error;
-  if (value.startsWith("0")) {
+  if (value.startsWith('0')) {
     error = 'Memory can"t be 0, you have to add positive number only';
   }
   return error;
-}
+};
 
 type MemoryProps = {
   currentProfile: string,
@@ -43,7 +43,7 @@ export const Memory: React.FC<MemoryProps> = ({ currentProfile, disabled }) => {
                 </ErrorMessageComponent>
               )}
             </React.Fragment>
-          )
+          );
         }}
       </Field>
     </FieldWrapper>

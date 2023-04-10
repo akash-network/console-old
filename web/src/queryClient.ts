@@ -1,6 +1,6 @@
-import { QueryClient } from "react-query";
-import { createWebStoragePersistor } from "react-query/createWebStoragePersistor-experimental";
-import { persistQueryClient } from "react-query/persistQueryClient-experimental";
+import { QueryClient } from 'react-query';
+import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental';
+import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
 
 export const queryClient = new QueryClient({
   defaultOptions: {

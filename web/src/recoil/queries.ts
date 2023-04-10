@@ -1,9 +1,9 @@
-import { QueryFunction, QueryFunctionContext } from "react-query";
-import { fetchCertificates, fetchDeployment, fetchLeaseStatus } from "./api";
-import { rpcEndpoint } from "./atoms";
-import { fetchAuditorAttributes, fetchProviderAttributes, fetchProviderInfo, fetchProvidersList } from "./api/providers";
-import { fetchRpcNodeStatus } from "./api/rpc";
-import { Lease } from "@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/lease";
+import { QueryFunction, QueryFunctionContext } from 'react-query';
+import { fetchCertificates, fetchDeployment, fetchLeaseStatus } from './api';
+import { rpcEndpoint } from './atoms';
+import { fetchAuditorAttributes, fetchProviderAttributes, fetchProviderInfo, fetchProvidersList } from './api/providers';
+import { fetchRpcNodeStatus } from './api/rpc';
+import { Lease } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/lease';
 
 function createQueryFunction<T, R>(fn: (args: T) => Promise<R>): QueryFunction<R, [string, T]> {
   return (context: QueryFunctionContext<[string, T]>) => {

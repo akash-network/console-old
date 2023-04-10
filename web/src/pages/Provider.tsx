@@ -1,6 +1,6 @@
-import { Suspense } from "react";
-import { useParams } from "react-router-dom";
-import ProviderDetails from "../components/ProviderDetails";
+import { Suspense } from 'react';
+import { useParams } from 'react-router-dom';
+import ProviderDetails from '../components/ProviderDetails';
 
 export default function MyDeployments() {
   const { providerId } = useParams();

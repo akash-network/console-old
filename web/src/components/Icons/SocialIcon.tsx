@@ -200,7 +200,7 @@ export const IconDocs: React.FC<{}> = () => {
     </svg>
 
   );
-}
+};
 
 export interface SocialIconProps {
   socialNetwork: string;
@@ -211,84 +211,84 @@ export default function SocialIcon(props: SocialIconProps) {
   const { socialNetwork, url } = props;
   if (socialNetwork === 'discord') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconDiscord /> <SocialTitle>Discord</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'facebook') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconFacebook /> <SocialTitle>Facebook</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'forum') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconForum /> <SocialTitle>Forum</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'instagram') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconInstagram /> <SocialTitle>Instagram</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'linkedin') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconLinkedIn /> <SocialTitle>LinkedIn</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'reddit') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconReddit /> <SocialTitle>Reddit</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'telegram') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconTelegram /> <SocialTitle>Telegram</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'twitter') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconTwitter /> <SocialTitle>Twitter</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'youtube') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconYoutube /> <SocialTitle>YouTube</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'sdlRepo') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconGitHub /> <SocialTitle>GitHub Repo</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'webpage') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconWebsite /> <SocialTitle>Website</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'docs') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconDocs /> <SocialTitle>Docs</SocialTitle>
       </a>
     );

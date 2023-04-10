@@ -1,6 +1,6 @@
-import { InputNumber } from "./InputNumbers";
-import React from "react";
-import styled from "@emotion/styled";
+import { InputNumber } from './InputNumbers';
+import React from 'react';
+import styled from '@emotion/styled';
 
 interface MeasurementControlProps {
   title: string
@@ -33,9 +33,9 @@ const MeasurementWrapper = styled.div<{disabled?: boolean, error?: boolean}>`
 
   width: 100%;
   height: 74px;
-  background-color: ${p => p.disabled ? "#d7d7d73d" : "#FFFFFF"};
+  background-color: ${p => p.disabled ? '#d7d7d73d' : '#FFFFFF'};
   
-  border: 1px solid ${props => props?.error ? "red" : "#D1D5DB"};
+  border: 1px solid ${props => props?.error ? 'red' : '#D1D5DB'};
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
 `;

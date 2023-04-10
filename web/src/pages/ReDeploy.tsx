@@ -1,25 +1,25 @@
-import React, { useCallback, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Formik } from "formik";
-import styled from "@emotion/styled";
+import React, { useCallback, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Formik } from 'formik';
+import styled from '@emotion/styled';
 import {
   CancelButton,
   SaveButton,
   UpdateDeploymentAction
-} from "../components/UpdateDeployment/styling";
-import { createDeployment } from "../recoil/api";
-import { useRecoilValue } from "recoil";
-import { keplrState } from "../recoil/atoms";
-import { Button } from "@mui/material";
-import { css } from "@emotion/react";
-import { SdlConfiguration } from "../components/SdlConfiguration/SdlConfiguration";
+} from '../components/UpdateDeployment/styling';
+import { createDeployment } from '../recoil/api';
+import { useRecoilValue } from 'recoil';
+import { keplrState } from '../recoil/atoms';
+import { Button } from '@mui/material';
+import { css } from '@emotion/react';
+import { SdlConfiguration } from '../components/SdlConfiguration/SdlConfiguration';
 import {
   initialValues,
   InitialValuesProps,
   SdlConfigurationType,
   SDLSpec
-} from "../components/SdlConfiguration/settings";
-import { isError } from "../_helpers/types";
+} from '../components/SdlConfiguration/settings';
+import { isError } from '../_helpers/types';
 
 const ReDeploy: React.FC<any> = () => {
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ const ReDeploy: React.FC<any> = () => {
             );
           }
         } catch (error) {
-          if (isError(error) && error.message === "Request rejected") {
+          if (isError(error) && error.message === 'Request rejected') {
             setProgressVisible(false);
             setCardMessage('');
           }
@@ -95,8 +95,8 @@ const ReDeploy: React.FC<any> = () => {
         );
       }}
     </Formik>
-  )
-}
+  );
+};
 
 export default ReDeploy;
 

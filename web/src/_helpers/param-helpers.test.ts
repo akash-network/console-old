@@ -11,7 +11,7 @@ test('nameToURI: A non-string value return empty string', () => {
   const testStr: any = null;
   const output = util.nameToURI(testStr);
 
-  expect(output).toEqual("");
+  expect(output).toEqual('');
 });
 
 test('uriToName: Decodes hyphens to spaces', () => {
@@ -25,5 +25,5 @@ test('uriToName: A non-string value return empty string', () => {
   const testStr: any = null;
   const output = util.uriToName(testStr);
 
-  expect(output).toEqual("");
+  expect(output).toEqual('');
 });

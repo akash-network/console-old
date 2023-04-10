@@ -5,8 +5,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { muiTheme } from './style/mui-theme';
 import { RecoilRoot } from 'recoil';
-import { QueryClientProvider } from "react-query";
-import { queryClient } from "./queryClient";
+import { QueryClientProvider } from 'react-query';
+import { queryClient } from './queryClient';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement as HTMLElement);

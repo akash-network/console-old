@@ -1,20 +1,20 @@
-import React from "react";
-import styled from "@emotion/styled";
-import IconTop from "../../assets/images/icon-top.svg";
-import IconDown from "../../assets/images/icon-down.svg";
+import React from 'react';
+import styled from '@emotion/styled';
+import IconTop from '../../assets/images/icon-top.svg';
+import IconDown from '../../assets/images/icon-down.svg';
 
 const ButtonUp = ({onClick}: any) => <img
-  style={{height: 8, cursor: "pointer"}}
+  style={{height: 8, cursor: 'pointer'}}
   onClick={onClick} src={IconTop}
   alt="Icon Up"
-/>
+/>;
 
 const ButtonDown = ({onClick}: any) => <img
-  style={{height: 8, cursor: "pointer"}}
+  style={{height: 8, cursor: 'pointer'}}
   onClick={onClick}
   src={IconDown}
   alt="Icon Down"
-/>
+/>;
 
 interface InputNumberProps {
   setFieldValue: (name: string, value: string | number) => void
@@ -25,8 +25,8 @@ interface InputNumberProps {
 
 export const InputNumber: React.FC<InputNumberProps> = ({setFieldValue, disabled, ...field}) => {
   const size = {
-    value: typeof field.value === "string" ? Number(field.withOutSuffix ? field.value : field.value.slice(0, -2)) : parseFloat(field.value),
-    suffix: !field.withOutSuffix && typeof field.value === "string" && field.value.slice(-2)
+    value: typeof field.value === 'string' ? Number(field.withOutSuffix ? field.value : field.value.slice(0, -2)) : parseFloat(field.value),
+    suffix: !field.withOutSuffix && typeof field.value === 'string' && field.value.slice(-2)
   };
 
   return (
@@ -39,7 +39,7 @@ export const InputNumber: React.FC<InputNumberProps> = ({setFieldValue, disabled
           type="number"
           value={size.value}
           onChange={({currentTarget}) => {
-            setFieldValue(field.name, currentTarget.value + (size?.suffix || ""));
+            setFieldValue(field.name, currentTarget.value + (size?.suffix || ''));
           }}
         />
         {size?.suffix && <InputSuffix>{size.suffix}</InputSuffix>}
@@ -52,12 +52,12 @@ export const InputNumber: React.FC<InputNumberProps> = ({setFieldValue, disabled
               const isNumberWithSmallStep = field.smallIncrement;
               if (isNumberAnExponent) {
                 const exponent = Math.log2(size.value);
-                return setFieldValue(field.name, Math.pow(2, exponent + 1) + (size.suffix || ""));
+                return setFieldValue(field.name, Math.pow(2, exponent + 1) + (size.suffix || ''));
               }
-              if (isNumberWithSmallStep && (size.suffix === "Gi" || field?.withOutSuffix)) {
-                return setFieldValue(field.name, +(size.value + 0.1).toFixed(1) + (size.suffix || ""))
+              if (isNumberWithSmallStep && (size.suffix === 'Gi' || field?.withOutSuffix)) {
+                return setFieldValue(field.name, +(size.value + 0.1).toFixed(1) + (size.suffix || ''));
               }
-              setFieldValue(field.name, (size.value + 1) + (size.suffix || ""))
+              setFieldValue(field.name, (size.value + 1) + (size.suffix || ''));
             }}
           />
           <InputIconDown
@@ -68,13 +68,13 @@ export const InputNumber: React.FC<InputNumberProps> = ({setFieldValue, disabled
                 const exponent = Math.log2(size.value);
                 return setFieldValue(
                   field.name,
-                  Math.pow(2, exponent - 1 >= 0 ? exponent - 1 : exponent) + (size.suffix || "")
+                  Math.pow(2, exponent - 1 >= 0 ? exponent - 1 : exponent) + (size.suffix || '')
                 );
               }
-              if (isNumberWithSmallStep && (size.suffix === "Gi" || field?.withOutSuffix)) {
-                return setFieldValue(field.name, +(size.value - 0.1).toFixed(1) + (size.suffix || ""))
+              if (isNumberWithSmallStep && (size.suffix === 'Gi' || field?.withOutSuffix)) {
+                return setFieldValue(field.name, +(size.value - 0.1).toFixed(1) + (size.suffix || ''));
               }
-              setFieldValue(field.name, (size.value - 1 >= 0 ? size.value - 1 : size.value) + (size?.suffix || ""));
+              setFieldValue(field.name, (size.value - 1 >= 0 ? size.value - 1 : size.value) + (size?.suffix || ''));
             }}
           />
         </NumberButtonWrapper>

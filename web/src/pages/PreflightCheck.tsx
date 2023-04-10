@@ -63,10 +63,10 @@ export const PreflightCheck: React.FC<{}> = () => {
     try {
       ManifestVersion(sdl).then(setManifestVersion);
     } catch (e) {
-      console.warn("Could not compute manifest version: ", e);
+      console.warn('Could not compute manifest version: ', e);
       setManifestVersion(undefined);
     }
-  }, [sdl])
+  }, [sdl]);
 
   /* Check if the current active certificate is valid */
   React.useEffect(() => {
@@ -144,7 +144,7 @@ export const PreflightCheck: React.FC<{}> = () => {
                     <div className="grow">{/* spacer - do not remove */}</div>
                     <a
                       href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap"
-                      target="_blank"
+                      target="_blank" rel="noreferrer"
                     >
                       <PreflightActionButton>Get Keplr</PreflightActionButton>
                     </a>

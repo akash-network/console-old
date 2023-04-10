@@ -7,7 +7,7 @@ interface TimerProps {
 }
 
 export const Timer: React.FC<TimerProps> = ({ startTime, onTimerEnd }) => {
-  const [timeRemaining, setTimeRemaining] = React.useState<string | null>("Expired");
+  const [timeRemaining, setTimeRemaining] = React.useState<string | null>('Expired');
   const duration = 60 * 5 * 1000;
 
   React.useEffect(() => {
@@ -19,7 +19,7 @@ export const Timer: React.FC<TimerProps> = ({ startTime, onTimerEnd }) => {
       const ms = endTime - now;
 
       if (ms > 0) {
-        setTimeRemaining(formatTimeRemaining(ms))
+        setTimeRemaining(formatTimeRemaining(ms));
         timer = setTimeout(updateTime, 1000);
       } else {
         setTimeRemaining(null);
@@ -35,7 +35,7 @@ export const Timer: React.FC<TimerProps> = ({ startTime, onTimerEnd }) => {
       if (timer !== null) {
         clearTimeout(timer);
       }
-    }
+    };
   }, [setTimeRemaining]);
 
   return (
@@ -57,7 +57,7 @@ export const Timer: React.FC<TimerProps> = ({ startTime, onTimerEnd }) => {
       }
     </TimerWrapper >
   );
-}
+};
 
 const TimerWrapper = styled(Box)`
   background-color: ${props => props.theme.palette.secondary.light};

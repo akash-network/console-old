@@ -1,5 +1,5 @@
-import { Endpoint } from "@akashnetwork/akashjs/build/protobuf/akash/base/v1beta2/endpoint";
-import { Attribute } from "@akashnetwork/akashjs/build/protobuf/akash/base/v1beta2/attribute";
+import { Endpoint } from '@akashnetwork/akashjs/build/protobuf/akash/base/v1beta2/endpoint';
+import { Attribute } from '@akashnetwork/akashjs/build/protobuf/akash/base/v1beta2/attribute';
 
 export interface InitialValuesProps {
   folderName?: string | undefined,
@@ -16,15 +16,15 @@ export interface Template {
 
 export const initialValues: InitialValuesProps = {
   folderName: undefined,
-  appName: "",
+  appName: '',
   sdl: undefined,
   depositor: undefined,
-}
+};
 
 export enum SdlConfigurationType {
-  Create = "Create",
-  Update = "Update",
-  ReDeploy = "ReDeploy"
+  Create = 'Create',
+  Update = 'Update',
+  ReDeploy = 'ReDeploy'
 }
 
 export interface Service {
@@ -47,7 +47,7 @@ export interface ServiceExpose {
   Hosts: string[] | null;
 }
 
-export type ServiceProtocol = "TCP" | "UDP";
+export type ServiceProtocol = 'TCP' | 'UDP';
 
 export interface ResourceUnits {
   cpu: CPU;
@@ -76,7 +76,7 @@ export interface ResourceValue {
 }
 
 export interface SDLSpec {
-  version: "2.0";
+  version: '2.0';
   services: {
     [key: string]: { // Service Name
       image: string;
@@ -88,7 +88,7 @@ export interface SDLSpec {
         port: number;
         as?: number;
         accept?: string[] | null;
-        proto?: "http" | "https" | "tcp";
+        proto?: 'http' | 'https' | 'tcp';
         to?: {
           service?: string;
           global?: boolean;
@@ -121,7 +121,7 @@ export interface SDLSpec {
     }
     placement: {
       [key: string]: { // Group Name
-        attributes?: Record<Attribute["key"], Attribute["value"]>;
+        attributes?: Record<Attribute['key'], Attribute['value']>;
         signedBy?: {
           allOf?: string[],
           anyOf?: string[]
@@ -149,8 +149,8 @@ export interface SDLSpec {
 export function isSDLSpec(sdl: unknown): sdl is SDLSpec {
   const sdlSpec = sdl as SDLSpec;
 
-  return sdlSpec.version === "2.0" &&
-    typeof sdlSpec.services === "object" &&
-    typeof sdlSpec.profiles === "object" &&
-    typeof sdlSpec.deployment === "object";
+  return sdlSpec.version === '2.0' &&
+    typeof sdlSpec.services === 'object' &&
+    typeof sdlSpec.profiles === 'object' &&
+    typeof sdlSpec.deployment === 'object';
 }

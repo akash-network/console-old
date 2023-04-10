@@ -1,7 +1,7 @@
-import styled from "@emotion/styled/macro";
-import { Avatar } from "@mui/material";
-import ArrowRight from "../../assets/images/arrow-right-gray.svg";
-import React from "react";
+import styled from '@emotion/styled/macro';
+import { Avatar } from '@mui/material';
+import ArrowRight from '../../assets/images/arrow-right-gray.svg';
+import React from 'react';
 
 interface TemplateProps {
   id: number
@@ -11,7 +11,7 @@ interface TemplateProps {
   onNextButtonClick?: () => void
 }
 
-const IconRight = () => <img src={ArrowRight} alt="Icon Right" />
+const IconRight = () => <img src={ArrowRight} alt="Icon Right" />;
 
 export const Template: React.FC<TemplateProps> = (
   {
@@ -39,7 +39,7 @@ export const Template: React.FC<TemplateProps> = (
       </TemplateFooter>
     </TemplateWrapper>
   );
-}
+};
 
 const TemplateFooter = styled.div`
   margin-top: auto;

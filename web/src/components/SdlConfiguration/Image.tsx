@@ -1,8 +1,8 @@
-import { Field } from "formik";
-import React from "react";
-import styled from "@emotion/styled";
-import { ErrorMessageComponent } from "../ErrorMessage";
-import { FieldWrapper, Input } from "./styling";
+import { Field } from 'formik';
+import React from 'react';
+import styled from '@emotion/styled';
+import { ErrorMessageComponent } from '../ErrorMessage';
+import { FieldWrapper, Input } from './styling';
 
 const validateImage = (value: any) => {
   let error;
@@ -10,7 +10,7 @@ const validateImage = (value: any) => {
     error = 'Image can"t be empty, you have to add app image to make deployment work';
   }
   return error;
-}
+};
 
 type ImageProps = {
   currentProfile: string

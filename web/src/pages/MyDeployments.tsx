@@ -21,11 +21,11 @@ const MyDeploymentsPlaceholder: React.FC<MyDeploymentsPlaceholderProps> = ({ hid
 
   const handleCreateDeployment = () => {
     navigate('/new-deployment');
-  }
+  };
 
   const handleConnectWallet = () => {
     connect();
-  }
+  };
 
   return <PlaceholderCard
     icon="newDeploy"
@@ -53,8 +53,8 @@ const MyDeploymentsPlaceholder: React.FC<MyDeploymentsPlaceholderProps> = ({ hid
         )
       }
     </Stack>
-  </PlaceholderCard >
-}
+  </PlaceholderCard >;
+};
 
 const MyDeploymentsTable: React.FC<{ showAll: boolean }> = ({ showAll }) => {
   const keplr = useRecoilValue(keplrState);
@@ -80,7 +80,7 @@ const MyDeploymentsTable: React.FC<{ showAll: boolean }> = ({ showAll }) => {
       : <MyDeploymentsPlaceholder hidden={deployments.length - tableData.length} />
     }
   </>;
-}
+};
 
 const MyDeployments: React.FC<{}> = () => {
   const [showAll, setShowAll] = React.useState(false);

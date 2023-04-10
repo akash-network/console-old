@@ -22,9 +22,9 @@ export default function useDeploymentData(owner: string) {
 
   const { status, data: deploymentsQuery } = useQuery(
     ['deployments', { owner }], fetchDeploymentList, {
-    refetchOnWindowFocus: false,
-    keepPreviousData: true,
-  });
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+    });
 
   const { data: leasesQuery } = useQuery(['leases', { owner }], fetchLeaseListActive, {
     refetchOnWindowFocus: false,
@@ -64,7 +64,7 @@ export default function useDeploymentData(owner: string) {
 
   useEffect(() => {
     // avoid showing stale data if a deployment has been created or deleted
-    if (status === "loading" && deploymentsStale) {
+    if (status === 'loading' && deploymentsStale) {
       return;
     }
 
@@ -72,7 +72,7 @@ export default function useDeploymentData(owner: string) {
       return;
     }
 
-    if (status === "success" && deploymentsStale) {
+    if (status === 'success' && deploymentsStale) {
       setDeploymentsStale(false);
     }
 
@@ -122,7 +122,7 @@ export default function useDeploymentData(owner: string) {
           url,
           lease: leaseInfo
             ? `Time Left: ${leaseInfo ? leaseInfo.timeLeft : 'N/A'}`
-            : `Time Left: 0 days`,
+            : 'Time Left: 0 days',
           status: query.deployment?.state || 0,
         };
       })

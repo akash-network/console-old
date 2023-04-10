@@ -1,8 +1,8 @@
-import React from "react";
-import { Field } from "formik";
-import { MeasurementControl } from "../MeasurementControl";
-import { ErrorMessageComponent } from "../ErrorMessage";
-import { FieldWrapper } from "./styling";
+import React from 'react';
+import { Field } from 'formik';
+import { MeasurementControl } from '../MeasurementControl';
+import { ErrorMessageComponent } from '../ErrorMessage';
+import { FieldWrapper } from './styling';
 
 const validateCpu = (value: number) => {
   let error;
@@ -10,7 +10,7 @@ const validateCpu = (value: number) => {
     error = 'CPU can"t be 0 and lower, you have to add positive number only';
   }
   return error;
-}
+};
 
 type CpuProps = {
   currentProfile: string;

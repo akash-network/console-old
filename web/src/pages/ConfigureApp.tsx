@@ -60,7 +60,7 @@ export const ConfigureApp: React.FC<ConfigureAppProps> = ({
   // prevent exception on initial load
   if (!form.values['sdl']) {
     return <></>;
-  };
+  }
 
   return (
     <SdlConfiguration

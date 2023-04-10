@@ -7,9 +7,9 @@ import { Address } from '../Address';
 import { formatCurrency } from '../../_helpers/formatter-currency';
 import { getAvgCostPerMonth } from '../../_helpers/lease-calculations';
 import { useNavigate } from 'react-router-dom';
-import moultireLogo from "../../assets/images/moultire-logo.svg";
-import ovrclkLogo from "../../assets/images/overclk-logo.svg";
-import { Hashicon } from "@emeraldpay/hashicon-react";
+import moultireLogo from '../../assets/images/moultire-logo.svg';
+import ovrclkLogo from '../../assets/images/overclk-logo.svg';
+import { Hashicon } from '@emeraldpay/hashicon-react';
 import { fetchProviderAttributes, fetchProviderInfo } from '../../recoil/api/providers';
 import { useQuery } from 'react-query';
 import { Bid as TBid } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/bid';
@@ -39,7 +39,7 @@ type BidAuditTagProps = {
 const BidAuditTag: React.FC<BidAuditTagProps> = ({ bid }) => {
   const { data: attributes } = useQuery(
     ['providerAttributes', bid.bidId?.provider],
-    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint())
+    () => fetchProviderAttributes({ owner: bid.bidId?.provider || '' }, rpcEndpoint())
   );
 
   const isAudited = (attributes?.providers?.length || 0) > 0;
@@ -52,12 +52,12 @@ const BidAuditTag: React.FC<BidAuditTagProps> = ({ bid }) => {
           label="Audited"
           color="success"
           size="small"
-          sx={{ marginLeft: "auto", marginRight: "10px", padding: "2px" }}
+          sx={{ marginLeft: 'auto', marginRight: '10px', padding: '2px' }}
         />
       )
     }
   </>;
-}
+};
 
 type BidAuditBadgesProps = {
   bid: TBid;
@@ -65,12 +65,12 @@ type BidAuditBadgesProps = {
 
 const isValidAuditor = (id: string): id is keyof typeof auditors => {
   return auditors.hasOwnProperty(id);
-}
+};
 
 const BidAuditBadges: React.FC<BidAuditBadgesProps> = ({ bid }) => {
   const { data: attributes } = useQuery(
     ['providerAttributes', bid.bidId?.provider],
-    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint())
+    () => fetchProviderAttributes({ owner: bid.bidId?.provider || '' }, rpcEndpoint())
   );
 
   return <>{
@@ -85,15 +85,15 @@ const BidAuditBadges: React.FC<BidAuditBadgesProps> = ({ bid }) => {
         return auditor && <BadgeBox key={`auditor-${idx}`}>{auditor?.logo()}</BadgeBox>;
       })
   }</>;
-}
+};
 
 type BidProps = BidCardProps;
 
 export const Bid: React.FC<BidProps> = (props) => {
   return <Suspense fallback={<></>}>
     <BidCard {...props} />
-  </Suspense>
-}
+  </Suspense>;
+};
 
 export interface BidCardProps {
   bid: TBid;
@@ -111,12 +111,12 @@ export const BidCard: React.FC<BidCardProps> = ({ bid, ...props }) => {
 
   const { data: provider } = useQuery(
     ['provider', providerId],
-    () => fetchProviderInfo({ owner: providerId || "" }, rpcEndpoint())
-  )
+    () => fetchProviderInfo({ owner: providerId || '' }, rpcEndpoint())
+  );
 
   const { data: attributes } = useQuery(
     ['providerAttributes', bid.bidId?.provider],
-    () => fetchProviderAttributes({ owner: bid.bidId?.provider || "" }, rpcEndpoint())
+    () => fetchProviderAttributes({ owner: bid.bidId?.provider || '' }, rpcEndpoint())
   );
 
   const akt = useRecoilValue(aktMarketCap);
@@ -194,12 +194,12 @@ export const BidCard: React.FC<BidCardProps> = ({ bid, ...props }) => {
 
 const formatProviderName = (uri: string | undefined) => {
   if (typeof uri !== 'string') {
-    return "";
+    return '';
   }
 
   const parsed = new URL(uri);
   return parsed.hostname;
-}
+};
 
 const BidWrapper = styled.div<{ checked?: boolean }>`
         width: 400px;

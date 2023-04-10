@@ -1,11 +1,12 @@
-import Long from "long";
+import React from 'react';
+import Long from 'long';
 import {
   QueryClientImpl,
   QueryBidsRequest as Request,
   QueryBidsResponse as Response,
-} from "@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/query";
-import { getRpc } from "@akashnetwork/akashjs/build/rpc";
-import { BaseAtomComponent } from "./basecomponent";
+} from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/query';
+import { getRpc } from '@akashnetwork/akashjs/build/rpc';
+import { BaseAtomComponent } from './basecomponent';
 
 export const MarketBidListFetch = (props?: {
   owner?: string;
@@ -19,12 +20,12 @@ export const MarketBidListFetch = (props?: {
   const doWork = async ({ rpcEndpoint }: any) => {
     const request: any = Request.fromJSON({
       filters: {
-        owner: props?.owner || "",
+        owner: props?.owner || '',
         dseq: props?.dseq !== undefined ? new Long(props?.dseq) : Long.UZERO,
         gseq: props?.gseq || 0,
         oseq: props?.oseq || 0,
-        provider: props?.provider || "",
-        state: props?.state || "",
+        provider: props?.provider || '',
+        state: props?.state || '',
       },
     });
 

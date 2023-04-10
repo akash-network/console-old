@@ -22,8 +22,8 @@ export default function Keplr(props: KeplrProps) {
       {/* Modal to install Keplr Chrome extension */}
       <HelpCenterWallet
 
-       isOpen={isOpen}
-       onClose={handleClose}
+        isOpen={isOpen}
+        onClose={handleClose}
       
       />
        

@@ -125,8 +125,8 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
                       onButtonSelect={selectTemplateAndFetchSdl}
                     />
                   );
-                })} 
-                
+                })}
+
             </TypologyWrapper>
             <DeployButton
               variant='contained'

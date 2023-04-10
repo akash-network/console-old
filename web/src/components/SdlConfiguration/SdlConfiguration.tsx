@@ -158,20 +158,20 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                           />
 
                           <ToolTipTitleWrapper>
-                              <ConfigurationTitle>Resources</ConfigurationTitle>
-                              <Tooltip
-                                title="This is where you specify how much CPU, memory and storage you would like to lease from the provider, to host your application."
-                                placement="right"
+                            <ConfigurationTitle>Resources</ConfigurationTitle>
+                            <Tooltip
+                              title="This is where you specify how much CPU, memory and storage you would like to lease from the provider, to host your application."
+                              placement="right"
                                 
-                                sx={{
-                                  fontSize: '25px',                   
-                                  color: 'rgb(207, 205, 204)',
-                                  padding: '4px',
-                                  borderRadius: '4px',
-                                }}
-                              >
-                                <InfoIcon />
-                              </Tooltip>
+                              sx={{
+                                fontSize: '25px',                   
+                                color: 'rgb(207, 205, 204)',
+                                padding: '4px',
+                                borderRadius: '4px',
+                              }}
+                            >
+                              <InfoIcon />
+                            </Tooltip>
                           </ToolTipTitleWrapper>
                           <Cpu currentProfile={profile} disabled={forbidEditing} />
                           <Memory currentProfile={profile} disabled={forbidEditing} />

@@ -20,11 +20,11 @@ function deleteRpcFromStorage() {
 export const [getRpcNode, setRpcNode] = (() => {
   let rpcNode = getRpcFromStorageOrDefault(defaultRpcNode);
 
-  function get(proxy: Boolean = false): string {
+  function get(proxy = false): string {
     const rpcEndpointURL = new URL(rpcNode);
 
     return proxy
-      ? `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${rpcEndpointURL.port || "443"}${rpcEndpointURL.pathname}`
+      ? `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${rpcEndpointURL.port || '443'}${rpcEndpointURL.pathname}`
       : rpcNode;
   }
 

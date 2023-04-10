@@ -1,4 +1,4 @@
-import { TLSCertificate } from "./certificates";
+import { TLSCertificate } from './certificates';
 
 // TODO: this will have to be populated using a ENV variable for production
 export const proxyURL = process.env.REACT_APP_PROXY_URL || 'http://localhost:3005/';
@@ -12,10 +12,10 @@ export const mtlsFetch = (certificate: TLSCertificate, upstream: string) => {
       upstream
     },
     body: JSON.stringify({
-      rewrite_method: params?.method || "GET",
+      rewrite_method: params?.method || 'GET',
       rewrite_body: params?.body,
       proxy_cert: certificate.csr,
       proxy_key: certificate.privateKey
     })
   });
-}
+};

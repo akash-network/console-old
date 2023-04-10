@@ -1,4 +1,4 @@
-import { HelpCenter } from "./HelpCenter"
+import { HelpCenter } from './HelpCenter';
 
 interface HelpCenterSideHelpProps {
   isOpen: boolean;
@@ -16,7 +16,7 @@ export const HelpCenterSideHelp: React.FC<HelpCenterSideHelpProps> = ({ isOpen, 
         {
           type: 'card',
           title: 'Akash Docs',
-          body: "Review detailed documentation",
+          body: 'Review detailed documentation',
           link: 'https://docs.akash.network/',
           footer: false,
         },
@@ -46,4 +46,4 @@ export const HelpCenterSideHelp: React.FC<HelpCenterSideHelpProps> = ({ isOpen, 
 
   );
 
-}
+};

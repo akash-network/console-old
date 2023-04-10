@@ -5,15 +5,15 @@ interface leaseID {
 }
 
 export function versionPath(): string {
-  return "version"
+  return 'version';
 }
 
 export function statusPath(): string {
-  return "status"
+  return 'status';
 }
 
 export function validatePath(): string {
-  return "validate"
+  return 'validate';
 }
 
 export function leasePath(id: leaseID): string {

@@ -34,16 +34,16 @@ export function ParseServiceProtocol(input: string) {
   }
 
   switch (input) {
-    case "TCP":
-    case "":
+    case 'TCP':
+    case '':
     case undefined: // The empty string (no input) implies TCP
-      result = "TCP";
+      result = 'TCP';
       break;
-    case "UDP":
-      result = "UDP";
+    case 'UDP':
+      result = 'UDP';
       break;
     default:
-      throw new Error("ErrUnsupportedServiceProtocol");
+      throw new Error('ErrUnsupportedServiceProtocol');
   }
 
   return result;
@@ -63,12 +63,12 @@ export function parseSizeStr(str: any) {
     }
   } catch (err) {
     console.error(err);
-    throw new Error("Error while parsing size: " + str);
+    throw new Error('Error while parsing size: ' + str);
   }
 }
 
 export function shouldBeIngress(expose: any) {
-  return expose.proto === "TCP" && expose.global && 80 === exposeExternalPort(expose);
+  return expose.proto === 'TCP' && expose.global && 80 === exposeExternalPort(expose);
 }
 
 function exposeExternalPort(expose: any) {
@@ -87,7 +87,7 @@ function exposeExternalPort(expose: any) {
  */
 export const transformSdl = (sdl: SDLSpec) => {
   const transformedSdl = cloneDeep(sdl);
-  const profiles = toArray(sdl.deployment).map((x: any) => find(x, "profile")).map((t: any) => t.profile)
+  const profiles = toArray(sdl.deployment).map((x: any) => find(x, 'profile')).map((t: any) => t.profile);
   profiles.map((profile: any) => {
     const isStorageArray = Array.isArray(transformedSdl.profiles.compute[profile].resources.storage);
     if (!isStorageArray) {
@@ -96,14 +96,14 @@ export const transformSdl = (sdl: SDLSpec) => {
       return true;
     }
     return true;
-  })
+  });
   return transformedSdl;
 };
 
-export const wait = async (time: number = 3000) => {
+export const wait = async (time = 3000) => {
   return new Promise<void>((res, rej) => {
     setTimeout(() => {
       res();
     }, time);
   });
-}
+};

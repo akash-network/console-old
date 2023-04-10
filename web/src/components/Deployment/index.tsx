@@ -23,7 +23,7 @@ import { useLeaseStatus } from '../../hooks/useLeaseStatus';
 import InfoIcon from '@mui/icons-material/Info';
 
 
-  const Deployment: React.FC<any> = () => {
+const Deployment: React.FC<any> = () => {
   const { dseq } = useParams<any>();
   const keplr = useRecoilValue(keplrState);
   const [appName, setAppName] = React.useState('');
@@ -196,7 +196,7 @@ import InfoIcon from '@mui/icons-material/Info';
 
   const onCompleteDeployment = () => {
     navigate(`/configure-deployment/${dseq}`);
-  }
+  };
 
   // In case that current SDL is deployed from another machine, only show Tooltip and not show re-deploy page
   const ConditionalLinkReDeploy = application !== null ? Link : Tooltip;
@@ -258,10 +258,10 @@ import InfoIcon from '@mui/icons-material/Info';
                       title={
                         deployment?.deployment?.state !== 1
                           ? 'It is not allowed to update closed deployment'
-                          : "This SDL is deployed with another tool and can't be updated from here"
+                          : 'This SDL is deployed with another tool and can\'t be updated from here'
                       }
                       placement="top"
-                      to={`update-deployment`}
+                      to={'update-deployment'}
                     >
                       <Button
                         fullWidth
@@ -292,7 +292,7 @@ import InfoIcon from '@mui/icons-material/Info';
                     <ConditionalLinkReDeploy
                       title="This SDL is deployed with another tool and can't be re-deployed from here"
                       placement="top"
-                      to={`re-deploy`}
+                      to={'re-deploy'}
                     >
                       <Button
                         fullWidth

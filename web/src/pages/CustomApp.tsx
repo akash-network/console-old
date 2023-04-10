@@ -37,7 +37,7 @@ const CustomApp: React.FC = () => {
 
   useEffect(() => {
     if (intentId && !dseq) {
-      setActiveStep({ currentCard: 2 })
+      setActiveStep({ currentCard: 2 });
     } else if (dseq) {
       setDeploymentId({
         owner: keplr.accounts[0].address,
@@ -53,7 +53,7 @@ const CustomApp: React.FC = () => {
       navigate(`/new-deployment/custom-sdl/${intentId}`, { state: { sdl } });
     }
 
-  }
+  };
 
   const acceptBid = async (bidId: any) => {
     setProgressVisible(true);

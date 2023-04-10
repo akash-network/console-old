@@ -6,8 +6,8 @@ export const flattenObject = (oldObject: any) => {
   return newObject;
 
   function flattenHelper(currentObject: any, newObject: any, previousKeyName: string) {
-    for (let key in currentObject) {
-      let value = currentObject[key];
+    for (const key in currentObject) {
+      const value = currentObject[key];
 
       if (value.constructor !== Object) {
         if (previousKeyName == null || previousKeyName === '') {
@@ -28,4 +28,4 @@ export const flattenObject = (oldObject: any) => {
       }
     }
   }
-}
+};
