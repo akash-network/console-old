@@ -148,6 +148,7 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
         >
           {disabled ? 'Close' : 'Save & Close'}
         </SaveAndCloseButton>
+        }
       </DialogActions>
     </EditorDialog >
   );

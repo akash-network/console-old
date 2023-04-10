@@ -1,14 +1,12 @@
-import {HelpCenter} from './HelpCenter';
+import { HelpCenter } from './HelpCenter';
 
 interface HelpCenterSDLProps {
-    isOpen: boolean;
-    onClose: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export const  HelpCenterSDL: React.FC<HelpCenterSDLProps> = ({isOpen, onClose}) =>  {
-
+export const HelpCenterSDL: React.FC<HelpCenterSDLProps> = ({ isOpen, onClose }: HelpCenterSDLProps) => {
   return (
-
     <HelpCenter
       isOpen={isOpen}
       onClose={onClose}
@@ -33,7 +31,5 @@ export const  HelpCenterSDL: React.FC<HelpCenterSDLProps> = ({isOpen, onClose}) 
         },
       ]}
     />
-
   );
-
 };

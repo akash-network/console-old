@@ -30,7 +30,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import Tooltip from '@mui/material/Tooltip';
 
 interface SdlConfigurationProps {
-  actionItems: Function;
+  actionItems?: () => React.ReactNode;
   sdl: any;
   reviewSdl: boolean;
   closeReviewModal: () => void;
@@ -101,9 +101,9 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                 <Tooltip
                   title="This is where you can specify various parameters (one per service) that make up your SDL file. The number and name of the services will vary depending on the application/ SDL"
                   placement="right"
-                  
+
                   sx={{
-                    fontSize: '25px',                   
+                    fontSize: '25px',
                     color: 'rgb(207, 205, 204)',
                     padding: '4px',
                     borderRadius: '4px',
@@ -139,9 +139,9 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                             <Tooltip
                               title="The value you specify here is the maximum you would like to pay for the compute resources you are requesting for this service. uakt allows you to specify an amount that is a fraction of 1AKT"
                               placement="right"
-                              
+
                               sx={{
-                                fontSize: '25px',                   
+                                fontSize: '25px',
                                 color: 'rgb(207, 205, 204)',
                                 padding: '4px',
                                 borderRadius: '4px',
@@ -162,9 +162,9 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                             <Tooltip
                               title="This is where you specify how much CPU, memory and storage you would like to lease from the provider, to host your application."
                               placement="right"
-                                
+
                               sx={{
-                                fontSize: '25px',                   
+                                fontSize: '25px',
                                 color: 'rgb(207, 205, 204)',
                                 padding: '4px',
                                 borderRadius: '4px',

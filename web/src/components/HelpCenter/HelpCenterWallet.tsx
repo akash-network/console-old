@@ -1,14 +1,12 @@
-import {HelpCenter} from './HelpCenter';
+import { HelpCenter } from './HelpCenter';
 
 interface HelpCenterWalletProps {
-    isOpen: boolean;
-    onClose: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export const  HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({isOpen, onClose}) =>  {
-
+export const HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({ isOpen, onClose }: HelpCenterWalletProps) => {
   return (
-
     <HelpCenter
       isOpen={isOpen}
       onClose={onClose}
@@ -28,7 +26,7 @@ export const  HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({isOpen, onCl
         {
           type: 'contentBody',
           // Make body more consisted with contentBody
-          contentBody: 'There are two main ways to fund your Keplr Wallet with AKT:'    
+          contentBody: 'There are two main ways to fund your Keplr Wallet with AKT:'
         },
         {
           type: 'largeCard',
@@ -42,7 +40,7 @@ export const  HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({isOpen, onCl
             { title: 'DigiFinex', link: 'https://www.digifinex.com/' },
             { title: 'Bittrex', link: 'https://bittrex.com/' }
           ],
-    
+
           contentBody: 'Purchase them from one of the exchanges listed below: ',
           body: 'If you have tokens of other Cosmos chains you can exchange them for AKT using the Osmosis App',
           title: 'Osmosis App',
@@ -56,7 +54,5 @@ export const  HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({isOpen, onCl
         },
       ]}
     />
-
   );
-
 };

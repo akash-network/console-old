@@ -18,8 +18,9 @@ import { useQuery } from 'react-query';
 import { Certificate_State } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/cert';
 import { Input, Label } from '../components/SdlConfiguration/styling';
 import { AntSwitch } from '../components/Switch/AntSwitch';
+import { v2Sdl } from '@akashnetwork/akashjs/build/sdl/types';
 
-export const PreflightCheck: React.FC<{}> = () => {
+export const PreflightCheck: React.FC<Record<string, never>> = () => {
   const [keplr,] = useRecoilState(keplrState);
   const [balance, setBalance] = React.useState(0);
   const { submitForm, values, setFieldValue } = useFormikContext<{ depositor: string | undefined, sdl: SDLSpec }>();
@@ -60,8 +61,11 @@ export const PreflightCheck: React.FC<{}> = () => {
 
   /* Attempts to calculate the version of the manifest as a quick validation check */
   React.useEffect(() => {
+    const sdlPartial = sdl as unknown;
+
     try {
-      ManifestVersion(sdl).then(setManifestVersion);
+      // we can safely cast this to v2Sdl because any failure will be caught by the catch block
+      ManifestVersion(sdlPartial as v2Sdl).then(setManifestVersion);
     } catch (e) {
       console.warn('Could not compute manifest version: ', e);
       setManifestVersion(undefined);

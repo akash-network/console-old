@@ -1,5 +1,6 @@
 import { Endpoint } from '@akashnetwork/akashjs/build/protobuf/akash/base/v1beta2/endpoint';
 import { Attribute } from '@akashnetwork/akashjs/build/protobuf/akash/base/v1beta2/attribute';
+import { v2Sdl } from '@akashnetwork/akashjs/build/sdl/types';
 
 export interface InitialValuesProps {
   folderName?: string | undefined,
@@ -75,75 +76,9 @@ export interface ResourceValue {
   val: string;
 }
 
-export interface SDLSpec {
+export type SDLSpec = v2Sdl & {
   version: '2.0';
-  services: {
-    [key: string]: { // Service Name
-      image: string;
-      depends_on?: string[];
-      command?: string[] | null;
-      args?: string[] | null;
-      env?: string[] | null;
-      expose: {
-        port: number;
-        as?: number;
-        accept?: string[] | null;
-        proto?: 'http' | 'https' | 'tcp';
-        to?: {
-          service?: string;
-          global?: boolean;
-        }[]
-      }[];
-      params?: {
-        storage: {
-          [key: string]: {
-            mount: string
-          }
-        }
-      }
-    }
-  };
-  profiles: {
-    compute: {
-      [key: string]: { // Service Name
-        resources: {
-          cpu: {
-            units: number | string,
-          }
-          memory: {
-            size: string
-          }
-          storage: {
-            size: string
-          }
-        }
-      }
-    }
-    placement: {
-      [key: string]: { // Group Name
-        attributes?: Record<Attribute['key'], Attribute['value']>;
-        signedBy?: {
-          allOf?: string[],
-          anyOf?: string[]
-        }
-        pricing: {
-          [key: string]: { // Service Name
-            denom: string,
-            amount: number
-          }
-        }
-      }
-    }
-  };
-  deployment: {
-    [key: string]: { // Service Name
-      [key: string]: { // Group Name
-        profile: string // Service Name
-        count: number
-      }
-    }
-  };
-}
+};
 
 // Quick and dirty type guard for SDL like objects
 export function isSDLSpec(sdl: unknown): sdl is SDLSpec {

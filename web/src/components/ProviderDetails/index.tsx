@@ -11,9 +11,11 @@ export interface ProviderDetailsProps {
 }
 
 function attributeByName(attributes: any) {
-  return (key: string) => attributes[key] !== 'undefined'
-    ? attributes[key]
-    : <span>not found</span>;
+  return function AttributeByName(key: string) {
+    return attributes[key] !== 'undefined'
+      ? attributes[key]
+      : <span>not found</span>;
+  };
 }
 
 const ProviderDetails: React.FC<ProviderDetailsProps> = ({ providerId }) => {
@@ -31,10 +33,11 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({ providerId }) => {
 
   const AttributeValue = useMemo(() => {
     const attrValue = attributeByName(attributes);
-
-    return ({ name }: { name: string }) => (
+    const AttributeValue = ({ name }: { name: string }) => (
       <span>{attrValue(name)}</span>
     );
+
+    return AttributeValue;
   }, [attributes]);
 
   const goBack = () => navigate(-1);

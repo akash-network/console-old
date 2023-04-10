@@ -100,40 +100,40 @@ export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, content
         <HelpCenterContent>
           {contentData.map((item: ContentItem, index: number) => {
             switch (item.type) {
-            case 'contentBody':
-              return (
-                <React.Fragment key={index}>
-                  {item.contentTitle && <ContentTitle>{item.contentTitle}</ContentTitle>}
-                  {item.contentBody && <ContentBody dangerouslySetInnerHTML={{ __html: item.contentBody }}></ContentBody>}
-                </React.Fragment>
-              );
-            case 'largeCard':
-              return (
-                <React.Fragment key={index}>
-                  {item.internalLinks && 
+              case 'contentBody':
+                return (
+                  <React.Fragment key={index}>
+                    {item.contentTitle && <ContentTitle>{item.contentTitle}</ContentTitle>}
+                    {item.contentBody && <ContentBody dangerouslySetInnerHTML={{ __html: item.contentBody }}></ContentBody>}
+                  </React.Fragment>
+                );
+              case 'largeCard':
+                return (
+                  <React.Fragment key={index}>
+                    {item.internalLinks && 
                       <LargeCardComponent 
                         internalLinks={item.internalLinks} 
                         header = {item.contentBody} 
                         footerLink = {item.link} 
                         footerContent = {item.body} 
                         footerLinkTitle = {item.title} />}
-                </React.Fragment>
-              );
-            case 'card':
-            default:
-              return (
-                <React.Fragment key={index}>
-                  <a target="_blank" href={item.link} rel="noreferrer">
-                    <Card>
-                      <CardTitle>
-                        {item.title}
-                        <OpenInNewIcon fontSize="inherit" style={{ color: 'rgba(0, 0, 0, 0.54)', fontSize: '0.875rem' }} />
-                      </CardTitle>
-                      <CardBody>{item.body}</CardBody>
-                    </Card>
-                  </a>
-                </React.Fragment>
-              );
+                  </React.Fragment>
+                );
+              case 'card':
+              default:
+                return (
+                  <React.Fragment key={index}>
+                    <a target="_blank" href={item.link} rel="noreferrer">
+                      <Card>
+                        <CardTitle>
+                          {item.title}
+                          <OpenInNewIcon fontSize="inherit" style={{ color: 'rgba(0, 0, 0, 0.54)', fontSize: '0.875rem' }} />
+                        </CardTitle>
+                        <CardBody>{item.body}</CardBody>
+                      </Card>
+                    </a>
+                  </React.Fragment>
+                );
             }
           })}
         </HelpCenterContent>

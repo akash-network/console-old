@@ -1,8 +1,8 @@
-// @ts-nocheck
 import axios from 'axios';
 import { SDL } from '@akashnetwork/akashjs/build/sdl';
+import { v2Sdl } from '@akashnetwork/akashjs/build/sdl/types';
 
-export async function getCurrentHeight(apiEndpoint) {
+export async function getCurrentHeight(apiEndpoint: string) {
   const response = await axios.get(`${apiEndpoint}/blocks/latest`);
   const data = response.data;
 
@@ -10,7 +10,7 @@ export async function getCurrentHeight(apiEndpoint) {
   return height;
 }
 
-function isString(value: object): value is string {
+function isString(value: object | string): value is string {
   return value.constructor === String;
 }
 

@@ -101,7 +101,9 @@ const UpdateDeployment: React.FC<any> = () => {
                   const resources = value.sdl.profiles.compute[key].resources;
                   cpu = resources.cpu.units;
                   memory = resources.memory.size;
-                  storage = resources.storage.size;
+                  storage = Array.isArray(resources.storage)
+                    ? resources.storage[0].size
+                    : resources.storage.size;
                 }
               }
               count++;

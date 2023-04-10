@@ -5,10 +5,8 @@ interface HelpCenterSideHelpProps {
   onClose: () => void;
 }
 
-export const HelpCenterSideHelp: React.FC<HelpCenterSideHelpProps> = ({ isOpen, onClose }) => {
-
+export const HelpCenterSideHelp: React.FC<HelpCenterSideHelpProps> = ({ isOpen, onClose }: HelpCenterSideHelpProps) => {
   return (
-
     <HelpCenter
       isOpen={isOpen}
       onClose={onClose}
@@ -43,7 +41,5 @@ export const HelpCenterSideHelp: React.FC<HelpCenterSideHelpProps> = ({ isOpen, 
         },
       ]}
     />
-
   );
-
 };

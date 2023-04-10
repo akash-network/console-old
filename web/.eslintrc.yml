@@ -20,7 +20,7 @@ rules:
   indent:
     - error
     - 2
-    - switchCase: 1
+    - SwitchCase: 1
   linebreak-style:
     - error
     - unix
@@ -30,3 +30,5 @@ rules:
   semi:
     - error
     - always
+  react/react-in-jsx-scope: "off"
+  react/no-unescaped-entities: "off"

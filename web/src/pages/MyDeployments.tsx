@@ -82,7 +82,7 @@ const MyDeploymentsTable: React.FC<{ showAll: boolean }> = ({ showAll }) => {
   </>;
 };
 
-const MyDeployments: React.FC<{}> = () => {
+const MyDeployments: React.FC<Record<string, never>> = () => {
   const [showAll, setShowAll] = React.useState(false);
   const wallet = useWallet();
 

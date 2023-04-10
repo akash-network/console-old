@@ -75,7 +75,7 @@ type FieldInfo<T> = {
   options: T[],
 }
 
-const Settings: React.FC<{}> = () => {
+const Settings: React.FC<Record<string, never>> = () => {
   const keplr = useRecoilValue(keplrState);
   const [currentActiveCertificate, setCurrentActiveCertificate] = useRecoilState(activeCertificate);
   const [certificatesList, setCertificatesList] = React.useState<(SortableCertificate & TLSCertificate)[]>([]);

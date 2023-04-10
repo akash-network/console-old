@@ -238,12 +238,19 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                           onClick={() => {
                             // Here we have to update parent sdl.services form and manipulate with service data bound to this persistent storage
                             const sdl = arrayHelpers.form.values.sdl as SDLSpec;
-                            const storage = sdl.services[serviceName]?.params?.storage;
+                            const storageParams = sdl.services[serviceName]?.params?.storage;
 
-                            if (storage) {
-                              const storages = Object.keys(storage);
-                              /* @ts-ignore */
-                              storages.forEach(key => key === storage?.name && delete sdl.services[serviceName].params.storage[key]);
+                            if (storageParams) {
+                              const storages = Object.keys(storageParams);
+
+                              // Remove the storage from service params
+                              for (const key of Object.keys(storageParams)) {
+                                if (key === storage?.name && storageParams[key]) {
+                                  delete storageParams[key];
+                                  break;
+                                }
+                              }
+
                               // -1 because we delete key after this loop
                               if ((storages.length - 1) === 0) {
                                 delete sdl.services[serviceName].params;
@@ -259,7 +266,8 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                         >
                           <TrashIcon />
                         </IconButton>
-                      )}
+                      )
+                      }
                     </VariableWrapper>
                   );
                 })
@@ -292,7 +300,7 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
           )}
         />
       </TabPanel>
-    </SdlSectionWrapper>
+    </SdlSectionWrapper >
   );
 };
 
