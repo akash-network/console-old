@@ -3,8 +3,10 @@ import styled from "@emotion/styled";
 import React, { useEffect, useRef } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { setDiagnosticsOptions } from "monaco-yaml";
-import yaml from "js-yaml";
+import yaml, { YAMLException } from "js-yaml";
 import ArrowRight from "../../assets/images/icon-right.svg";
+import { isSDLSpec, SDLSpec } from '../SdlConfiguration/settings';
+import logging from '../../logging';
 
 // The uri is used for the schema file match.
 const modelUri = Uri.parse('a://b/foo.yaml');
@@ -14,7 +16,7 @@ interface MonacoYamlEditorProps {
   open: boolean
   appName?: string
   closeReviewModal: () => void
-  onSaveButtonClick: (value: any) => void;
+  onSaveButtonClick: (value: SDLSpec) => void;
   disabled: boolean
 }
 
@@ -24,6 +26,8 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
   }) => {
   const comment = "#Copy and paste your SDL here";
   const editorRef = useRef<HTMLDivElement>(null);
+  const [isEditorEmpty, setIsEditorEmpty] = React.useState(true);
+
   setDiagnosticsOptions({
     enableSchemaRequest: true,
     hover: true,
@@ -31,6 +35,11 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
     validate: true,
     format: true,
   });
+
+  function handleInput() {
+    setIsEditorEmpty(false);
+  }
+
   useEffect(() => {
     if (open && document.getElementById("editor")) {
       const existingModel = editor.getModel(modelUri);
@@ -70,6 +79,7 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
           borderRadius: 4
         }
       }}
+      onInput={handleInput}
     >
       <DialogTitle
         sx={{
@@ -98,29 +108,48 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
           <SaveAndCloseButton
             variant="outlined"
             size="small"
-            onClick={() => closeReviewModal()}
+            onClick={() => {
+              closeReviewModal()
+              setIsEditorEmpty(true);
+            }}
           >
             Cancel
           </SaveAndCloseButton>
         )}
 
-        <SaveAndCloseButton
+        {!isEditorEmpty && <SaveAndCloseButton
           variant="outlined"
           size="small"
           onClick={() => {
-            if (!disabled) {
-              // @ts-ignore
-              const valueFromEditor = editor.getModel(modelUri).getValue();
-              // Here we transform yaml to JS Object and update the Formik
-              onSaveButtonClick(yaml.load(valueFromEditor));
+            if (disabled) {
+              return false;
             }
-            closeReviewModal();
+
+            try {
+              const valueFromEditor = editor.getModel(modelUri)?.getValue();
+
+              if (valueFromEditor === undefined) {
+                logging.error("Unable to get SDL value from form. Please return to the previous page and try again.");
+                return false;
+              }
+
+              const sdl: unknown = yaml.load(valueFromEditor);
+
+              if (isSDLSpec(sdl)) {
+                onSaveButtonClick(sdl);
+                closeReviewModal();
+              } else {
+                logging.error("SDL is invalid. Please check the SDL and try again.")
+              }
+            } catch (e: unknown) {
+              logging.error(`Cannot parse SDL: ${(e as YAMLException).message}}`);
+            }
           }}
         >
           {disabled ? "Close" : "Save & Close"}
-        </SaveAndCloseButton>
+        </SaveAndCloseButton>}
       </DialogActions>
-    </EditorDialog>
+    </EditorDialog >
   );
 };
 

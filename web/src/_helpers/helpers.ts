@@ -1,6 +1,7 @@
 //const stableStringify = require("json-stable-stringify");
 
 import { cloneDeep, find, toArray } from "lodash";
+import { SDLSpec } from "../components/SdlConfiguration/settings";
 
 const specSuffixes = {
   Ki: 1024,
@@ -84,7 +85,7 @@ function exposeExternalPort(expose: any) {
  * @param sdl = {}
  * @return transformed SDL 
  */
-export const transformSdl = (sdl: any) => {
+export const transformSdl = (sdl: SDLSpec) => {
   const transformedSdl = cloneDeep(sdl);
   const profiles = toArray(sdl.deployment).map((x: any) => find(x, "profile")).map((t: any) => t.profile)
   profiles.map((profile: any) => {

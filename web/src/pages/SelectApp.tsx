@@ -7,6 +7,7 @@ import { useQuery } from 'react-query';
 import { transformSdl } from '../_helpers/helpers';
 import { ButtonTemplate } from '../components/Button';
 import SocialIcon from "../components/Icons/SocialIcon";
+import { isSDLSpec } from '../components/SdlConfiguration/settings';
 import { Template } from '../components/SdlConfiguration/settings';
 import { WalletDeployButtons } from '../components/WalletDeployButton';
 import { fetchSdlList, templateList } from '../recoil/api/sdl';
@@ -69,7 +70,11 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
       //const configuration = await yaml.load(response.data);
       const configuration = await yaml.load(response.data);
       // We need to transform storage property to be arrayed by default to be able to add persistent storage
-      setFieldValue('sdl', transformSdl(configuration));
+      if (isSDLSpec(configuration)) {
+        setFieldValue('sdl', transformSdl(configuration));
+      } else {
+        console.error('Selected template is not a valid SDL spec');
+      }
     } catch (e) {
       new Error(e as any);
     }
