@@ -45,11 +45,11 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
       const existingModel = editor.getModel(modelUri);
       // If value is empty it will be "{}\n" and we will show the comment to the user to paste the value
       const valueToShow = value === '{}\n' ? comment : value;
+
       if (existingModel) {
         existingModel.setValue(valueToShow);
-        // @ts-ignore
-        existingModel.updateOptions({ readOnly: disabled });
       }
+
       const model = existingModel || editor.createModel(valueToShow, 'yaml', modelUri);
 
       if (editorRef.current) {

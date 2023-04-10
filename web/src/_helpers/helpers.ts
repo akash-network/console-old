@@ -51,12 +51,13 @@ export function ParseServiceProtocol(input: string) {
 
 export function parseSizeStr(str: any) {
   try {
-    const suffix = Object.keys(specSuffixes).find((s) => str.toString().toLowerCase().endsWith(s.toLowerCase()));
+    const suffix = (Object.keys(specSuffixes) as Array<keyof typeof specSuffixes>)
+      .find((s) => str.toString().toLowerCase().endsWith(s.toLowerCase()));
 
     if (suffix) {
       const suffixPos = str.length - suffix.length;
       const numberStr = str.substring(0, suffixPos);
-      // @ts-ignore
+
       return (parseFloat(numberStr) * specSuffixes[suffix]).toString();
     } else {
       return parseFloat(str);

@@ -42,20 +42,20 @@ const Deployment: React.FC<any> = () => {
     <Tooltip title="This will create a whole new replica of this deployment. The existing deployment will not be touched." placement="top">
       <div style={{ display: 'inline-flex', alignItems: 'center' }}>
         <InfoIcon style={{ fontSize: '15px', color: 'lightgrey', marginLeft: '8px' }} />
-      
+
       </div>
     </Tooltip>
   );
-  
+
   const UpdateDeploymentTooltip = (
     <Tooltip title="This will update a limited set of fields in an existing/ active deployment. Compute resources and placement criteria are not updatable." placement="top">
       <div style={{ display: 'inline-flex', alignItems: 'center' }}>
         <InfoIcon style={{ fontSize: '15px', color: 'lightgrey', marginLeft: '8px' }} />
-      
+
       </div>
     </Tooltip>
   );
-  
+
   const applicationCache = dseq
     ? localStorage.getItem(dseq)
     : null;
@@ -207,7 +207,7 @@ const Deployment: React.FC<any> = () => {
   return (
     <Stack>
       {certificate.$type === 'Invalid Certificate' && <Alert severity="warning" variant="filled">
-        You don't have a valid certificate. This is required to view the details of your lease.
+        You don&apos;t have a valid certificate. This is required to view the details of your lease.
         You can create one <Link className="text-[#ffffff] font-bold" to="/settings">here</Link>.
       </Alert>}
       <Grid container spacing={2} style={{ maxWidth: '90vw', width: '90vw', margin: 'auto' }}>
@@ -251,7 +251,7 @@ const Deployment: React.FC<any> = () => {
               }
               {deployment?.deployment && !deploymentIncomplete && (
                 <React.Fragment>
-                 
+
                   {/* deployment?.state is 1 if it is in active state. It should be that state === 2 is in-active but i am not 100% sure */}
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <ConditionalLinkUpdate
@@ -280,7 +280,7 @@ const Deployment: React.FC<any> = () => {
                           marginBottom: '12px',
                           minWidth: '150px',
                           width: '380px',
-                          
+
                         }}
                       >
                         Update Deployment
@@ -313,9 +313,9 @@ const Deployment: React.FC<any> = () => {
                       >
 
                         Re-Deploy
-                        
+
                       </Button>
-                      
+
                     </ConditionalLinkReDeploy>
                     <div style={{ marginLeft: '5px' }}>{ReDeployTooltip}</div>
                   </div>

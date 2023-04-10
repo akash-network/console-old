@@ -64,7 +64,7 @@ type BidAuditBadgesProps = {
 }
 
 const isValidAuditor = (id: string): id is keyof typeof auditors => {
-  return auditors.hasOwnProperty(id);
+  return Object.prototype.hasOwnProperty.call(auditors, id);
 };
 
 const BidAuditBadges: React.FC<BidAuditBadgesProps> = ({ bid }) => {

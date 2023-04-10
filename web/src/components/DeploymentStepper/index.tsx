@@ -140,7 +140,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   // TODO: this should be changed to use the logging system, and not throw
   // additional exceptions.
   const handleError = async (maybeError: unknown, method: string) => {
-    const error = maybeError && maybeError.hasOwnProperty('message')
+    const error = maybeError && Object.prototype.hasOwnProperty.call(maybeError, 'message')
       ? (maybeError as Error)
       : { message: 'Unknown error' };
 
