@@ -48,6 +48,9 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
 
       if (existingModel) {
         existingModel.setValue(valueToShow);
+        // readOnly is not officially supported by updateOptions
+        // but seems to work, so... ¯\_(ツ)_/¯
+        existingModel.updateOptions({ readOnly: disabled } as any);
       }
 
       const model = existingModel || editor.createModel(valueToShow, 'yaml', modelUri);
