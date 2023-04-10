@@ -1,7 +1,7 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { truncate } from "lodash";
+import React from 'react';
 import CheckedImage from "../../assets/images/checkmark-red.svg";
 import { Template } from "../SdlConfiguration/settings";
 
@@ -10,6 +10,7 @@ export interface WalletDeployButtonProps {
   typology: Template
   onButtonSelect: (template: Template) => void
   index: number
+  length: number
 
   [key: string]: any
 }
@@ -20,6 +21,7 @@ export const WalletDeployButtons: React.FC<WalletDeployButtonProps> = (
     typology,
     onButtonSelect,
     index,
+    length,
     ...field
   }) => {
   return (
@@ -29,6 +31,7 @@ export const WalletDeployButtons: React.FC<WalletDeployButtonProps> = (
       }}>
       <WalletDeployButtonWrapper
         checked={selected?.title === typology.title}
+        length={length}
         onClick={() => onButtonSelect(typology)}
       >
         <WalletDeployHeadline>
@@ -57,7 +60,7 @@ export const WalletDeployButtons: React.FC<WalletDeployButtonProps> = (
   );
 };
 
-const WalletDeployButtonWrapper = styled.div<{ checked?: boolean }>`
+const WalletDeployButtonWrapper = styled.div<{ checked?: boolean, length?: number }>`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -65,7 +68,7 @@ const WalletDeployButtonWrapper = styled.div<{ checked?: boolean }>`
   padding: 16px 20px;
   gap: 16px;
   cursor: pointer;
-  width: 100%;
+  width: ${(props) => (props.length == 1 ? '33%' : '100%')};
   height: 180px;
 
   background: #ffffff;
@@ -118,4 +121,3 @@ const WalletDeployButtonDescription = styled.p`
   letter-spacing: 0.015em;
   color: #3d4148;
 `;
-

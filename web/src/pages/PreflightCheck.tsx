@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Box, Button, Card, Stack, Tooltip, CircularProgress } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { useFormikContext } from 'formik';
-import { activeCertificate, keplrState, rpcEndpoint } from '../recoil/atoms';
+import { KeplrWallet, activeCertificate, keplrState, rpcEndpoint } from '../recoil/atoms';
 import { getAccountBalance } from '../recoil/api/bank';
 import { createAndBroadcastCertificate } from '../recoil/api';
 import { Icon } from '../components/Icons';
@@ -16,12 +16,13 @@ import { SDLSpec } from '../components/SdlConfiguration/settings';
 import { queryCertificates } from '../recoil/queries';
 import { useQuery } from 'react-query';
 import { Certificate_State } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/cert';
+import { Input, Label } from '../components/SdlConfiguration/styling';
+import { AntSwitch } from '../components/Switch/AntSwitch';
 
 export const PreflightCheck: React.FC<{}> = () => {
-  const [hasKeplr, setHasKeplr] = React.useState(false);
   const [keplr,] = useRecoilState(keplrState);
   const [balance, setBalance] = React.useState(0);
-  const { submitForm, values } = useFormikContext();
+  const { submitForm, values, setFieldValue } = useFormikContext<{ depositor: string | undefined, sdl: SDLSpec }>();
   const [certificate, setCertificate] = useRecoilState(activeCertificate);
   const { data: accountCertificates } = useQuery(
     ['certificates', keplr?.accounts[0]?.address],
@@ -29,11 +30,35 @@ export const PreflightCheck: React.FC<{}> = () => {
   );
   const wallet = useWallet();
   const [isValidCert, setIsValidCert] = React.useState(false);
-  const sdl = (values as { sdl: SDLSpec }).sdl;
   const [manifestVersion, setManifestVersion] = React.useState<Uint8Array>();
   const [loading, setLoading] = React.useState(false);
-  const [showVarifiedCert, setShowVarifiedCert] = React.useState(false);
+  const [showVerifiedCert, setShowVerifiedCert] = React.useState(false);
+  const [useAuthorizedDepositor, setUseAuthorizedDepositor] = React.useState(false);
 
+  const hasKeplr = window.keplr !== undefined;
+  const sdl = values.sdl;
+
+  const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+
+    if (!checked) {
+      setFieldValue('depositor', undefined);
+    }
+
+    setUseAuthorizedDepositor(event.target.checked);
+  };
+
+  const setDepositorAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFieldValue('depositor', event.target.value);
+  };
+
+  const handleConnectWallet = async () => {
+    if (!wallet.isConnected) {
+      wallet.connect();
+    }
+  };
+
+  /* Attempts to calculate the version of the manifest as a quick validation check */
   React.useEffect(() => {
     try {
       ManifestVersion(sdl).then(setManifestVersion);
@@ -43,10 +68,11 @@ export const PreflightCheck: React.FC<{}> = () => {
     }
   }, [sdl])
 
+  /* Check if the current active certificate is valid */
   React.useEffect(() => {
     if (accountCertificates && accountCertificates.certificates) {
       const activeCert = accountCertificates.certificates.find((cert: any) => {
-        const pubKey = Buffer.from(cert.certificate.pubkey, 'base64').toString('ascii');
+        const pubKey = Buffer.from(Object.values(cert.certificate.pubkey) as any, 'base64').toString('ascii');
         return certificate.$type === 'TLS Certificate' && certificate.publicKey === pubKey;
       });
 
@@ -54,45 +80,38 @@ export const PreflightCheck: React.FC<{}> = () => {
     }
   }, [certificate, accountCertificates]);
 
+  /* Check if the current active certificate is valid, also? */
   React.useEffect(() => {
-    if (window.keplr) {
-      setHasKeplr(true);
+    if (showVerifiedCert) {
+      setIsValidCert(true);
     }
-  }, []);
+  }, [showVerifiedCert]);
 
+  /* Automatically connect the wallet if keplr is installed */
   React.useEffect(() => {
     handleConnectWallet();
   }, []);
 
+  /* Check the current balance of the wallet */
   React.useEffect(() => {
     if (!window.keplr) return;
     if (keplr.isSignedIn && keplr?.accounts[0]?.address) {
-      getAccountBalance(keplr.accounts[0].address).then((result) => {
+      const account = values.depositor || keplr.accounts[0].address;
+      getAccountBalance(account).then((result) => {
         const akt = uaktToAKT(result);
         setBalance(akt);
       });
     }
-  }, [keplr]);
+  }, [keplr, values.depositor]);
 
-  const handleConnectWallet = async () => {
-    if (!wallet.isConnected) {
-      wallet.connect();
-    }
-  };
-
-  React.useEffect(() => {
-    if(showVarifiedCert){
-      setIsValidCert(true);
-    }
-  }, [showVarifiedCert]);
-
+  /* Action handler for creating a certificate */
   const handleCreateCertificate = async () => {
     setLoading(true);
     const result = await createAndBroadcastCertificate(rpcEndpoint(), keplr);
 
     if (result.code === 0 && result.certificate) {
       setCertificate(result.certificate);
-      setShowVarifiedCert(true);
+      setShowVerifiedCert(true);
     }
   };
 
@@ -114,9 +133,9 @@ export const PreflightCheck: React.FC<{}> = () => {
           </Title>
           <Delayed>
             {/* Check Keplr & Login */}
-            <Stack sx={{ width: '100%' }} spacing={0}>
+            <Stack sx={{ width: '100%' }} spacing='1rem'>
               {!hasKeplr && (
-                <PreflightCheckItem>
+                <PreflightCheckItemContainer>
                   <div className="flex mb-2">
                     <Icon type="alert" />
                     <Title size={14} className="pl-2">
@@ -136,13 +155,11 @@ export const PreflightCheck: React.FC<{}> = () => {
                     </Tooltip>
                   </div>
                   <Text size={14}>In order to deploy you will need to connect your wallet.</Text>
-                </PreflightCheckItem>
+                </PreflightCheckItemContainer>
               )}
-            </Stack>
 
-            <Stack sx={{ width: '100%', marginBottom: '16px' }} spacing={0}>
               {hasKeplr && !keplr.isSignedIn ? (
-                <PreflightCheckItem>
+                <PreflightCheckItemContainer>
                   <div className="flex mb-2">
                     <Icon type="alert" />
                     <Title size={14} className="pl-2">
@@ -159,10 +176,10 @@ export const PreflightCheck: React.FC<{}> = () => {
                     </Tooltip>
                   </div>
                   <Text size={14}>In order to deploy you will need to connect your wallet.</Text>
-                </PreflightCheckItem>
+                </PreflightCheckItemContainer>
               ) : null}
               {hasKeplr && keplr.isSignedIn ? (
-                <PreflightCheckItem>
+                <PreflightCheckItemContainer>
                   <div className="flex">
                     <Icon type="checkVerified" />
                     <Title size={14} className="pl-3">
@@ -170,44 +187,58 @@ export const PreflightCheck: React.FC<{}> = () => {
                     </Title>
                     <div className="grow">{/* spacer - do not remove */}</div>
                   </div>
-                </PreflightCheckItem>
+                </PreflightCheckItemContainer>
               ) : null}
-            </Stack>
 
-            {/* Check Funds */}
-            <Stack sx={{ width: '100%', marginBottom: '16px' }} spacing={0}>
               {balance < 5 && (
-                <PreflightCheckItem>
+                <PreflightCheckItemContainer>
                   <div className="flex mb-2">
                     <Icon type="alert" />
                     <Title size={14} className="pl-2">
                       Insufficient funds in your wallet
                     </Title>
                     <div className="grow">{/* spacer - do not remove */}</div>
+                    <div className="flex gap-2">
+                      <Label>Use Depositor</Label>
+                      <AntSwitch checked={useAuthorizedDepositor} onChange={handleSwitchChange} />
+                    </div>
                   </div>
                   <Text size={14}>
                     Minimum wallet balance is at least 5 AKT. You can add funds to your wallet or
-                    specify an authorized depositor.
+                    specify an authorized depositor. Foo
                   </Text>
-                </PreflightCheckItem>
+                  {useAuthorizedDepositor ? (
+                    <div className='flex items-center gap-2'>
+                      <Label className='pt-2'>Depositor Address:</Label>
+                      <Input value={values.depositor} className="mt-2 grow" placeholder="Enter AKT address" onChange={setDepositorAddress} />
+                    </div>
+                  ) : null}
+                </PreflightCheckItemContainer>
               )}
               {balance >= 5 ? (
-                <PreflightCheckItem>
+                <PreflightCheckItemContainer>
                   <div className="flex">
                     <Icon type="checkVerified" />
                     <Title size={14} className="pl-2">
                       Wallet Funds Sufficient
                     </Title>
                     <div className="grow">{/* spacer - do not remove */}</div>
+                    <div className="flex gap-2">
+                      <Label>Use Depositor</Label>
+                      <AntSwitch checked={useAuthorizedDepositor} onChange={handleSwitchChange} />
+                    </div>
                   </div>
-                </PreflightCheckItem>
+                  {useAuthorizedDepositor ? (
+                    <div className='flex items-center gap-2'>
+                      <Label className='pt-2'>Depositor Address:</Label>
+                      <Input value={values.depositor} className="mt-2 grow" placeholder="Enter AKT address" onChange={setDepositorAddress} />
+                    </div>
+                  ) : null}
+                </PreflightCheckItemContainer>
               ) : null}
-            </Stack>
 
-            {/* Validate SDL */}
-            <Stack sx={{ width: '100%', marginBottom: '16px' }} spacing={0}>
               {manifestVersion === undefined && (
-                <PreflightCheckItem>
+                <PreflightCheckItemContainer>
                   <div className="flex mb-2">
                     <Icon type="alert" />
                     <Title size={14} className="pl-2">
@@ -219,10 +250,10 @@ export const PreflightCheck: React.FC<{}> = () => {
                     SDL could not be validated. Please double-check and ensure all values are correct.
                     {manifestVersion}
                   </Text>
-                </PreflightCheckItem>
+                </PreflightCheckItemContainer>
               )}
               {manifestVersion !== undefined ? (
-                <PreflightCheckItem>
+                <PreflightCheckItemContainer>
                   <div className="flex">
                     <Icon type="checkVerified" />
                     <Title size={14} className="pl-2">
@@ -230,14 +261,11 @@ export const PreflightCheck: React.FC<{}> = () => {
                     </Title>
                     <div className="grow">{/* spacer - do not remove */}</div>
                   </div>
-                </PreflightCheckItem>
+                </PreflightCheckItemContainer>
               ) : null}
-            </Stack>
 
-            {/* Check Certificate */}
-            <Stack sx={{ width: '100%', marginBottom: '16px' }} spacing={0}>
               {!isValidCert && (
-                <PreflightCheckItem>
+                <PreflightCheckItemContainer>
                   <div className="flex mb-2">
                     <Icon type="alert" />
                     <Title size={14} className="pl-2">
@@ -257,10 +285,10 @@ export const PreflightCheck: React.FC<{}> = () => {
                     </Tooltip>
                   </div>
                   <Text size={14}>{loading ? <div className="flex justify-center"> <CircularProgress /> </div> : 'In order to deploy you will need to create a certificate.'}</Text>
-                </PreflightCheckItem>
+                </PreflightCheckItemContainer>
               )}
               {isValidCert ? (
-                <PreflightCheckItem>
+                <PreflightCheckItemContainer>
                   <div className="flex">
                     <Icon type="checkVerified" />
                     <Title size={14} className="pl-2">
@@ -268,18 +296,18 @@ export const PreflightCheck: React.FC<{}> = () => {
                     </Title>
                     <div className="grow">{/* spacer - do not remove */}</div>
                   </div>
-                </PreflightCheckItem>
+                </PreflightCheckItemContainer>
               ) : null}
             </Stack>
           </Delayed>
         </div>
-      </PreflightCheckWrapper>
+      </PreflightCheckWrapper >
       <DeploymentAction>
         <Button variant="contained" onClick={submitForm}>
           Next
         </Button>
       </DeploymentAction>
-    </Box>
+    </Box >
   );
 };
 
@@ -295,7 +323,7 @@ const PreflightCheckWrapper = styled(Card)`
   min-height: 320px;
 `;
 
-const PreflightCheckItem = styled.div`
+const PreflightCheckItemContainer = styled.div`
   width: 100%;
   padding: 16px;
   background: #ffffff;
