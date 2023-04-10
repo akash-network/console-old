@@ -73,7 +73,7 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
       if (isSDLSpec(configuration)) {
         setFieldValue('sdl', transformSdl(configuration));
       } else {
-        // handle the error case
+        console.error('Selected template is not a valid SDL spec');
       }
     } catch (e) {
       new Error(e as any);

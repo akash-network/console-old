@@ -702,6 +702,10 @@ video {
   height: 3rem;
 }
 
+.h-full {
+  height: 100%;
+}
+
 .w-\[106px\] {
   width: 106px;
 }

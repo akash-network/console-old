@@ -52,7 +52,7 @@ export const ConfigureApp: React.FC<ConfigureAppProps> = ({
         if (isSDLSpec(sdl)) {
           form.setFieldValue('sdl', transformSdl(sdl));
         } else {
-          // handle the error case
+          console.error('Template is not a valid SDL spec');
         }
       });
   }, [directoryConfig, templateId, form]);
