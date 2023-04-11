@@ -21,21 +21,21 @@ export const HelpCenterSideHelp: React.FC<HelpCenterSideHelpProps> = ({ isOpen, 
         {
           type: 'card',
           title: 'Akash Forum',
-          body: "View current and past community discussions",
+          body: 'View current and past community discussions',
           link: 'https://github.com/orgs/akash-network/discussions',
 
         },
         {
           type: 'card',
           title: 'Akash Discord',
-          body: "Join the Discord server and ask any questions",
+          body: 'Join the Discord server and ask any questions',
           link: 'https://discord.akash.network/',
 
         },
         {
           type: 'card',
           title: 'Akash GitHub',
-          body: "Check out the Akash Network Open Source code bases and community repository",
+          body: 'Check out the Akash Network Open Source code bases and community repository',
           link: 'https://github.com/akash-network/',
 
         },

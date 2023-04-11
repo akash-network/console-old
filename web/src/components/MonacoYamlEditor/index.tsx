@@ -112,7 +112,7 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
             variant="outlined"
             size="small"
             onClick={() => {
-              closeReviewModal()
+              closeReviewModal();
               setIsEditorEmpty(true);
             }}
           >
@@ -132,7 +132,7 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
               const valueFromEditor = editor.getModel(modelUri)?.getValue();
 
               if (valueFromEditor === undefined) {
-                logging.error("Unable to get SDL value from form. Please return to the previous page and try again.");
+                logging.error('Unable to get SDL value from form. Please return to the previous page and try again.');
                 return false;
               }
 
@@ -142,7 +142,7 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
                 onSaveButtonClick(sdl);
                 closeReviewModal();
               } else {
-                logging.error("SDL is invalid. Please check the SDL and try again.")
+                logging.error('SDL is invalid. Please check the SDL and try again.');
               }
             } catch (e: unknown) {
               logging.error(`Cannot parse SDL: ${(e as YAMLException).message}}`);

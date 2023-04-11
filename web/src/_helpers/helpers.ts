@@ -1,7 +1,7 @@
 //const stableStringify = require("json-stable-stringify");
 
-import { cloneDeep, find, toArray } from "lodash";
-import { SDLSpec } from "../components/SdlConfiguration/settings";
+import { cloneDeep, find, toArray } from 'lodash';
+import { SDLSpec } from '../components/SdlConfiguration/settings';
 
 const specSuffixes = {
   Ki: 1024,

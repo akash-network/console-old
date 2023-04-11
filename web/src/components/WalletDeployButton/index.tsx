@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
-import { truncate } from "lodash";
+import { truncate } from 'lodash';
 import React from 'react';
-import CheckedImage from "../../assets/images/checkmark-red.svg";
-import { Template } from "../SdlConfiguration/settings";
+import CheckedImage from '../../assets/images/checkmark-red.svg';
+import { Template } from '../SdlConfiguration/settings';
 
 export interface WalletDeployButtonProps {
   selected: Template | undefined

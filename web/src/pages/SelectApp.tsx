@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { transformSdl } from '../_helpers/helpers';
 import { ButtonTemplate } from '../components/Button';
-import SocialIcon from "../components/Icons/SocialIcon";
+import SocialIcon from '../components/Icons/SocialIcon';
 import { isSDLSpec } from '../components/SdlConfiguration/settings';
 import { Template } from '../components/SdlConfiguration/settings';
 import { WalletDeployButtons } from '../components/WalletDeployButton';
