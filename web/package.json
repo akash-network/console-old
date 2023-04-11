@@ -5,7 +5,8 @@
     "scripts": {
         "start": "craco start --config ./craco.config.js",
         "build": "craco build --config ./craco.config.js",
-        "test": "craco test --config ./craco.config.js",
+        "test": "yarn lint && craco test --config ./craco.config.js",
+        "lint": "eslint --quiet --ext .js,.jsx,.ts,.tsx src",
         "css": "npx tailwindcss -i ./src/style/app.scss -o ./src/style/app.css --watch"
     },
     "dependencies": {
