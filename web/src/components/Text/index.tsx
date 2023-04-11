@@ -89,12 +89,12 @@ type TextProps = {
   className?: string;
 };
 
-export const Title: React.FC<TitleProps> = ({ size, className, ...rest }) => {
+export const Title: React.FC<TitleProps> = ({ size, className, ...rest }: TextProps) => {
   const Component = titleMap[size];
   return <Component {...rest} className={className} />;
 };
 
-export const Text: React.FC<TextProps> = ({ size, className, ...rest }) => {
+export const Text: React.FC<TextProps> = ({ size, className, ...rest }: TextProps) => {
   const Component = textMap[size];
   return <Component {...rest} className={className} />;
 };

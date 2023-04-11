@@ -1,4 +1,4 @@
-import { uniqueName } from "./unique-name";
+import { uniqueName } from './unique-name';
 
 test('uniqueName: A unique name generated from a Keplr address and a deployment DSEQ', () => {
   const address = 'akash1annwm34rgxtkmt9tk32tj0shy5jtm3tzdsqvrj';

@@ -1,7 +1,7 @@
-import { QueryClientImpl as BankClient } from "cosmjs-types/cosmos/bank/v1beta1/query";
+import { QueryClientImpl as BankClient } from 'cosmjs-types/cosmos/bank/v1beta1/query';
 import { getRpc } from '@akashnetwork/akashjs/build/rpc';
 
-import { rpcEndpoint } from "../atoms";
+import { rpcEndpoint } from '../atoms';
 
 export async function getAccountBalance(address: string) {
   const rpc = await getRpc(rpcEndpoint());
@@ -11,5 +11,5 @@ export async function getAccountBalance(address: string) {
     denom: 'uakt'
   });
 
-  return parseInt(request?.balance?.amount || "0");
+  return parseInt(request?.balance?.amount || '0');
 }

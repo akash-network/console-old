@@ -11,14 +11,14 @@ import { loadActiveCertificate } from './recoil/api';
 import { useWallet } from './hooks/useWallet';
 
 // Lazy loading all pages in appropriate time
-const DeploymentStepper = lazy(() => import("./components/DeploymentStepper"));
-const Deployment = lazy(() => import("./components/Deployment"));
-const ReDeploy = lazy(() => import("./pages/ReDeploy"));
-const Settings = lazy(() => import("./pages/Settings"));
-const MyDeployments = lazy(() => import("./pages/MyDeployments"));
-const UpdateDeployment = lazy(() => import("./pages/UpdateDeployment"));
-const CustomApp = lazy(() => import("./pages/CustomApp"));
-const Provider = lazy(() => import("./pages/Provider"));
+const DeploymentStepper = lazy(() => import('./components/DeploymentStepper'));
+const Deployment = lazy(() => import('./components/Deployment'));
+const ReDeploy = lazy(() => import('./pages/ReDeploy'));
+const Settings = lazy(() => import('./pages/Settings'));
+const MyDeployments = lazy(() => import('./pages/MyDeployments'));
+const UpdateDeployment = lazy(() => import('./pages/UpdateDeployment'));
+const CustomApp = lazy(() => import('./pages/CustomApp'));
+const Provider = lazy(() => import('./pages/Provider'));
 
 const Welcome = () => {
   const navigate = useNavigate();
@@ -130,7 +130,7 @@ export default function App() {
             }
           }
         } catch (err) {
-          console.warn('unable to update keplr status', err)
+          console.warn('unable to update keplr status', err);
         }
       }
 
@@ -145,7 +145,7 @@ export default function App() {
       if (timer) {
         clearTimeout(timer);
       }
-    }
+    };
   }, [isConnected, certificate, setCertificate, keplr, setKeplr]);
 
   return (

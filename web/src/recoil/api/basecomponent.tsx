@@ -10,7 +10,7 @@ export const BaseAtomComponent = (props?: any) => {
   useEffect(() => {
     (async () => {
       const res: any = await axios.get(
-        `http://localhost:4040/api/deployments/list?address=akash1g2824089yrnlfzg0fns2t0t8lgzy47ck7t60hg`
+        'http://localhost:4040/api/deployments/list?address=akash1g2824089yrnlfzg0fns2t0t8lgzy47ck7t60hg'
       );
       setStateData(res.data);
     })();

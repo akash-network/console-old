@@ -30,7 +30,7 @@ export const FundDeploymentButton: React.FC<FundDeploymentButtonProps> = ({ icon
   React.useEffect(() => {
     getAccountBalance(wallet.accounts[0].address)
       .then(setBalance);
-  }, [wallet])
+  }, [wallet]);
 
   const onButtonClick = React.useCallback(() => {
     setOpen(true);
@@ -97,5 +97,5 @@ export const FundDeploymentButton: React.FC<FundDeploymentButtonProps> = ({ icon
         </InputContainer>
       </div>
     </Prompt>
-  </>
-}
+  </>;
+};

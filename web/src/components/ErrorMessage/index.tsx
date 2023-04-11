@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 export const ErrorMessageComponent = styled.span`
   background-color: rgb(255, 245, 245);

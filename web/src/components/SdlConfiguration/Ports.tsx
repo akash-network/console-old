@@ -1,10 +1,10 @@
-import React from "react";
-import { Field, FieldArray } from "formik";
-import styled from "@emotion/styled";
-import { FormControl, IconButton, MenuItem, Select, Stack } from "@mui/material";
-import { ErrorMessageComponent } from "../ErrorMessage";
-import PlusIcon from "../../assets/images/plus-icon.svg";
-import Trash from "../../assets/images/icon-trash.svg";
+import React from 'react';
+import { Field, FieldArray } from 'formik';
+import styled from '@emotion/styled';
+import { FormControl, IconButton, MenuItem, Select, Stack } from '@mui/material';
+import { ErrorMessageComponent } from '../ErrorMessage';
+import PlusIcon from '../../assets/images/plus-icon.svg';
+import Trash from '../../assets/images/icon-trash.svg';
 import {
   AddNewButton,
   AddNewButtonWrapper,
@@ -12,10 +12,10 @@ import {
   Input,
   SdlSectionWrapper,
   VariableWrapper
-} from "./styling";
+} from './styling';
 
-const PlusSign = () => <img src={PlusIcon} alt="Plus Icon" />
-const TrashIcon = () => <img src={Trash} alt="Trash Icon" />
+const PlusSign = () => <img src={PlusIcon} alt="Plus Icon" />;
+const TrashIcon = () => <img src={Trash} alt="Trash Icon" />;
 
 const validatePort = (value: number, field: string) => {
   let error;
@@ -23,7 +23,7 @@ const validatePort = (value: number, field: string) => {
     error = `${field.toUpperCase()} can"t be 0, you have to add positive number only`;
   }
   return error;
-}
+};
 
 type Service = {
   expose: Array<{
@@ -57,7 +57,7 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
               <FieldWrapper>
                 <Field
                   name={`sdl.services.${serviceName}.expose.${index}.port`}
-                  validate={(value: number) => validatePort(value, "port")}
+                  validate={(value: number) => validatePort(value, 'port')}
                 >
                   {({ field, meta }: any) => (
                     <React.Fragment>
@@ -74,7 +74,7 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
               <FieldWrapper>
                 <Field
                   name={`sdl.services.${serviceName}.expose.${index}.as`}
-                  validate={(value: number) => validatePort(value, "as")}
+                  validate={(value: number) => validatePort(value, 'as')}
                 >
                   {({ field, meta }: any) => (
                     <React.Fragment>
@@ -91,7 +91,7 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
 
               <FieldWrapper>
                 <Field name={`sdl.services.${serviceName}.expose.${index}.accept.[0]`}>
-                  {({ field }: any) => <Input {...field} value={field.value ?? ""} />}
+                  {({ field }: any) => <Input {...field} value={field.value ?? ''} />}
                 </Field>
               </FieldWrapper>
 
@@ -106,21 +106,21 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
                             name={`sdl.services.${serviceName}.expose.${index}.to.${i}.global`}
                           >
                             {({ field }: any) => (
-                              <FormControl fullWidth style={{ background: "white" }}>
+                              <FormControl fullWidth style={{ background: 'white' }}>
                                 <Select
                                   labelId="to-id"{...field}
                                   MenuProps={{
                                     PaperProps: {
                                       sx: {
                                         '& .MuiList-root': {
-                                          padding: "4px",
+                                          padding: '4px',
                                         },
                                       },
                                     },
                                   }}
                                   SelectDisplayProps={{
                                     style: {
-                                      padding: "11.5px 14px"
+                                      padding: '11.5px 14px'
                                     }
                                   }}
                                 >
@@ -141,12 +141,12 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
 
                   <IconButton
                     sx={{
-                      background: "#FFFFFF",
-                      border: "1px solid #D1D5DB",
-                      boxShadow: "0px 1px 2px rgb(0 0 0 / 5%)",
-                      borderRadius: "6px",
-                      width: "46px",
-                      height: "46px",
+                      background: '#FFFFFF',
+                      border: '1px solid #D1D5DB',
+                      boxShadow: '0px 1px 2px rgb(0 0 0 / 5%)',
+                      borderRadius: '6px',
+                      width: '46px',
+                      height: '46px',
                     }}
                     onClick={() => arrayHelpers.remove(index)}
                     aria-label="Delete port"

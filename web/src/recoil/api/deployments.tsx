@@ -94,24 +94,24 @@ export const fetchDeploymentList: QueryFunction<
 > = async (
   params
 ) => {
-    const [, { owner, state, dseq }] = params.queryKey;
-    const pagination = {
-      limit: 100,
-    };
-    const filters = {
-      owner,
-      state,
-      dseq,
-    };
-    const deploymentCount = await fetchDeploymentCount({ owner: filters.owner }, rpcEndpoint());
-    if (deploymentCount > 100) {
-      pagination.limit = deploymentCount;
-    }
-    const rpc = await getRpc(rpcEndpoint());
-    const client = new DeploymentClient(rpc);
-
-    return client.Deployments(QueryDeploymentsRequest.fromPartial({ pagination, filters }));
+  const [, { owner, state, dseq }] = params.queryKey;
+  const pagination = {
+    limit: 100,
   };
+  const filters = {
+    owner,
+    state,
+    dseq,
+  };
+  const deploymentCount = await fetchDeploymentCount({ owner: filters.owner }, rpcEndpoint());
+  if (deploymentCount > 100) {
+    pagination.limit = deploymentCount;
+  }
+  const rpc = await getRpc(rpcEndpoint());
+  const client = new DeploymentClient(rpc);
+
+  return client.Deployments(QueryDeploymentsRequest.fromPartial({ pagination, filters }));
+};
 
 export const fetchBidsList = async (
   filters: { owner: string; dseq: string },
@@ -182,7 +182,7 @@ export const watchLeaseLogs = async (address: string, provider: any, lease: any,
     dseq: lease.leaseId.dseq.low,
     gseq: lease.leaseId.gseq,
     oseq: lease.leaseId.oseq,
-  }
+  };
   const cert = await loadActiveCertificate(address);
   const url = serviceLogsPath(leaseId);
   const providerUri = new URL(provider.provider.hostUri);
@@ -298,7 +298,7 @@ export async function createDeployment(wallet: KeplrWallet, sdl: any, depositor:
   const status = await fetchRpcNodeStatus(rpcEndpoint());
 
   if (!signer) {
-    return Promise.reject("Unable to initialize signing client");
+    return Promise.reject('Unable to initialize signing client');
   }
 
   const client = await getMsgClient(rpcEndpoint(), signer);
@@ -340,7 +340,7 @@ export async function updateDeployment(wallet: KeplrWallet, deploymentId: any, s
 
   if (!signer) {
     return Promise.reject('Unable to initialize signing client');
-  };
+  }
 
   const client = await getMsgClient(rpcEndpoint(), signer);
   const ver = await ManifestVersion(sdl);

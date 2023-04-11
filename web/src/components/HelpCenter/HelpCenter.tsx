@@ -54,11 +54,11 @@ interface LargeCardComponentProps {
 const LargeCardComponent: React.FC<LargeCardComponentProps> = ({ internalLinks,footerLink,footerContent,header,footerLinkTitle }) => (
   <Card>
     <ContentBody>
-       {header}
+      {header}
     </ContentBody>
     {internalLinks.map((link, index) => (
       <React.Fragment key={index}>
-        <a href={link.link} target="_blank">
+        <a href={link.link} target="_blank" rel="noreferrer">
           <CardTitle2>
             {link.title}
             <OpenInNewIcon fontSize="inherit" style={{ color: 'rgba(0, 0, 0, 0.54)', fontSize: '0.875rem' }} />
@@ -69,12 +69,12 @@ const LargeCardComponent: React.FC<LargeCardComponentProps> = ({ internalLinks,f
     ))}
     <div style={{ padding: '4px' }}></div>
     <ContentBody>
-       {footerContent}
+      {footerContent}
     </ContentBody>
-    <a href={footerLink} target="_blank">
+    <a href={footerLink} target="_blank" rel="noreferrer">
       <CardTitle3>
-          {footerLinkTitle}
-          <OpenInNewIcon fontSize="inherit" style={{ color: 'rgba(0, 0, 0, 0.54)', fontSize: '0.875rem' }} />   
+        {footerLinkTitle}
+        <OpenInNewIcon fontSize="inherit" style={{ color: 'rgba(0, 0, 0, 0.54)', fontSize: '0.875rem' }} />   
 
       </CardTitle3>
     </a>
@@ -83,12 +83,12 @@ const LargeCardComponent: React.FC<LargeCardComponentProps> = ({ internalLinks,f
 );
 
 export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, contentData }) => {
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
-    return (
-      <>
-        <HelpCenterOverlay onClick={onClose} />
-        <HelpCenterWrapper>
+  return (
+    <>
+      <HelpCenterOverlay onClick={onClose} />
+      <HelpCenterWrapper>
         <HelpCenterTitle>
           Help Center
           <CloseButton onClick={onClose}>&times;</CloseButton>
@@ -123,7 +123,7 @@ export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, content
               default:
                 return (
                   <React.Fragment key={index}>
-                    <a target="_blank" href={item.link}>
+                    <a target="_blank" href={item.link} rel="noreferrer">
                       <Card>
                         <CardTitle>
                           {item.title}
@@ -142,21 +142,21 @@ export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, content
 
 
           <HelpCenterFooter>
-            <a href="https://forum.akash.network/" target="_blank">
-            <FooterEntry>Akash Forum</FooterEntry>
+            <a href="https://forum.akash.network/" target="_blank" rel="noreferrer">
+              <FooterEntry>Akash Forum</FooterEntry>
             </a>
-            <a href="https://docs.akash.network/" target="_blank">
-            <FooterEntry>Akash Docs</FooterEntry>
+            <a href="https://docs.akash.network/" target="_blank" rel="noreferrer">
+              <FooterEntry>Akash Docs</FooterEntry>
             </a>
-            <a href="https://discord.akash.network/" target="_blank">
-            <FooterEntry>Akash Discord</FooterEntry>
+            <a href="https://discord.akash.network/" target="_blank" rel="noreferrer">
+              <FooterEntry>Akash Discord</FooterEntry>
             </a>
-            <a href="https://akash.network/community/" target="_blank">
-            <FooterEntry>Contact Us</FooterEntry>
+            <a href="https://akash.network/community/" target="_blank" rel="noreferrer">
+              <FooterEntry>Contact Us</FooterEntry>
             </a>
           </HelpCenterFooter>
         </FooterWrapper>}
       </HelpCenterWrapper>
-      </>
-    );
+    </>
+  );
 };

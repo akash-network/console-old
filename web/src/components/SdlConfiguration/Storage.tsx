@@ -1,11 +1,11 @@
-import { FormControl, IconButton, MenuItem, Select, Tab, Tabs, Tooltip } from "@mui/material";
-import { Field, FieldArray } from "formik";
-import { MeasurementControl } from "../MeasurementControl";
-import React from "react";
-import styled from "@emotion/styled";
-import PlusIcon from "../../assets/images/plus-icon.svg";
-import Trash from "../../assets/images/icon-trash.svg";
-import { SDLSpec } from "./settings";
+import { FormControl, IconButton, MenuItem, Select, Tab, Tabs, Tooltip } from '@mui/material';
+import { Field, FieldArray } from 'formik';
+import { MeasurementControl } from '../MeasurementControl';
+import React from 'react';
+import styled from '@emotion/styled';
+import PlusIcon from '../../assets/images/plus-icon.svg';
+import Trash from '../../assets/images/icon-trash.svg';
+import { SDLSpec } from './settings';
 import {
   AddNewButton,
   AddNewButtonWrapper,
@@ -13,7 +13,7 @@ import {
   Input,
   SdlSectionWrapper,
   VariableWrapper
-} from "./styling";
+} from './styling';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -21,25 +21,25 @@ interface TabPanelProps {
   value: number;
 }
 
-const PlusSign = () => <img src={PlusIcon} alt="Plus Icon" />
-const TrashIcon = () => <img src={Trash} alt="Trash Icon" />
+const PlusSign = () => <img src={PlusIcon} alt="Plus Icon" />;
+const TrashIcon = () => <img src={Trash} alt="Trash Icon" />;
 
 const validateStorage = (value: any) => {
   let error;
-  let strippedValue = value?.slice(0, -2);
+  const strippedValue = value?.slice(0, -2);
   if (strippedValue && strippedValue <= 0) {
-    error = "Storage must be a positive value greater than zero";
+    error = 'Storage must be a positive value greater than zero';
   }
   return error;
-}
+};
 
 const validateStorageData = (value: any) => {
   let error;
   if (!value) {
-    error = "This value can't be blank";
+    error = 'This value can\'t be blank';
   }
   return error;
-}
+};
 
 type StorageProfile = {
   resources: {
@@ -69,10 +69,10 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
   return (
     <SdlSectionWrapper>
       <StorageType>Storage Type</StorageType>
-      <Tabs variant="fullWidth" value={value} onChange={handleChange} sx={{ marginBottom: "16px", borderBottom: "1px solid #D1D5DB" }}>
+      <Tabs variant="fullWidth" value={value} onChange={handleChange} sx={{ marginBottom: '16px', borderBottom: '1px solid #D1D5DB' }}>
         <Tab
           sx={{ textTransform: 'none' }}
-          label={`Ephemeral`}
+          label={'Ephemeral'}
           {...a11yProps(0)}
         />
         <Tab sx={{ textTransform: 'none' }} label="Persistent" {...a11yProps(1)} />
@@ -88,9 +88,9 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                   <FieldWrapper
                     key={`${currentProfile}-ephemeral-${index}`}
                     style={{
-                      display: "flex",
-                      columnGap: "10px",
-                      paddingBottom: "10px"
+                      display: 'flex',
+                      columnGap: '10px',
+                      paddingBottom: '10px'
                     }}
                   >
                     <Field
@@ -114,15 +114,15 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                     </Field>
                     {!disabled && (
                       <Tooltip
-                        title={storages.length === 1 && index === 0 && "This is your only storage, you have to have at least one to be able to deploy the SDL"}
+                        title={storages.length === 1 && index === 0 && 'This is your only storage, you have to have at least one to be able to deploy the SDL'}
                       >
                         <IconButton
                           sx={{
-                            background: "#FFFFFF",
-                            border: "1px solid #D1D5DB",
-                            boxShadow: "0px 1px 2px rgb(0 0 0 / 5%)",
-                            borderRadius: "6px",
-                            width: "46px"
+                            background: '#FFFFFF',
+                            border: '1px solid #D1D5DB',
+                            boxShadow: '0px 1px 2px rgb(0 0 0 / 5%)',
+                            borderRadius: '6px',
+                            width: '46px'
                           }}
                           onClick={() => {
                             // Remove selected ephemeral storage but only if it is not the only storage
@@ -146,7 +146,7 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                       onClick={() => arrayHelpers.insert(
                         (profiles.compute[currentProfile]?.resources.storage?.length + 1) ?? 0,
                         {
-                          size: "512Mi",
+                          size: '512Mi',
                         }
                       )}
                     >
@@ -200,16 +200,16 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                       >
                         {({ field }: any) => (
                           <FormControl fullWidth style={{
-                            background: "white", ...disabled && {
-                              backgroundColor: "#d7d7d73d",
-                              pointerEvents: "none"
+                            background: 'white', ...disabled && {
+                              backgroundColor: '#d7d7d73d',
+                              pointerEvents: 'none'
                             }
                           }}>
                             <Select
                               labelId="to-id"{...field}
                               SelectDisplayProps={{
                                 style: {
-                                  padding: "11.5px 14px",
+                                  padding: '11.5px 14px',
                                 }
                               }}
                             >
@@ -229,29 +229,36 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                       {!disabled && (
                         <IconButton
                           sx={{
-                            background: "#FFFFFF",
-                            border: "1px solid #D1D5DB",
-                            boxShadow: "0px 1px 2px rgb(0 0 0 / 5%)",
-                            borderRadius: "6px",
-                            width: "46px"
+                            background: '#FFFFFF',
+                            border: '1px solid #D1D5DB',
+                            boxShadow: '0px 1px 2px rgb(0 0 0 / 5%)',
+                            borderRadius: '6px',
+                            width: '46px'
                           }}
                           onClick={() => {
                             // Here we have to update parent sdl.services form and manipulate with service data bound to this persistent storage
                             const sdl = arrayHelpers.form.values.sdl as SDLSpec;
-                            const storage = sdl.services[serviceName]?.params?.storage;
+                            const storageParams = sdl.services[serviceName]?.params?.storage;
 
-                            if (storage) {
-                              const storages = Object.keys(storage);
-                              /* @ts-ignore */
-                              storages.forEach(key => key === storage?.name && delete sdl.services[serviceName].params.storage[key]);
+                            if (storageParams) {
+                              const storages = Object.keys(storageParams);
+
+                              // Remove the storage from service params
+                              for (const key of Object.keys(storageParams)) {
+                                if (key === storage?.name && storageParams[key]) {
+                                  delete storageParams[key];
+                                  break;
+                                }
+                              }
+
                               // -1 because we delete key after this loop
                               if ((storages.length - 1) === 0) {
-                                delete sdl.services[serviceName].params
+                                delete sdl.services[serviceName].params;
                               }
                             }
 
                             // Here we update the sdl in Formik state to propagate it down to all children
-                            arrayHelpers.form.setFieldValue("sdl", sdl);
+                            arrayHelpers.form.setFieldValue('sdl', sdl);
                             // Remove selected persistent storage
                             arrayHelpers.remove(index);
                           }}
@@ -259,9 +266,10 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                         >
                           <TrashIcon />
                         </IconButton>
-                      )}
+                      )
+                      }
                     </VariableWrapper>
-                  )
+                  );
                 })
               }
               {!disabled && (
@@ -274,11 +282,11 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                       arrayHelpers.insert(
                         (profiles.compute[currentProfile]?.resources.storage?.length + 1) ?? 0,
                         {
-                          size: "1Gi",
-                          name: "",
+                          size: '1Gi',
+                          name: '',
                           attributes: {
                             persistent: true,
-                            class: "beta1"
+                            class: 'beta1'
                           }
                         }
                       );
@@ -292,7 +300,7 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
           )}
         />
       </TabPanel>
-    </SdlSectionWrapper>
+    </SdlSectionWrapper >
   );
 };
 

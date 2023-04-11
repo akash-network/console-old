@@ -5,9 +5,9 @@ import { fetchBidsList } from '../recoil/api';
 import { Bid } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/bid';
 import styled from '@emotion/styled';
 import Loading from '../components/Loading';
-import { useQuery } from "react-query";
-import { WordSwitch } from "../components/Switch/WordSwitch";
-import { Timer } from "../components/Timer";
+import { useQuery } from 'react-query';
+import { WordSwitch } from '../components/Switch/WordSwitch';
+import { Timer } from '../components/Timer';
 import { PlaceholderCard } from '../components/PlaceholderCard';
 import { rpcEndpoint } from '../recoil/atoms';
 
@@ -19,7 +19,7 @@ export interface SelectProviderProps {
 const Title = styled.h2`
   display: inline-block;
   height: 1.75rem;
-`
+`;
 
 const sortingMethods = {
   random: {
@@ -32,7 +32,7 @@ const sortingMethods = {
         : 0
     ),
   }
-}
+};
 
 const filterMethods = {
   none: {
@@ -41,7 +41,7 @@ const filterMethods = {
   byAudit: {
     algorithm: (bid: any) => bid.auditStatus?.length > 0
   }
-}
+};
 
 export default function SelectProvider(
   {
@@ -51,7 +51,7 @@ export default function SelectProvider(
 
   // TODO: this should be moved into queries.ts
   const { data: bids } = useQuery(
-    ["bids", deploymentId],
+    ['bids', deploymentId],
     () => fetchBidsList(deploymentId, rpcEndpoint())
       .then((resp) => resp.bids
         .filter(resp => resp.bid !== undefined)
@@ -75,16 +75,16 @@ export default function SelectProvider(
   const selectProvider = (providerId: string) => (evt: React.MouseEvent) => {
     evt.preventDefault();
     setSelectedProvider(providerId);
-  }
+  };
 
   const toggleFilter: ChangeEventHandler<HTMLInputElement> = (evt) => {
     const checked = evt.target.checked;
-    setFilterMethod(checked ? filterMethods.byAudit : filterMethods.none)
-  }
+    setFilterMethod(checked ? filterMethods.byAudit : filterMethods.none);
+  };
 
   const handleTimerExpire = () => {
     setTimerExpired(true);
-  }
+  };
 
   return (<Stack className="container akt-card">
     <Box className="flex items-center justify-between mb-2 w-100">

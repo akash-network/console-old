@@ -11,9 +11,11 @@ export interface ProviderDetailsProps {
 }
 
 function attributeByName(attributes: any) {
-  return (key: string) => attributes[key] !== 'undefined'
-    ? attributes[key]
-    : <span>not found</span>;
+  return function AttributeByName(key: string) {
+    return attributes[key] !== 'undefined'
+      ? attributes[key]
+      : <span>not found</span>;
+  };
 }
 
 const ProviderDetails: React.FC<ProviderDetailsProps> = ({ providerId }) => {
@@ -31,10 +33,11 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({ providerId }) => {
 
   const AttributeValue = useMemo(() => {
     const attrValue = attributeByName(attributes);
-
-    return ({ name }: { name: string }) => (
+    const AttributeValue = ({ name }: { name: string }) => (
       <span>{attrValue(name)}</span>
     );
+
+    return AttributeValue;
   }, [attributes]);
 
   const goBack = () => navigate(-1);
@@ -96,7 +99,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({ providerId }) => {
       </Grid>
     </Grid >
   );
-}
+};
 
 export default ProviderDetails;
 
@@ -114,8 +117,8 @@ const Field = ({ label, children }: { label: string, children: React.ReactNode }
       <Typography color="#6B7280">{label}:</Typography>
       {children}
     </Stack>
-  </FieldContainer>
-}
+  </FieldContainer>;
+};
 
 const Attribute = ({ label, children }: { label: string, children: any }) => {
   return <AttributeContainer>
@@ -123,8 +126,8 @@ const Attribute = ({ label, children }: { label: string, children: any }) => {
       <Typography width="18rem">{label[0].toUpperCase() + label.slice(1)}:</Typography>
       {children}
     </Stack>
-  </AttributeContainer>
-}
+  </AttributeContainer>;
+};
 
 const FieldContainer = styled.div`
   padding: 9px 13px;

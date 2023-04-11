@@ -1,6 +1,6 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
-import { Button } from "@mui/material";
+import styled from '@emotion/styled';
+import { css } from '@emotion/react';
+import { Button } from '@mui/material';
 
 export const FieldWrapper = styled.div`
   position: relative;
@@ -10,7 +10,7 @@ export const FieldWrapper = styled.div`
 export const Input = styled.input<{ error?: boolean }>`
   padding: 10px 16px;
   gap: 8px;
-  border: 1px solid ${(props: { error?: boolean }) => props?.error ? "red" : "#D7D7D7"};
+  border: 1px solid ${(props: { error?: boolean }) => props?.error ? 'red' : '#D7D7D7'};
   border-radius: 6px;
   font-weight: 500;
   

@@ -22,10 +22,10 @@ function formatPorts(services: Record<string, Array<{ externalPort: string, port
       .map((service) => (
         service.map(rule => `${rule.externalPort}: ${rule.port}`)
       ))
-      .join("");
+      .join('');
   }
 
-  return "";
+  return '';
 }
 
 export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus }) => {
@@ -37,7 +37,7 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus 
   const [details, setDetails] = React.useState<Array<LabeledValue>>([]);
   const [capacity, setCapacity] = React.useState<Array<LabeledValue>>([]);
   const [, setInfo] = React.useState<Array<LabeledValue>>([]);
-  const { data: provider } = useQuery(['providerInfo', lease?.lease?.leaseId?.provider], queryProviderInfo)
+  const { data: provider } = useQuery(['providerInfo', lease?.lease?.leaseId?.provider], queryProviderInfo);
   const attributes = provider?.provider?.attributes as any;
 
   const applicationCache = localStorage.getItem(dseq);

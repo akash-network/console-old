@@ -1,18 +1,18 @@
-import React from "react";
-import { BaseAtomComponent } from "./basecomponent";
+import React from 'react';
+import { BaseAtomComponent } from './basecomponent';
 
 import {
   QueryCertificatesRequest,
   QueryCertificatesResponse,
   QueryClientImpl,
-} from "@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/query";
-import { getMsgClient, getRpc } from "@akashnetwork/akashjs/build/rpc";
+} from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/query';
+import { getMsgClient, getRpc } from '@akashnetwork/akashjs/build/rpc';
 import {
   broadcastCertificate,
   createCertificate,
   revokeCertificate
-} from "@akashnetwork/akashjs/build/certificates";
-import crypto from "crypto-js";
+} from '@akashnetwork/akashjs/build/certificates';
+import crypto from 'crypto-js';
 
 export interface CertificateFilter {
   owner: string;
@@ -21,7 +21,7 @@ export interface CertificateFilter {
 }
 
 export interface TLSCertificate {
-  $type: "TLS Certificate";
+  $type: 'TLS Certificate';
   serial: number;
   csr: string;
   publicKey: string;
@@ -29,7 +29,7 @@ export interface TLSCertificate {
 }
 
 export interface NoCertificate {
-  $type: "Invalid Certificate";
+  $type: 'Invalid Certificate';
 }
 
 export interface CertificateRecord {
@@ -55,7 +55,7 @@ export const createAndBroadcastCertificate = async (rpcEndpoint: string, wallet:
   saveActiveSerial(wallet.accounts[0].address, idx);
 
   return { ...response, certificate: { $type: 'TLS Certificate', ...certificate } as TLSCertificate };
-}
+};
 
 export const broadcastRevokeCertificate = async (rpcEndpoint: string, wallet: any, certSerial: string) => {
   const signer = wallet.offlineSigner;
@@ -66,7 +66,7 @@ export const broadcastRevokeCertificate = async (rpcEndpoint: string, wallet: an
     certSerial,
     client
   );
-}
+};
 
 export const fetchCertificates = async (filter: CertificateFilter, rpcEndpoint: string) => {
   const request: any = QueryCertificatesRequest.fromPartial({ filter });
@@ -81,7 +81,7 @@ export const fetchCertificates = async (filter: CertificateFilter, rpcEndpoint: 
   }
 
   return response;
-}
+};
 
 export const getActiveSerial = (walletId: string) => {
   const key = `active-certificate-serial-${walletId}`;
@@ -92,7 +92,7 @@ export const getActiveSerial = (walletId: string) => {
     : 0;
 
   return index as number;
-}
+};
 
 export const loadCertificates = (walletId?: string) => {
   const raw = localStorage.getItem('certificates');
@@ -101,7 +101,7 @@ export const loadCertificates = (walletId?: string) => {
     : []) as Array<CertificateRecord>;
 
   return certs.filter(cert => walletId === undefined || cert.walletId === walletId);
-}
+};
 
 export const getCertificateByIndex = (walletId: string, index: number): TLSCertificate | NoCertificate => {
   const certificates = loadCertificates(walletId);
@@ -110,7 +110,7 @@ export const getCertificateByIndex = (walletId: string, index: number): TLSCerti
   return cert !== undefined
     ? { $type: 'TLS Certificate', ...decodeCertificate(cert.cypher) }
     : { $type: 'Invalid Certificate' };
-}
+};
 
 export const loadActiveCertificate = async (walletId?: string) => {
   if (!walletId) {
@@ -121,7 +121,7 @@ export const loadActiveCertificate = async (walletId?: string) => {
 
   const activeSerial = getActiveSerial(walletId);
   return getCertificateByIndex(walletId, activeSerial);
-}
+};
 
 export const migrateCertificates = (walletId: string) => {
   const rawLastCert = localStorage.getItem('last-created-certificate');
@@ -131,11 +131,11 @@ export const migrateCertificates = (walletId: string) => {
   const lastCert = JSON.parse(rawLastCert);
   const idx = saveCertificate(walletId, lastCert);
   saveActiveSerial(walletId, idx);
-}
+};
 
 export const saveActiveSerial = (walletId: string, idx: number) => {
-  localStorage.setItem(`active-certificate-serial-${walletId}`, JSON.stringify(idx))
-}
+  localStorage.setItem(`active-certificate-serial-${walletId}`, JSON.stringify(idx));
+};
 
 export const saveCertificate = (walletId: string, certificate: any) => {
   const hash = crypto.SHA256(JSON.stringify(certificate)).toString();
@@ -145,7 +145,7 @@ export const saveCertificate = (walletId: string, certificate: any) => {
   const certificateMap = Object.fromEntries([
     ...certificateList.map(cert => ([cert.hash, cert])),
     [hash, { walletId, hash, cypher }]
-  ])
+  ]);
 
   const certSet = new Set(Object.keys(certificateMap));
   const marshaledCerts = [...certSet].map(hash => certificateMap[hash]);
@@ -153,10 +153,10 @@ export const saveCertificate = (walletId: string, certificate: any) => {
   localStorage.setItem(
     'certificates',
     JSON.stringify(marshaledCerts)
-  )
+  );
 
   return marshaledCerts.findIndex(cert => cert.hash === hash);
-}
+};
 
 // Returns a list of the public keys for all available certificates
 // for the provided wallet account
@@ -167,7 +167,7 @@ export const getAvailableCertificates = (walletId: string) => {
     .map(cert => cert.cypher)
     .map(decodeCertificate)
     .map(cert => cert.publicKey);
-}
+};
 
 // DANGER: Be very careful modifying this function, as it will
 // make all existing certificates unavailable.
@@ -182,11 +182,11 @@ const loadOrCreateHostKey = () => {
   localStorage.setItem('host-key', key);
 
   return key;
-}
+};
 
 const encryptionKey = (): string => {
   return loadOrCreateHostKey();
-}
+};
 
 const encodeCertificate = (certificate: object): string => {
   const secret = encryptionKey();
@@ -195,14 +195,14 @@ const encodeCertificate = (certificate: object): string => {
   const cypher = crypto.AES.encrypt(msg, secret).toString();
 
   return cypher;
-}
+};
 
 const decodeCertificate = (cypher: string): Omit<TLSCertificate, '$type'> => {
   const secret = encryptionKey();
   const strval = crypto.AES.decrypt(cypher, secret).toString(crypto.enc.Utf8);
 
   return JSON.parse(strval) as TLSCertificate;
-}
+};
 
 export const CertificatesListFetch = (props?: {
   owner?: string;
@@ -213,9 +213,9 @@ export const CertificatesListFetch = (props?: {
   const doWork = async ({ rpcEndpoint }: any) => {
     const request: any = QueryCertificatesRequest.fromJSON({
       filters: {
-        owner: props?.owner || "",
-        serial: props?.serial || "",
-        state: props?.state || "",
+        owner: props?.owner || '',
+        serial: props?.serial || '',
+        state: props?.state || '',
       },
     });
 

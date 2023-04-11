@@ -1,10 +1,10 @@
 import { editor, Uri } from 'monaco-editor';
-import styled from "@emotion/styled";
-import React, { useEffect, useRef } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import { setDiagnosticsOptions } from "monaco-yaml";
-import yaml, { YAMLException } from "js-yaml";
-import ArrowRight from "../../assets/images/icon-right.svg";
+import styled from '@emotion/styled';
+import React, { useEffect, useRef } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { setDiagnosticsOptions } from 'monaco-yaml';
+import yaml, { YAMLException } from 'js-yaml';
+import ArrowRight from '../../assets/images/icon-right.svg';
 import { isSDLSpec, SDLSpec } from '../SdlConfiguration/settings';
 import logging from '../../logging';
 
@@ -24,7 +24,7 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
   {
     value, open, appName, closeReviewModal, onSaveButtonClick, disabled
   }) => {
-  const comment = "#Copy and paste your SDL here";
+  const comment = '#Copy and paste your SDL here';
   const editorRef = useRef<HTMLDivElement>(null);
   const [isEditorEmpty, setIsEditorEmpty] = React.useState(true);
 
@@ -41,16 +41,19 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
   }
 
   useEffect(() => {
-    if (open && document.getElementById("editor")) {
+    if (open && document.getElementById('editor')) {
       const existingModel = editor.getModel(modelUri);
       // If value is empty it will be "{}\n" and we will show the comment to the user to paste the value
-      const valueToShow = value === "{}\n" ? comment : value;
+      const valueToShow = value === '{}\n' ? comment : value;
+
       if (existingModel) {
         existingModel.setValue(valueToShow);
-        // @ts-ignore
-        existingModel.updateOptions({ readOnly: disabled });
+        // readOnly is not officially supported by updateOptions
+        // but seems to work, so... ¯\_(ツ)_/¯
+        existingModel.updateOptions({ readOnly: disabled } as any);
       }
-      const model = existingModel || editor.createModel(valueToShow, "yaml", modelUri);
+
+      const model = existingModel || editor.createModel(valueToShow, 'yaml', modelUri);
 
       if (editorRef.current) {
         editor.create(editorRef.current, {
@@ -61,11 +64,11 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
             enabled: false
           },
           readOnly: disabled,
-          theme: "vs-dark"
+          theme: 'vs-dark'
         });
       }
     }
-  }, [open, value])
+  }, [open, value]);
 
   return (
     <EditorDialog
@@ -74,8 +77,8 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
       onClose={closeReviewModal}
       PaperProps={{
         sx: {
-          maxWidth: "100%",
-          maxHeight: "100%",
+          maxWidth: '100%',
+          maxHeight: '100%',
           borderRadius: 4
         }
       }}
@@ -85,10 +88,10 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
         sx={{
           m: 0,
           bgcolor: '#272727',
-          color: "white",
-          borderBottom: "1px solid #858A92",
+          color: 'white',
+          borderBottom: '1px solid #858A92',
           fontSize: 0,
-          display: "flex"
+          display: 'flex'
         }}>
         {appName && <DialogTitleText>{appName}</DialogTitleText>}
         <DialogTitleReview>
@@ -101,15 +104,15 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
       </DialogContent>
       <DialogActions sx={{
         bgcolor: '#272727',
-        borderTop: "1px solid #858A92",
-        padding: "20px 10px"
+        borderTop: '1px solid #858A92',
+        padding: '20px 10px'
       }}>
         {!disabled && (
           <SaveAndCloseButton
             variant="outlined"
             size="small"
             onClick={() => {
-              closeReviewModal()
+              closeReviewModal();
               setIsEditorEmpty(true);
             }}
           >
@@ -129,7 +132,7 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
               const valueFromEditor = editor.getModel(modelUri)?.getValue();
 
               if (valueFromEditor === undefined) {
-                logging.error("Unable to get SDL value from form. Please return to the previous page and try again.");
+                logging.error('Unable to get SDL value from form. Please return to the previous page and try again.');
                 return false;
               }
 
@@ -139,15 +142,16 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
                 onSaveButtonClick(sdl);
                 closeReviewModal();
               } else {
-                logging.error("SDL is invalid. Please check the SDL and try again.")
+                logging.error('SDL is invalid. Please check the SDL and try again.');
               }
             } catch (e: unknown) {
               logging.error(`Cannot parse SDL: ${(e as YAMLException).message}}`);
             }
           }}
         >
-          {disabled ? "Close" : "Save & Close"}
-        </SaveAndCloseButton>}
+          {disabled ? 'Close' : 'Save & Close'}
+        </SaveAndCloseButton>
+        }
       </DialogActions>
     </EditorDialog >
   );

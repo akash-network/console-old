@@ -22,7 +22,7 @@ export interface KeplrWallet {
 export const rpcEndpointBase = 'https://rpc.ny.akash.farm/token/TBWM93ZB';
 export const rpcEndpointURL = new URL(rpcEndpointBase);
 export const rpcProxyEndpoint = (
-  `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${rpcEndpointURL.port || "443"}${rpcEndpointURL.pathname}`
+  `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${rpcEndpointURL.port || '443'}${rpcEndpointURL.pathname}`
 );
 
 // Located in this file for backwards compatibility
@@ -40,7 +40,7 @@ export const keplrState = atom<KeplrWallet>({
     accounts: [] as AccountData[],
     offlineSigner: undefined,
     cosmosClient: undefined,
-    isSignedIn: JSON.parse(localStorage.walletConnected || "false"),
+    isSignedIn: JSON.parse(localStorage.walletConnected || 'false'),
     file: '',
   },
 });
@@ -98,9 +98,9 @@ export const myDeployments = atom({
 export const showKeplrWindow = atom({
   key: 'ShowKeplrWindow',
   default: false
-})
+});
 
 export const deploymentDataStale = atom({
   key: 'DeploymentDataStale',
   default: false
-})
+});

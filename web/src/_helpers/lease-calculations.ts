@@ -31,7 +31,7 @@ export function ceilDecimal(value: number) {
 }
 
 export function getAvgCostPerMonth(leasePriceAmount: number, priceData: number) {
-  const price = uaktToAKT(leasePriceAmount, 6)
+  const price = uaktToAKT(leasePriceAmount, 6);
   const averagePrice = price * (60 / averageBlockTimeInSeconds) * 60 * 24 * averageDaysInMonth;
 
   const _value = parseFloat(averagePrice.toString()) * priceData;
@@ -74,4 +74,4 @@ export function leaseCalculator(deployment: Deployment | undefined, escrowAccoun
     spentUsd,
     timeLeft,
   };
-};
+}

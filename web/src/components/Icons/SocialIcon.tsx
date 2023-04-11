@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-export const IconDiscord: React.FC<{}> = () => {
+export const IconDiscord: React.FC<Record<string, never>> = () => {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_1876_26691)">
@@ -23,7 +23,7 @@ export const IconDiscord: React.FC<{}> = () => {
   );
 };
 
-export const IconFacebook: React.FC<{}> = () => {
+export const IconFacebook: React.FC<Record<string, never>> = () => {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_1876_26706)">
@@ -43,7 +43,7 @@ export const IconFacebook: React.FC<{}> = () => {
   );
 };
 
-export const IconForum: React.FC<{}> = () => {
+export const IconForum: React.FC<Record<string, never>> = () => {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_1876_26687)">
@@ -63,7 +63,7 @@ export const IconForum: React.FC<{}> = () => {
   );
 };
 
-export const IconInstagram: React.FC<{}> = () => {
+export const IconInstagram: React.FC<Record<string, never>> = () => {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -82,7 +82,7 @@ export const IconInstagram: React.FC<{}> = () => {
   );
 };
 
-export const IconLinkedIn: React.FC<{}> = () => {
+export const IconLinkedIn: React.FC<Record<string, never>> = () => {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -95,7 +95,7 @@ export const IconLinkedIn: React.FC<{}> = () => {
   );
 };
 
-export const IconReddit: React.FC<{}> = () => {
+export const IconReddit: React.FC<Record<string, never>> = () => {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_1876_26693)">
@@ -113,7 +113,7 @@ export const IconReddit: React.FC<{}> = () => {
   );
 };
 
-export const IconTelegram: React.FC<{}> = () => {
+export const IconTelegram: React.FC<Record<string, never>> = () => {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_1876_26699)">
@@ -133,7 +133,7 @@ export const IconTelegram: React.FC<{}> = () => {
   );
 };
 
-export const IconTwitter: React.FC<{}> = () => {
+export const IconTwitter: React.FC<Record<string, never>> = () => {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_1876_26685)">
@@ -151,7 +151,7 @@ export const IconTwitter: React.FC<{}> = () => {
   );
 };
 
-export const IconYoutube: React.FC<{}> = () => {
+export const IconYoutube: React.FC<Record<string, never>> = () => {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_1876_26695)">
@@ -171,7 +171,7 @@ export const IconYoutube: React.FC<{}> = () => {
   );
 };
 
-export const IconGitHub: React.FC<{}> = () => {
+export const IconGitHub: React.FC<Record<string, never>> = () => {
   return (
     <svg width="17" height="17" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -181,7 +181,7 @@ export const IconGitHub: React.FC<{}> = () => {
   );
 };
 
-export const IconWebsite: React.FC<{}> = () => {
+export const IconWebsite: React.FC<Record<string, never>> = () => {
   return (
     <svg width="17" height="17" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fillRule="evenodd" clipRule="evenodd"
@@ -191,7 +191,7 @@ export const IconWebsite: React.FC<{}> = () => {
   );
 };
 
-export const IconDocs: React.FC<{}> = () => {
+export const IconDocs: React.FC<Record<string, never>> = () => {
   return (
     <svg width="11" height="15" viewBox="0 0 9 13" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fillRule="evenodd" clipRule="evenodd"
@@ -200,7 +200,7 @@ export const IconDocs: React.FC<{}> = () => {
     </svg>
 
   );
-}
+};
 
 export interface SocialIconProps {
   socialNetwork: string;
@@ -211,84 +211,84 @@ export default function SocialIcon(props: SocialIconProps) {
   const { socialNetwork, url } = props;
   if (socialNetwork === 'discord') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconDiscord /> <SocialTitle>Discord</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'facebook') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconFacebook /> <SocialTitle>Facebook</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'forum') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconForum /> <SocialTitle>Forum</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'instagram') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconInstagram /> <SocialTitle>Instagram</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'linkedin') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconLinkedIn /> <SocialTitle>LinkedIn</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'reddit') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconReddit /> <SocialTitle>Reddit</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'telegram') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconTelegram /> <SocialTitle>Telegram</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'twitter') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconTwitter /> <SocialTitle>Twitter</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'youtube') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconYoutube /> <SocialTitle>YouTube</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'sdlRepo') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconGitHub /> <SocialTitle>GitHub Repo</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'webpage') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconWebsite /> <SocialTitle>Website</SocialTitle>
       </a>
     );
   }
   if (socialNetwork === 'docs') {
     return (
-      <a className="flex" href={url} target="_blank" rel="noopener">
+      <a className="flex" href={url} target="_blank" rel="noopener noreferrer">
         <IconDocs /> <SocialTitle>Docs</SocialTitle>
       </a>
     );

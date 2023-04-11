@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import { SDLSpec } from '../components/SdlConfiguration/settings';
 
 type Application = {
@@ -19,9 +19,9 @@ function useAppCache(dseq: string | undefined) {
       : null;
 
     setApplication(app);
-  }, [dseq])
+  }, [dseq]);
 
   return application;
 }
 
-export default useAppCache
+export default useAppCache;

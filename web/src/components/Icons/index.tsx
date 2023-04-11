@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const IconLogoConsole: React.FC<{}> = () => {
+export const IconLogoConsole: React.FC<Record<string, never>> = () => {
   return (
     <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -13,7 +13,7 @@ export const IconLogoConsole: React.FC<{}> = () => {
   );
 };
 
-export const IconLogoAkash: React.FC<{}> = (props) => {
+export const IconLogoAkash: React.FC<Record<string, never>> = (props) => {
   return (
     <svg width="29" height="24" viewBox="0 0 29 25" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -45,7 +45,7 @@ export const IconLogoAkash: React.FC<{}> = (props) => {
   );
 };
 
-export const IconLogoAkashConsole: React.FC<{}> = () => {
+export const IconLogoAkashConsole: React.FC<Record<string, never>> = () => {
   return <svg width="210" height="21" viewBox="0 0 210 21" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M14.5278 13.6975L18.115 20.0068H10.8689L7.2439 13.6975H14.5278Z" fill="url(#paint0_linear_2324_89781)" />
     <path d="M18.1131 20.0079L21.7321 13.6986L14.488 1.07706H7.2439L18.1131 20.0079Z" fill="#FA5757" />
@@ -85,11 +85,11 @@ export const IconLogoAkashConsole: React.FC<{}> = () => {
         <stop offset="1" stopColor="#FA5757" stopOpacity="0.127613" />
       </linearGradient>
     </defs>
-  </svg>
+  </svg>;
 
-}
+};
 
-export const IconWallet: React.FC<{}> = () => {
+export const IconWallet: React.FC<Record<string, never>> = () => {
   return (
     <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -108,7 +108,7 @@ export const IconWallet: React.FC<{}> = () => {
   );
 };
 
-export const IconLoading: React.FC<{}> = () => {
+export const IconLoading: React.FC<Record<string, never>> = () => {
   return (
     <svg width="59" height="59" viewBox="0 0 59 59" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle
@@ -127,15 +127,15 @@ export const IconLoading: React.FC<{}> = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(29.5 29.5) rotate(90) scale(29.5)"
         >
-          <stop stop-color="#D6D6D6" />
-          <stop offset="1" stop-color="#090808" />
+          <stop stopColor="#D6D6D6" />
+          <stop offset="1" stopColor="#090808" />
         </radialGradient>
       </defs>
     </svg>
   );
 };
 
-export const IconMoney: React.FC<{}> = () => {
+export const IconMoney: React.FC<Record<string, never>> = () => {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -149,7 +149,7 @@ export const IconMoney: React.FC<{}> = () => {
   );
 };
 
-export const IconTrash: React.FC<{}> = () => {
+export const IconTrash: React.FC<Record<string, never>> = () => {
   return (
     <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -163,7 +163,7 @@ export const IconTrash: React.FC<{}> = () => {
   );
 };
 
-export const IconClone: React.FC<{}> = () => {
+export const IconClone: React.FC<Record<string, never>> = () => {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -184,7 +184,7 @@ export const IconClone: React.FC<{}> = () => {
   );
 };
 
-export const IconLink: React.FC<{}> = () => {
+export const IconLink: React.FC<Record<string, never>> = () => {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -198,7 +198,7 @@ export const IconLink: React.FC<{}> = () => {
   );
 };
 
-export const IconLinkChain: React.FC<{}> = () => {
+export const IconLinkChain: React.FC<Record<string, never>> = () => {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -213,7 +213,7 @@ export const IconLinkChain: React.FC<{}> = () => {
   );
 };
 
-export const IconUpdate: React.FC<{}> = () => {
+export const IconUpdate: React.FC<Record<string, never>> = () => {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -227,7 +227,7 @@ export const IconUpdate: React.FC<{}> = () => {
   );
 };
 
-export const IconSuccess: React.FC<{}> = () => {
+export const IconSuccess: React.FC<Record<string, never>> = () => {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -241,7 +241,7 @@ export const IconSuccess: React.FC<{}> = () => {
   );
 };
 
-export const IconClose: React.FC<{}> = () => {
+export const IconClose: React.FC<Record<string, never>> = () => {
   return (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -254,7 +254,7 @@ export const IconClose: React.FC<{}> = () => {
   );
 };
 
-export const IconDeployments: React.FC<{}> = () => {
+export const IconDeployments: React.FC<Record<string, never>> = () => {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -268,7 +268,7 @@ export const IconDeployments: React.FC<{}> = () => {
   );
 };
 
-export const IconSearch: React.FC<{}> = () => {
+export const IconSearch: React.FC<Record<string, never>> = () => {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -282,7 +282,7 @@ export const IconSearch: React.FC<{}> = () => {
   );
 };
 
-export const IconProviders: React.FC<{}> = () => {
+export const IconProviders: React.FC<Record<string, never>> = () => {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -317,7 +317,7 @@ export const IconProviders: React.FC<{}> = () => {
   );
 };
 
-export const IconSettings: React.FC<{}> = () => {
+export const IconSettings: React.FC<Record<string, never>> = () => {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -338,7 +338,7 @@ export const IconSettings: React.FC<{}> = () => {
   );
 };
 
-export const IconHelp: React.FC<{}> = () => {
+export const IconHelp: React.FC<Record<string, never>> = () => {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -352,7 +352,7 @@ export const IconHelp: React.FC<{}> = () => {
   );
 };
 
-export const IconConsole: React.FC<{}> = () => {
+export const IconConsole: React.FC<Record<string, never>> = () => {
   return (
     <svg width="69" height="16" viewBox="0 0 69 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -384,7 +384,7 @@ export const IconConsole: React.FC<{}> = () => {
   );
 };
 
-export const IconOverclock: React.FC<{}> = () => {
+export const IconOverclock: React.FC<Record<string, never>> = () => {
   return (
     <svg width="87" height="16" viewBox="0 0 87 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -424,7 +424,7 @@ export const IconOverclock: React.FC<{}> = () => {
   );
 };
 
-export const IconShare: React.FC<{}> = () => {
+export const IconShare: React.FC<Record<string, never>> = () => {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -438,7 +438,7 @@ export const IconShare: React.FC<{}> = () => {
   );
 };
 
-export const IconCheckEssentials: React.FC<{}> = () => {
+export const IconCheckEssentials: React.FC<Record<string, never>> = () => {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="40" height="40" rx="20" fill="#F0F3F8" />
@@ -449,7 +449,7 @@ export const IconCheckEssentials: React.FC<{}> = () => {
   );
 };
 
-export const IconCheckVerified: React.FC<{}> = () => {
+export const IconCheckVerified: React.FC<Record<string, never>> = () => {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="40" height="40" rx="20" fill="#ECFDF5" />
@@ -463,7 +463,7 @@ export const IconCheckVerified: React.FC<{}> = () => {
   );
 };
 
-export const IconAlert: React.FC<{}> = () => {
+export const IconAlert: React.FC<Record<string, never>> = () => {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="40" height="40" rx="20" fill="#FEE2E2" />
@@ -478,7 +478,7 @@ export const IconAlert: React.FC<{}> = () => {
   );
 };
 
-export const IconInfoGray: React.FC<{}> = () => {
+export const IconInfoGray: React.FC<Record<string, never>> = () => {
   return (
     <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -491,7 +491,7 @@ export const IconInfoGray: React.FC<{}> = () => {
   );
 };
 
-export const IconEdit: React.FC<{}> = () => {
+export const IconEdit: React.FC<Record<string, never>> = () => {
   return (
     <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -505,7 +505,7 @@ export const IconEdit: React.FC<{}> = () => {
   );
 };
 
-export const IconRedeploy: React.FC<{}> = () => {
+export const IconRedeploy: React.FC<Record<string, never>> = () => {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -519,7 +519,7 @@ export const IconRedeploy: React.FC<{}> = () => {
   );
 };
 
-export const IconNewDeployment: React.FC<{}> = () => {
+export const IconNewDeployment: React.FC<Record<string, never>> = () => {
   return <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M18 26H30H18ZM24 20V32V20ZM6 34V14C6 12.9391 6.42143 11.9217 7.17157 11.1716C7.92172 10.4214 8.93913 10 10 10H22L26 14H38C39.0609 14 40.0783 14.4214 40.8284 15.1716C41.5786 15.9217 42 16.9391 42 18V34C42 35.0609 41.5786 36.0783 40.8284 36.8284C40.0783 37.5786 39.0609 38 38 38H10C8.93913 38 7.92172 37.5786 7.17157 36.8284C6.42143 36.0783 6 35.0609 6 34Z"
@@ -528,10 +528,10 @@ export const IconNewDeployment: React.FC<{}> = () => {
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-  </svg>
-}
+  </svg>;
+};
 
-export const IconAdd: React.FC<{}> = () => {
+export const IconAdd: React.FC<Record<string, never>> = () => {
   return <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       fillRule="evenodd"
@@ -539,7 +539,7 @@ export const IconAdd: React.FC<{}> = () => {
       d="M10.5 3C11.0523 3 11.5 3.44772 11.5 4V9H16.5C17.0523 9 17.5 9.44772 17.5 10C17.5 10.5523 17.0523 11 16.5 11H11.5V16C11.5 16.5523 11.0523 17 10.5 17C9.94772 17 9.5 16.5523 9.5 16V11H4.5C3.94772 11 3.5 10.5523 3.5 10C3.5 9.44771 3.94772 9 4.5 9L9.5 9V4C9.5 3.44772 9.94772 3 10.5 3Z"
       fill="white"
     />
-  </svg>
+  </svg>;
 };
 
 const iconMap = {

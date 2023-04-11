@@ -32,7 +32,7 @@ export const Address: React.FC<AddressProps> = (props) => {
 
   const handleClick = (fullAddress: string) => {
     navigator.clipboard.writeText(fullAddress);
-    setMessage(`Copied to clipboard!`);
+    setMessage('Copied to clipboard!');
     setOpen(true);
   };
 
@@ -41,7 +41,7 @@ export const Address: React.FC<AddressProps> = (props) => {
   };
 
   if (typeof address !== 'string') {
-    return <></>
+    return <></>;
   }
 
   return (

@@ -1,19 +1,19 @@
-import { Field, FieldArray } from "formik";
-import { IconButton } from "@mui/material";
-import React from "react";
-import PlusIcon from "../../assets/images/plus-icon.svg";
-import Trash from "../../assets/images/icon-trash.svg";
-import styled from "@emotion/styled";
+import { Field, FieldArray } from 'formik';
+import { IconButton } from '@mui/material';
+import React from 'react';
+import PlusIcon from '../../assets/images/plus-icon.svg';
+import Trash from '../../assets/images/icon-trash.svg';
+import styled from '@emotion/styled';
 import {
   AddNewButton,
   AddNewButtonWrapper,
   Input,
   SdlSectionWrapper,
   VariableWrapper
-} from "./styling";
+} from './styling';
 
-const PlusSign = () => <img src={PlusIcon} alt="Plus Icon" />
-const TrashIcon = () => <img src={Trash} alt="Trash Icon" />
+const PlusSign = () => <img src={PlusIcon} alt="Plus Icon" />;
+const TrashIcon = () => <img src={Trash} alt="Trash Icon" />;
 
 type Service = {
   env: Array<string>
@@ -40,9 +40,9 @@ export const EnvironmentVariable: React.FC<EnvironmentVariableProps> = ({ servic
                     <React.Fragment>
                       <InputField
                         disabled={disabled}
-                        value={field.value.split("=")[0]}
+                        value={field.value.split('=')[0]}
                         onChange={({ currentTarget }) => {
-                          return arrayHelpers.replace(index, `${currentTarget.value}=`)
+                          return arrayHelpers.replace(index, `${currentTarget.value}=`);
                         }}
                       />
                     </React.Fragment>
@@ -52,11 +52,11 @@ export const EnvironmentVariable: React.FC<EnvironmentVariableProps> = ({ servic
                   {({ field }: { field: { value: string } }) => (
                     <InputField
                       disabled={disabled}
-                      value={field.value.split("=")[1]}
+                      value={field.value.split('=')[1]}
                       onChange={({ currentTarget }) => {
-                        const name = field.value.split("=")[0];
+                        const name = field.value.split('=')[0];
                         const value = currentTarget.value;
-                        return arrayHelpers.replace(index, `${name}=${value}`)
+                        return arrayHelpers.replace(index, `${name}=${value}`);
                       }}
                     />
                   )}
@@ -64,11 +64,11 @@ export const EnvironmentVariable: React.FC<EnvironmentVariableProps> = ({ servic
                 {!disabled && (
                   <IconButton
                     sx={{
-                      background: "#FFFFFF",
-                      border: "1px solid #D1D5DB",
-                      boxShadow: "0px 1px 2px rgb(0 0 0 / 5%)",
-                      borderRadius: "6px",
-                      width: "46px"
+                      background: '#FFFFFF',
+                      border: '1px solid #D1D5DB',
+                      boxShadow: '0px 1px 2px rgb(0 0 0 / 5%)',
+                      borderRadius: '6px',
+                      width: '46px'
                     }}
                     onClick={() => arrayHelpers.remove(index)}
                     aria-label="Delete environment variable"

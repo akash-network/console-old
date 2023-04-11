@@ -1,8 +1,8 @@
-import { Field } from "formik";
-import { ErrorMessageComponent } from "../ErrorMessage";
-import React from "react";
-import styled from "@emotion/styled";
-import { FieldWrapper, Input } from "./styling";
+import { Field } from 'formik';
+import { ErrorMessageComponent } from '../ErrorMessage';
+import React from 'react';
+import styled from '@emotion/styled';
+import { FieldWrapper, Input } from './styling';
 
 const validatePricing = (value: any) => {
   let error;
@@ -10,7 +10,7 @@ const validatePricing = (value: any) => {
     error = 'Pricing can"t be 0, you have to add positive number only';
   }
   return error;
-}
+};
 
 type PricingAmount = {
   amount: number;

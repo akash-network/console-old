@@ -1,5 +1,6 @@
-import { Endpoint } from "@akashnetwork/akashjs/build/protobuf/akash/base/v1beta2/endpoint";
-import { Attribute } from "@akashnetwork/akashjs/build/protobuf/akash/base/v1beta2/attribute";
+import { Endpoint } from '@akashnetwork/akashjs/build/protobuf/akash/base/v1beta2/endpoint';
+import { Attribute } from '@akashnetwork/akashjs/build/protobuf/akash/base/v1beta2/attribute';
+import { v2Sdl } from '@akashnetwork/akashjs/build/sdl/types';
 
 export interface InitialValuesProps {
   folderName?: string | undefined,
@@ -16,15 +17,15 @@ export interface Template {
 
 export const initialValues: InitialValuesProps = {
   folderName: undefined,
-  appName: "",
+  appName: '',
   sdl: undefined,
   depositor: undefined,
-}
+};
 
 export enum SdlConfigurationType {
-  Create = "Create",
-  Update = "Update",
-  ReDeploy = "ReDeploy"
+  Create = 'Create',
+  Update = 'Update',
+  ReDeploy = 'ReDeploy'
 }
 
 export interface Service {
@@ -47,7 +48,7 @@ export interface ServiceExpose {
   Hosts: string[] | null;
 }
 
-export type ServiceProtocol = "TCP" | "UDP";
+export type ServiceProtocol = 'TCP' | 'UDP';
 
 export interface ResourceUnits {
   cpu: CPU;
@@ -75,82 +76,16 @@ export interface ResourceValue {
   val: string;
 }
 
-export interface SDLSpec {
-  version: "2.0";
-  services: {
-    [key: string]: { // Service Name
-      image: string;
-      depends_on?: string[];
-      command?: string[] | null;
-      args?: string[] | null;
-      env?: string[] | null;
-      expose: {
-        port: number;
-        as?: number;
-        accept?: string[] | null;
-        proto?: "http" | "https" | "tcp";
-        to?: {
-          service?: string;
-          global?: boolean;
-        }[]
-      }[];
-      params?: {
-        storage: {
-          [key: string]: {
-            mount: string
-          }
-        }
-      }
-    }
-  };
-  profiles: {
-    compute: {
-      [key: string]: { // Service Name
-        resources: {
-          cpu: {
-            units: number | string,
-          }
-          memory: {
-            size: string
-          }
-          storage: {
-            size: string
-          }
-        }
-      }
-    }
-    placement: {
-      [key: string]: { // Group Name
-        attributes?: Record<Attribute["key"], Attribute["value"]>;
-        signedBy?: {
-          allOf?: string[],
-          anyOf?: string[]
-        }
-        pricing: {
-          [key: string]: { // Service Name
-            denom: string,
-            amount: number
-          }
-        }
-      }
-    }
-  };
-  deployment: {
-    [key: string]: { // Service Name
-      [key: string]: { // Group Name
-        profile: string // Service Name
-        count: number
-      }
-    }
-  };
-}
+export type SDLSpec = v2Sdl & {
+  version: '2.0';
+};
 
 // Quick and dirty type guard for SDL like objects
 export function isSDLSpec(sdl: unknown): sdl is SDLSpec {
   const sdlSpec = sdl as SDLSpec;
 
-  return sdlSpec.version === "2.0" &&
-    typeof sdlSpec.services === "object" &&
-    typeof sdlSpec.profiles === "object" &&
-    typeof sdlSpec.deployment === "object";
+  return sdlSpec.version === '2.0' &&
+    typeof sdlSpec.services === 'object' &&
+    typeof sdlSpec.profiles === 'object' &&
+    typeof sdlSpec.deployment === 'object';
 }

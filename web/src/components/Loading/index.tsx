@@ -1,8 +1,8 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 const LoadingIcon = (props: React.Attributes) => {
-  return <div {...props}></div>
-}
+  return <div {...props}></div>;
+};
 
 const LoadingSpinner = styled(LoadingIcon)`
   background: conic-gradient(from 180deg at 50% 50%, #D6D6D6 0deg, #090808 360deg);
@@ -37,7 +37,7 @@ const Loading = ({ title, msg }: { msg?: string, title?: string }) => {
     {msg && <div className="my-3 text-2xl">
       {msg}
     </div>}
-  </div >
-}
+  </div >;
+};
 
 export default Loading;

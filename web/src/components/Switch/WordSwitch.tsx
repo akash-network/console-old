@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from '@emotion/styled/macro';
 
 type WordSwitchProps = {
   on: string,
@@ -9,8 +9,8 @@ type WordSwitchProps = {
 
 export const WordSwitch = (
   {
-    on = "All",
-    off = "Only Audited",
+    on = 'All',
+    off = 'Only Audited',
     checked = false,
     onChange
   }: WordSwitchProps) => {
@@ -31,7 +31,7 @@ export const WordSwitch = (
       </CheckBoxLabelWrapper>
     </CheckBoxWrapper>
   );
-}
+};
 
 const CheckBoxWrapper = styled.div`
   position: relative;

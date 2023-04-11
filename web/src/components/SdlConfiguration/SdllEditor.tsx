@@ -1,8 +1,8 @@
-import React from "react";
-import { Field } from "formik";
-import { MonacoYamlEditor } from "../MonacoYamlEditor";
-import yaml from "js-yaml";
-import { FieldWrapper } from "./styling";
+import React from 'react';
+import { Field } from 'formik';
+import { MonacoYamlEditor } from '../MonacoYamlEditor';
+import yaml from 'js-yaml';
+import { FieldWrapper } from './styling';
 
 interface SdlEditorProps {
   reviewSdl: boolean
@@ -20,7 +20,7 @@ export const SdlEditor: React.FC<SdlEditorProps> = (
   }) => {
   return (
     <FieldWrapper>
-      <Field name={`sdl`}>
+      <Field name={'sdl'}>
         {({ field, form }: any) => {
           return (
             <MonacoYamlEditor

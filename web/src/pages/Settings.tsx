@@ -32,7 +32,7 @@ import {
 import { AntSwitch } from '../components/Switch/AntSwitch';
 import { Address } from '../components/Address';
 import { useQuery } from 'react-query';
-import { useWallet } from "../hooks/useWallet";
+import { useWallet } from '../hooks/useWallet';
 import { queryCertificates } from '../recoil/queries';
 import { QueryCertificatesResponse } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/query';
 import { useRpcNode } from '../hooks/useRpcNode';
@@ -66,7 +66,7 @@ const byCertificateStatus = (
   }
 
   return a.serial > b.serial ? 1 : -1;
-}
+};
 
 type FieldInfo<T> = {
   title: string,
@@ -75,7 +75,7 @@ type FieldInfo<T> = {
   options: T[],
 }
 
-const Settings: React.FC<{}> = () => {
+const Settings: React.FC<Record<string, never>> = () => {
   const keplr = useRecoilValue(keplrState);
   const [currentActiveCertificate, setCurrentActiveCertificate] = useRecoilState(activeCertificate);
   const [certificatesList, setCertificatesList] = React.useState<(SortableCertificate & TLSCertificate)[]>([]);
@@ -94,7 +94,7 @@ const Settings: React.FC<{}> = () => {
 
   const handleConnectWallet = (): void => {
     wallet.connect();
-  }
+  };
 
   const availableCertificates = useMemo(
     () => getAvailableCertificates(keplr?.accounts[0]?.address),
@@ -134,7 +134,7 @@ const Settings: React.FC<{}> = () => {
     refetch();
     setRevokeOpen(false);
     setShowProgress(false);
-    setRevokeCert("")
+    setRevokeCert('');
   }, [keplr, revokeCert]);
 
   React.useEffect(() => {
@@ -291,10 +291,10 @@ const Settings: React.FC<{}> = () => {
           {/* no current valid certificate */}
           {certificatesList.length > 0 &&
             currentCertificate?.certificate?.state !== 'valid' && (
-              <Alert severity="error" variant="filled">
+            <Alert severity="error" variant="filled">
                 You don't have a valid certificate. You must generate a new certificate to deploy.
-              </Alert>
-            )
+            </Alert>
+          )
           }
 
           {certificatesList.length > 0

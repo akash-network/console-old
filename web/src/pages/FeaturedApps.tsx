@@ -2,14 +2,14 @@ import React, { useCallback, useState } from 'react';
 import styled from '@emotion/styled';
 import { Template } from '../components/Template';
 import { Button } from '@mui/material';
-import { css } from "@emotion/react";
-import { templateList } from "../recoil/api/sdl";
-import Document from "../assets/images/document.svg";
-import { SdlEditor } from "../components/SdlConfiguration/SdllEditor";
+import { css } from '@emotion/react';
+import { templateList } from '../recoil/api/sdl';
+import Document from '../assets/images/document.svg';
+import { SdlEditor } from '../components/SdlConfiguration/SdllEditor';
 import { HelpCenterSDL } from '../components/HelpCenter/HelpCenterSDL';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
-const DocumentIcon = () => <img src={Document} alt="Document Icon" />
+const DocumentIcon = () => <img src={Document} alt="Document Icon" />;
 
 export interface FeaturedAppsProps {
   onDeployNowClick: (dir: string) => void;
@@ -46,7 +46,7 @@ export default function FeaturedApps(
           variant="outlined"
           size="small"
           onClick={() => {
-            setFieldValue("sdl", {});
+            setFieldValue('sdl', {});
             showSdlReview(true);
           }}
         >

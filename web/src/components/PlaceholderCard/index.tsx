@@ -7,7 +7,7 @@ export interface PlaceholderCardProps {
   icon: IconType;
   title: string;
   children: React.ReactNode;
-};
+}
 
 export const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
   icon,

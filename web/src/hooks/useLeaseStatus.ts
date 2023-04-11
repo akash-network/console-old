@@ -1,6 +1,6 @@
 import { useRecoilValue } from 'recoil';
-import { Lease } from "@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/lease";
-import { activeCertificate, rpcEndpoint } from "../recoil/atoms";
+import { Lease } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/lease';
+import { activeCertificate, rpcEndpoint } from '../recoil/atoms';
 import { useCallback, useEffect, useState } from 'react';
 import {
   QueryProviderResponse
@@ -25,7 +25,7 @@ interface LeaseStatus {
   }
 }
 
-type ProviderInfo = QueryProviderResponse["provider"];
+type ProviderInfo = QueryProviderResponse['provider'];
 
 export function useLeaseStatus(lease: Lease) {
   const [leaseStatusState, setLeaseStatus] = useState<LeaseStatus>();
@@ -49,8 +49,8 @@ export function useLeaseStatus(lease: Lease) {
           setTimeout(refreshLeaseStatus, 5000);
         }
       )
-      .then((data) => setLeaseStatus(data as LeaseStatus))
-  }, [providerInfoState, certificate, lease])
+      .then((data) => setLeaseStatus(data as LeaseStatus));
+  }, [providerInfoState, certificate, lease]);
 
   useEffect(() => {
     if (lease?.leaseId) {
@@ -59,7 +59,7 @@ export function useLeaseStatus(lease: Lease) {
       fetchProviderInfo({ owner: provider }, rpcEndpoint())
         .then(response => setProviderInfo(response?.provider));
     }
-  }, [lease])
+  }, [lease]);
 
   useEffect(() => {
     refreshLeaseStatus();
