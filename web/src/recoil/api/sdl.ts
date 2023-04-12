@@ -130,6 +130,13 @@ export const templateList = [
     description: 'An RPC Node that runs on the Bit Canna Blockchain',
   },
   {
+    id: 'terpnetwork',
+    name: 'terpnetwork',
+    logo: templateIcons.terpnetwork,
+    title: 'Terp Network',
+    description: 'An RPC Node that runs on the Terp Network Blockchain',
+  },
+  {
     id: 'digchain',
     name: 'digchain',
     logo: templateIcons.digchain,
