@@ -135,15 +135,15 @@ const Deployment: React.FC<any> = () => {
               },
               {
                 label: 'Cost/Month',
-                value: `${formatCurrency.format(leaseCost.costUsd)} / ${leaseCost.costAkt} AKT`,
+                value: `${formatCurrency.format(leaseCost.costUsd)} | ${leaseCost.costAkt} AKT`,
               },
               {
                 label: 'Spent',
-                value: `${formatCurrency.format(leaseCost.spentUsd)} / ${leaseCost.spentAkt} AKT`,
+                value: `${formatCurrency.format(leaseCost.spentUsd)} | ${leaseCost.spentAkt} AKT`,
               },
               {
                 label: 'Balance',
-                value: `${formatCurrency.format(leaseCost.balanceUsd)} / ${leaseCost.balanceAkt} AKT`,
+                value: `${formatCurrency.format(leaseCost.balanceUsd)} | ${leaseCost.balanceAkt} AKT`,
               },
             ]);
           }
