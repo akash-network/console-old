@@ -62,8 +62,6 @@ export function leaseCalculator(deployment: Deployment | undefined, escrowAccoun
   const balanceAkt = uaktToAKT(escrowBalanceAmount);
   const balanceUsd = balanceAkt * aktCurrentPrice;
   const spentAkt = uaktToAKT(escrowTransferredAmount);
-  console.log(escrowTransferredAmount);
-  
   const spentUsd = spentAkt * aktCurrentPrice;
   const timeLeft = getTimeLeft(leasePriceAmount, escrowBalanceAmount);
 
