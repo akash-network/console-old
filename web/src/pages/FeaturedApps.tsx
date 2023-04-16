@@ -25,7 +25,9 @@ export default function FeaturedApps(
     callback,
     setFieldValue
   }: FeaturedAppsProps): JSX.Element {
-  // const [numberOfTemplates, setNumberOfTemplates] = useState(templateList.length);
+  // initially showing 12 templates on the main page
+  const initialTemplatesToShowPerPage = 12;
+  const [numberOfTemplates, setNumberOfTemplates] = useState(initialTemplatesToShowPerPage);
   const [reviewSdl, showSdlReview] = useState(false);
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
   const [isHelpCenterOpen, setIsHelpCenterOpen] = useState(false);
@@ -61,7 +63,7 @@ export default function FeaturedApps(
       </FeaturedAppsPageHeader>
       <Divider />
       <FeaturedAppsPageWrapper>
-        {templateListConfig.tiles.map((template: any) => {
+        {templateListConfig?.tiles?.slice(0, numberOfTemplates).map((template: any) => {
           return <Template
             key={template.name}
             id={template.name}
@@ -73,17 +75,19 @@ export default function FeaturedApps(
           />;
         })}
       </FeaturedAppsPageWrapper>
-      {/* <ViewAllButtonContainer>
-        {templateList.length > numberOfTemplates && (
+
+      {/* on clicking view all templates, load all the templates onto the UI */}
+      <ViewAllButtonContainer>
+        {templateListConfig?.tiles?.length > numberOfTemplates && (
           <ViewAllButton
             fullWidth
             variant="outlined"
-            onClick={() => setNumberOfTemplates(templateList.length)}
+            onClick={() => setNumberOfTemplates(templateListConfig?.tiles?.length)}
           >
             View All Apps
           </ViewAllButton>
         )}
-      </ViewAllButtonContainer> */}
+      </ViewAllButtonContainer>
       <SdlEditor
         reviewSdl={reviewSdl}
         closeReviewModal={closeReviewModal}

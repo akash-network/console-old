@@ -87,7 +87,6 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
   };
 
   const template = templateListConfig.tiles.find((template: any) => template.name === folderName);
-  console.log({template});
 
   return (
     <Stack className="items-center">
