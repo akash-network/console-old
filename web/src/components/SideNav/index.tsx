@@ -162,6 +162,19 @@ export default function SideNav(props: any) {
                 <SideNavMenuItemLabel>My Deployments</SideNavMenuItemLabel>
               </SideNavMenuItem>
             </NavLink>
+            {/* PRODUCT-CLARIFY: where should providers navlink be linked to, we only have the /providers/:providerId route */}
+            <NavLink
+              to="providers"
+              id="link_providers"
+              className={({ isActive }) => (isActive ? 'selected-active' : 'selected-inactive')}
+            >
+              <SideNavMenuItem>
+                <IconWrapper>
+                  <Icon type="providers" />
+                </IconWrapper>
+                <SideNavMenuItemLabel>Providers</SideNavMenuItemLabel>
+              </SideNavMenuItem>
+            </NavLink>
             <div className="grow">
               <button onClick={handleToggleDrawer} style={{ width: 260, height: '100%' }}></button>
             </div>

@@ -4,7 +4,7 @@ import ArrowRight from '../../assets/images/arrow-right-gray.svg';
 import React from 'react';
 
 interface TemplateProps {
-  id: number
+  id: string
   title: string
   description: string
   logo?: string
