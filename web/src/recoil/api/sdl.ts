@@ -27,7 +27,7 @@ export const fetchTemplateList: QueryFunction<any, string> = async ({queryKey}) 
   const octokit = new Octokit({});
 
   const repository = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}/metadata.json', {
-    owner: 'kaushik-rishi',
+    owner: 'akash-network',
     repo: 'deploy-templates',
     path: 'nodes-master',
   });
