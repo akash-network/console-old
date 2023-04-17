@@ -8,6 +8,8 @@ import {
   Divider,
 } from '@mui/material';
 import { Icon, IconType } from '../Icons';
+import { useQuery } from 'react-query';
+import { fetchLandingPageMetadata } from '../../recoil/api/sdl';
 
 export interface DeploymentStepperProps {
   dseq?: string;
@@ -24,12 +26,18 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
     'buttonEnabled': true
   };
 
+  const { data: landingPageMetadata } = useQuery('landingPageMetadata', fetchLandingPageMetadata, {
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+  });
+  console.log(landingPageMetadata);
+
   return (
     <Box sx={{ width: '100%', minHeight: '450px', marginBottom: '25px' }}>
       <IntroHeading>What would you like to do today?</IntroHeading>
       <Divider style={{ marginTop: '20px', marginBottom: '32px' }} />
       <FeaturedAppsPageWrapper>
-        {landingMetadata?.categoriesTiles?.tiles?.map(c => {
+        {landingPageMetadata?.categoriesTiles?.tiles?.map((c: any) => {
           return <CategoryCard key={c.title}>
             <CategoryCardHeaderWithIcon>
               <IconWrapper>
