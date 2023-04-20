@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { Alert, Button, Grid, Stack, Tooltip } from '@mui/material';
 import { DeploymentEvents } from '../DeploymentEvents';
 import { fetchDeployment } from '../../recoil/api';
-import { activeCertificate, keplrState } from '../../recoil/atoms';
+import { activeCertificate, keplrState, deploymentSdl } from '../../recoil/atoms';
 import { formatCurrency } from '../../_helpers/formatter-currency';
 import { flattenObject } from '../../_helpers/flatten-object';
 import fetchPriceAndMarketCap from '../../recoil/api/akt';
@@ -21,13 +21,14 @@ import { uniqueName } from '../../_helpers/unique-name';
 import { Icon } from '../Icons';
 import { useLeaseStatus } from '../../hooks/useLeaseStatus';
 import InfoIcon from '@mui/icons-material/Info';
-
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import green from '@mui/material/colors/green';
 
 const Deployment: React.FC<any> = () => {
   const { dseq } = useParams<any>();
   const keplr = useRecoilValue(keplrState);
   const [appName, setAppName] = React.useState('');
-  const [info, setInfo] = React.useState<{ label: string; value: string }[]>([]);
+  const [info, setInfo] = React.useState<{ label: string; value: string | JSX.Element }[]>([]);
   const [costLease, setCostLease] = React.useState<{ label: string; value: string | number }[]>([]);
   const [endpoints, setEndpoints] = React.useState<{ value: string }[]>([]);
   const [lease, setLease] = React.useState<any>();
@@ -37,6 +38,7 @@ const Deployment: React.FC<any> = () => {
   const deploymentIncomplete = deployment?.deployment?.state === 1 && !lease;
   const [refresh, setRefresh] = React.useState(false);
   const certificate = useRecoilValue(activeCertificate);
+  const [sdl,] = useRecoilState(deploymentSdl);
 
   const ReDeployTooltip = (
     <Tooltip title="This will create a whole new replica of this deployment. The existing deployment will not be touched." placement="top">
@@ -94,6 +96,10 @@ const Deployment: React.FC<any> = () => {
         setDeployment(getDeployment.deployment);
 
         setInfo([
+          {
+            label: 'Updatable',
+            value: deployment['deployment.state'] === 'active' && sdl !== undefined ? <CheckCircleIcon sx={{ color: green[500] }} /> : '',
+          },
           {
             label: 'Status',
             value: deployment['deployment.state'] === 1 ? 'Active' : 'Not Active',
