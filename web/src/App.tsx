@@ -24,7 +24,7 @@ const Welcome = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate('/new-deployment');
+    navigate('/landing/node-deployment');
   }, []);
 
   return <></>;
@@ -43,8 +43,8 @@ const AppRouter = () => {
         <SideNav>
           <Routes>
             <Route path="/" element={<Welcome />} />
+            <Route path="landing/node-deployment" element={<DeploymentStepper />}/>
             <Route path="new-deployment">
-              <Route path="" element={<DeploymentStepper />} />
               <Route path=":folderName/" element={<DeploymentStepper />} />
               <Route path=":folderName/:templateId" element={<DeploymentStepper />} />
               <Route path=":folderName/:templateId/:intentId" element={<DeploymentStepper />} />

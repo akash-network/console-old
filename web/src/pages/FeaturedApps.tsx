@@ -1,13 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Template } from '../components/Template';
 import { Button } from '@mui/material';
 import { css } from '@emotion/react';
-import { templateList } from '../recoil/api/sdl';
+import { fetchTemplateList } from '../recoil/api/sdl';
 import Document from '../assets/images/document.svg';
 import { SdlEditor } from '../components/SdlConfiguration/SdllEditor';
 import { HelpCenterSDL } from '../components/HelpCenter/HelpCenterSDL';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { useQuery } from 'react-query';
+import { templateIcons } from '../assets/templates';
 
 const DocumentIcon = () => <img src={Document} alt="Document Icon" />;
 
@@ -23,10 +25,16 @@ export default function FeaturedApps(
     callback,
     setFieldValue
   }: FeaturedAppsProps): JSX.Element {
-  const [numberOfTemplates, setNumberOfTemplates] = useState(templateList.length);
+  // initially showing 12 templates on the main page
+  const initialTemplatesToShowPerPage = 12;
+  const [numberOfTemplates, setNumberOfTemplates] = useState(initialTemplatesToShowPerPage);
   const [reviewSdl, showSdlReview] = useState(false);
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
   const [isHelpCenterOpen, setIsHelpCenterOpen] = useState(false);
+  const { data: templateListConfig } = useQuery('templateList', fetchTemplateList, {
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+  });
 
   const toggleHelpCenter = useCallback(() => {
     setIsHelpCenterOpen((prevIsOpen) => !prevIsOpen);
@@ -55,23 +63,26 @@ export default function FeaturedApps(
       </FeaturedAppsPageHeader>
       <Divider />
       <FeaturedAppsPageWrapper>
-        {templateList.slice(0, numberOfTemplates).map((template: any) => {
+        {templateListConfig?.tiles?.slice(0, numberOfTemplates).map((template: any) => {
           return <Template
-            key={template.id}
-            id={template.id}
+            key={template.name}
+            id={template.name}
             title={template.title}
             description={template.description}
-            logo={template.logo}
+            // logo={'https://raw.githubusercontent.com/akash-network/deploy-templates/main' + template.logo}
+            logo={templateIcons[template.logoFileNameWithoutExt]}
             onNextButtonClick={() => onDeployNowClick(template.name)}
           />;
         })}
       </FeaturedAppsPageWrapper>
+
+      {/* on clicking view all templates, load all the templates onto the UI */}
       <ViewAllButtonContainer>
-        {templateList.length > numberOfTemplates && (
+        {templateListConfig?.tiles?.length > numberOfTemplates && (
           <ViewAllButton
             fullWidth
             variant="outlined"
-            onClick={() => setNumberOfTemplates(templateList.length)}
+            onClick={() => setNumberOfTemplates(templateListConfig?.tiles?.length)}
           >
             View All Apps
           </ViewAllButton>

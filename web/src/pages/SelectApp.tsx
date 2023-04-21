@@ -10,7 +10,8 @@ import SocialIcon from '../components/Icons/SocialIcon';
 import { isSDLSpec } from '../components/SdlConfiguration/settings';
 import { Template } from '../components/SdlConfiguration/settings';
 import { WalletDeployButtons } from '../components/WalletDeployButton';
-import { fetchSdlList, templateList } from '../recoil/api/sdl';
+import { fetchSdlList, fetchTemplateList } from '../recoil/api/sdl';
+import { templateIcons } from '../assets/templates';
 
 type SocialNetwork = {
   socialNetwork: string,
@@ -35,6 +36,11 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
       (topology: any) => topology.title === directoryConfig?.topology?.selected
     )
   );
+
+  const { data: templateListConfig } = useQuery('templateList', fetchTemplateList, {
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+  });
 
   const [social, setSocial] = useState<SocialNetwork[]>([]);
 
@@ -80,7 +86,7 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
     }
   };
 
-  const template = templateList.find((template) => template.name === folderName);
+  const template = templateListConfig.tiles.find((template: any) => template.name === folderName);
 
   return (
     <Stack className="items-center">
@@ -88,7 +94,7 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
         <SdlIntro>
           {folderName && template && (
             <Avatar
-              src={template.logo}
+              src={templateIcons[template.logoFileNameWithoutExt]}
               alt="Logo"
             />
           )}
