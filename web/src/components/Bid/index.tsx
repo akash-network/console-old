@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { aktMarketCap, rpcEndpoint } from '../../recoil/atoms';
 import { Address } from '../Address';
 import { formatCurrency } from '../../_helpers/formatter-currency';
-import { getAvgCostPerMonth } from '../../_helpers/lease-calculations';
+import { getAvgAktCostPerMonth } from '../../_helpers/lease-calculations';
 import { useNavigate } from 'react-router-dom';
 import moultireLogo from '../../assets/images/moultire-logo.svg';
 import ovrclkLogo from '../../assets/images/overclk-logo.svg';
@@ -120,7 +120,7 @@ export const BidCard: React.FC<BidCardProps> = ({ bid, ...props }) => {
   );
 
   const akt = useRecoilValue(aktMarketCap);
-  const price = getAvgCostPerMonth(Number(bid?.price?.amount), akt?.current_price || 0);
+  const price = getAvgAktCostPerMonth(Number(bid?.price?.amount)) * (akt?.current_price || 0);
   const navigate = useNavigate();
 
   const handleOpen = () => navigate(`/provider/${provider?.provider?.owner}`);
