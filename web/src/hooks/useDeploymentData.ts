@@ -12,6 +12,7 @@ interface DeploymentData {
   url: string;
   lease: any;
   status: number;
+  updatable: number;
   dseq: string;
 }
 
@@ -89,6 +90,7 @@ export default function useDeploymentData(owner: string) {
           lease,
           akt?.current_price || 0
         );
+        let updatable = 0;
         // Doing this cause dseq sometimes comes as plain object and not Long type,
         // and if that happen can't crate dseq string
         const dseq = new Long(
@@ -115,6 +117,11 @@ export default function useDeploymentData(owner: string) {
             .map((service) => (service as any).uris[0])
             .join(', ');
         }
+        if (application !== null && application.sdl !== undefined) {
+          updatable = 1;
+        } else {
+          updatable = 0;
+        }
         // Table row object
         return {
           name,
@@ -124,6 +131,7 @@ export default function useDeploymentData(owner: string) {
             ? `Time Left: ${leaseInfo ? leaseInfo.timeLeft : 'N/A'}`
             : 'Time Left: 0 days',
           status: query.deployment?.state || 0,
+          updatable: updatable,
         };
       })
     ).then(setDeploymentsData);
