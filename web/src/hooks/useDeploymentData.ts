@@ -117,7 +117,7 @@ export default function useDeploymentData(owner: string) {
             .map((service) => (service as any).uris[0])
             .join(', ');
         }
-        if (application !== null && application.sdl !== undefined) {
+        if (application !== null && query.deployment?.state === 1 && application.sdl !== undefined) {
           updatable = 1;
         } else {
           updatable = 0;
