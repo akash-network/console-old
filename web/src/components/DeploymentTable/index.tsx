@@ -138,7 +138,7 @@ function DeploymentTableHead(props: DeploymentTableHeadProps) {
               {headCell.label === 'UPDATABLE'
                 ? (<>
                   {headCell.label}
-                  <Tooltip title="If the initial deployment was done using a different client(not console) it cannot be updated by Console." placement="bottom">
+                  <Tooltip title="If the initial deployment was done using a different client (not console) it cannot be updated by Console." placement="bottom">
                     <InfoOutlinedIcon sx={{ color: '#666666', fontSize: '18px', ml: '4px' }} />
                   </Tooltip></>)
                 : headCell.label}
