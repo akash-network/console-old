@@ -17,13 +17,13 @@ const ButtonTemplate = css`
   gap: 8px;
   color: #374151;
   text-transform: capitalize;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #D7D7D7;
+  border: 1px solid #d7d7d7;
   border-radius: 6px;
 
   &:hover {
-    border-color: #3D4148
+    border-color: #3d4148;
   }
 `;
 
@@ -33,10 +33,10 @@ export const ReviewSdlButton = styled(Button)`
   border-radius: 8px;
   font-family: 'Satoshi-Medium', sans-serif;
   font-size: 14px;
-  box-shadow: 0px 1px 2px 0px #0000000D;
+  box-shadow: 0px 1px 2px 0px #0000000d;
 
   &:hover {
-    background-color: #F4F5F8
+    background-color: #f4f5f8;
   }
 `;
 
@@ -46,7 +46,7 @@ export const CancelButton = styled(ReviewSdlButton)`
 
 export const SaveButton = styled(Button)`
   ${ButtonTemplate};
-  background-color: #E11D48;
+  background-color: #e11d48;
   color: white;
   align-self: end;
 

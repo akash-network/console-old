@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import {
   CancelButton,
   SaveButton,
-  UpdateDeploymentAction
+  UpdateDeploymentAction,
 } from '../components/UpdateDeployment/styling';
 import { fetchDeployment, sendManifest, updateDeployment } from '../recoil/api';
 import { useRecoilValue } from 'recoil';
@@ -17,7 +17,7 @@ import {
   initialValues,
   InitialValuesProps,
   SdlConfigurationType,
-  SDLSpec
+  SDLSpec,
 } from '../components/SdlConfiguration/settings';
 import logging from '../logging';
 import { ManifestVersion } from '../_helpers/deployments-utils';
@@ -39,11 +39,10 @@ const UpdateDeployment: React.FC<any> = () => {
   useEffect(() => {
     if (!dseq) return;
 
-    fetchDeployment(keplr.accounts[0].address, dseq)
-      .then(deploy => {
-        setDeployment(deploy.deployment.deployment);
-        setLease(deploy?.leases?.leases[0].lease);
-      });
+    fetchDeployment(keplr.accounts[0].address, dseq).then((deploy) => {
+      setDeployment(deploy.deployment.deployment);
+      setLease(deploy?.leases?.leases[0].lease);
+    });
   }, []);
 
   if (application === null) {
@@ -53,7 +52,11 @@ const UpdateDeployment: React.FC<any> = () => {
   return (
     <Formik
       enableReinitialize
-      initialValues={{ ...initialValues, appName: application.name, sdl: application.sdl as SDLSpec }}
+      initialValues={{
+        ...initialValues,
+        appName: application.name,
+        sdl: application.sdl as SDLSpec,
+      }}
       onSubmit={async (value: InitialValuesProps) => {
         setProgressVisible(true);
         setCardMessage('Updating deployment');
@@ -74,25 +77,30 @@ const UpdateDeployment: React.FC<any> = () => {
         if (oldVersion === newVersion) {
           await sendManifest(keplr.accounts[0].address, lease, value.sdl)
             .then(() => logging.success('Manifest successfully updated'))
-            .catch(error => logging.log(`Failed to send manifest: ${error}`));
+            .catch((error) => logging.log(`Failed to send manifest: ${error}`));
 
           navigate(-1);
           return;
         }
 
         try {
-          const result = await updateDeployment(keplr, {
-            owner: keplr.accounts[0].address,
-            dseq
-          }, value.sdl);
+          const result = await updateDeployment(
+            keplr,
+            {
+              owner: keplr.accounts[0].address,
+              dseq,
+            },
+            value.sdl
+          );
 
           if (result.deploymentId && value.sdl) {
             setCardMessage('Sending manifest');
 
-            await sendManifest(keplr.accounts[0].address, lease, value.sdl)
-              .catch(error => logging.log(error));
+            await sendManifest(keplr.accounts[0].address, lease, value.sdl).catch((error) =>
+              logging.log(error)
+            );
 
-            for (const [key,] of Object.entries(value.sdl.services)) {
+            for (const [key] of Object.entries(value.sdl.services)) {
               if (count === 0) {
                 if (value.sdl.services[key] && value.sdl.services[key].image) {
                   image = value.sdl.services[key].image;
@@ -124,7 +132,7 @@ const UpdateDeployment: React.FC<any> = () => {
         } catch (error) {
           // TODO: Implement appropriate error handling
           // Here we need to check it error.message is "Request rejected" which mean user clicked reject button
-          // or it could also happen that user didn't change anything and error is "Query failed with (6): rpc error: code..." 
+          // or it could also happen that user didn't change anything and error is "Query failed with (6): rpc error: code..."
           if (isError(error)) {
             logging.error('UpdateDeployment.tsx' + error.message);
           }
@@ -147,12 +155,8 @@ const UpdateDeployment: React.FC<any> = () => {
                 <ReviewSdlButton onClick={() => showSdlReview(true)}>
                   View Parameter Editor
                 </ReviewSdlButton>
-                <CancelButton onClick={() => navigate(-1)}>
-                  Cancel
-                </CancelButton>
-                <SaveButton onClick={() => submitForm()}>
-                  Save
-                </SaveButton>
+                <CancelButton onClick={() => navigate(-1)}>Cancel</CancelButton>
+                <SaveButton onClick={() => submitForm()}>Save</SaveButton>
               </UpdateDeploymentAction>
             )}
           />
@@ -169,13 +173,13 @@ const ButtonTemplate = css`
   gap: 8px;
   color: #374151;
   text-transform: capitalize;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #D7D7D7;
+  border: 1px solid #d7d7d7;
   border-radius: 6px;
 
   &:hover {
-    border-color: #3D4148
+    border-color: #3d4148;
   }
 `;
 
@@ -185,9 +189,9 @@ const ReviewSdlButton = styled(Button)`
   border-radius: 8px;
   font-family: 'Satoshi-Medium', sans-serif;
   font-size: 14px;
-  box-shadow: 0px 1px 2px 0px #0000000D;
+  box-shadow: 0px 1px 2px 0px #0000000d;
 
   &:hover {
-    background-color: #F4F5F8
+    background-color: #f4f5f8;
   }
 `;

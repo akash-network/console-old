@@ -18,9 +18,7 @@ export const BaseAtomComponent = (props?: any) => {
 
   return (
     <ErrorBoundary>
-      {props?.children
-        ? React.cloneElement(props.children, { data: stateData })
-        : null}
+      {props?.children ? React.cloneElement(props.children, { data: stateData }) : null}
     </ErrorBoundary>
   );
 };

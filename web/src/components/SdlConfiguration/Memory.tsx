@@ -13,9 +13,9 @@ const validateMemory = (value: any) => {
 };
 
 type MemoryProps = {
-  currentProfile: string,
-  disabled: boolean
-}
+  currentProfile: string;
+  disabled: boolean;
+};
 
 export const Memory: React.FC<MemoryProps> = ({ currentProfile, disabled }) => {
   return (
@@ -37,11 +37,7 @@ export const Memory: React.FC<MemoryProps> = ({ currentProfile, disabled }) => {
                 disabled={disabled}
                 {...field}
               />
-              {meta?.error && (
-                <ErrorMessageComponent>
-                  {meta?.error}
-                </ErrorMessageComponent>
-              )}
+              {meta?.error && <ErrorMessageComponent>{meta?.error}</ErrorMessageComponent>}
             </React.Fragment>
           );
         }}

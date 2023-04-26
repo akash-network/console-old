@@ -1,33 +1,23 @@
 import styled from '@emotion/styled/macro';
 
 type WordSwitchProps = {
-  on: string,
-  off: string,
-  checked: boolean,
-  onChange: React.ChangeEventHandler<HTMLInputElement> | undefined,
-}
+  on: string;
+  off: string;
+  checked: boolean;
+  onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
+};
 
-export const WordSwitch = (
-  {
-    on = 'All',
-    off = 'Only Audited',
-    checked = false,
-    onChange
-  }: WordSwitchProps) => {
+export const WordSwitch = ({
+  on = 'All',
+  off = 'Only Audited',
+  checked = false,
+  onChange,
+}: WordSwitchProps) => {
   return (
     <CheckBoxWrapper>
       <CheckBoxLabelWrapper>
-        <CheckBox
-          id="checkbox"
-          type="checkbox"
-          checked={checked}
-          onChange={onChange}
-        />
-        <CheckBoxLabel
-          htmlFor="checkbox"
-          data-on={on}
-          data-off={off}
-        />
+        <CheckBox id="checkbox" type="checkbox" checked={checked} onChange={onChange} />
+        <CheckBoxLabel htmlFor="checkbox" data-on={on} data-off={off} />
       </CheckBoxLabelWrapper>
     </CheckBoxWrapper>
   );
@@ -64,15 +54,15 @@ const CheckBoxLabel = styled.label`
     width: 40px;
     height: 25px;
     padding: 3px;
-    background: #FFF1F2;
-    color: #F43F5E;
+    background: #fff1f2;
+    color: #f43f5e;
     border-radius: 6px;
     position: absolute;
     left: 2px;
     top: 2px;
     text-align: center;
     transition: all 0.3s ease;
-    box-shadow: 0 0 6px -2px #F43F5E;
+    box-shadow: 0 0 6px -2px #f43f5e;
   }
 `;
 const CheckBox = styled.input`
@@ -87,7 +77,7 @@ const CheckBox = styled.input`
 
   &:checked + ${CheckBoxLabel} {
     background: rgba(244, 245, 248, 0.4);
-    border: 1px solid #D1D5DB;
+    border: 1px solid #d1d5db;
     box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
     border-radius: 6px;
 
@@ -102,7 +92,7 @@ const CheckBox = styled.input`
       content: attr(data-on);
       left: 46px;
       width: 100px;
-      background: #FFF1F2;
+      background: #fff1f2;
     }
   }
 `;
@@ -113,7 +103,7 @@ const CheckBoxLabelWrapper = styled.label`
     width: 150px;
     height: 30px;
     background: rgba(244, 245, 248, 0.4);
-    border: 1px solid #D1D5DB;
+    border: 1px solid #d1d5db;
     box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
     border-radius: 6px;
     overflow: hidden;

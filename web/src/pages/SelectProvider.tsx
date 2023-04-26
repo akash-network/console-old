@@ -10,9 +10,10 @@ import { WordSwitch } from '../components/Switch/WordSwitch';
 import { Timer } from '../components/Timer';
 import { PlaceholderCard } from '../components/PlaceholderCard';
 import { rpcEndpoint } from '../recoil/atoms';
+import { getRpcNode } from '../hooks/useRpcNode';
 
 export interface SelectProviderProps {
-  deploymentId: { owner: string; dseq: string },
+  deploymentId: { owner: string; dseq: string };
   onNextButtonClick?: (bidId: any) => void;
 }
 
@@ -26,41 +27,40 @@ const sortingMethods = {
     algorithm: (ba: Bid, bb: Bid) => 0,
   },
   byPrice: {
-    algorithm: (ba: Bid, bb: Bid) => (
+    algorithm: (ba: Bid, bb: Bid) =>
       ba.price !== undefined && bb.price !== undefined
         ? parseInt(ba.price.amount) - parseInt(bb.price.amount)
-        : 0
-    ),
-  }
+        : 0,
+  },
 };
 
 const filterMethods = {
   none: {
-    algorithm: (bid: any) => true
+    algorithm: (bid: any) => true,
   },
   byAudit: {
-    algorithm: (bid: any) => bid.auditStatus?.length > 0
-  }
+    algorithm: (bid: any) => bid.auditStatus?.length > 0,
+  },
 };
 
-export default function SelectProvider(
-  {
-    onNextButtonClick,
-    deploymentId
-  }: SelectProviderProps): JSX.Element {
+export default function SelectProvider({
+  onNextButtonClick,
+  deploymentId,
+}: SelectProviderProps): JSX.Element {
+  const { rpcNode } = getRpcNode();
 
   // TODO: this should be moved into queries.ts
   const { data: bids } = useQuery(
     ['bids', deploymentId],
-    () => fetchBidsList(deploymentId, rpcEndpoint())
-      .then((resp) => resp.bids
-        .filter(resp => resp.bid !== undefined)
-        .map(resp => resp.bid as Bid)),
+    () =>
+      fetchBidsList(deploymentId, rpcNode).then((resp) =>
+        resp.bids.filter((resp) => resp.bid !== undefined).map((resp) => resp.bid as Bid)
+      ),
     {
       refetchOnWindowFocus: false,
       keepPreviousData: true,
-      refetchInterval: (bids) => bids && bids.length > 0 ? 5000 : 1000
-    },
+      refetchInterval: (bids) => (bids && bids.length > 0 ? 5000 : 1000),
+    }
   );
 
   const [timerExpired, setTimerExpired] = React.useState(false);
@@ -68,9 +68,8 @@ export default function SelectProvider(
   const [sortMethod] = useState(sortingMethods.byPrice);
   const [filterMethod, setFilterMethod] = React.useState(filterMethods.byAudit);
 
-  const isSelectedProvider = (providerId: string) => (
-    selectedProvider && providerId === selectedProvider
-  );
+  const isSelectedProvider = (providerId: string) =>
+    selectedProvider && providerId === selectedProvider;
 
   const selectProvider = (providerId: string) => (evt: React.MouseEvent) => {
     evt.preventDefault();
@@ -86,11 +85,12 @@ export default function SelectProvider(
     setTimerExpired(true);
   };
 
-  return (<Stack className="container akt-card">
-    <Box className="flex items-center justify-between mb-2 w-100">
-      <Title className="text-lg font-bold">Select a Provider</Title>
-      <div className="flex items-center gap-2">
-        {/* <Button
+  return (
+    <Stack className="container akt-card">
+      <Box className="flex items-center justify-between mb-2 w-100">
+        <Title className="text-lg font-bold">Select a Provider</Title>
+        <div className="flex items-center gap-2">
+          {/* <Button
           style={{
             height: "30px",
             backgroundColor: "white",
@@ -104,52 +104,57 @@ export default function SelectProvider(
         >
           Refresh
         </Button> */}
-        <WordSwitch
-          on="Only Audited"
-          off="All"
-          checked={filterMethod === filterMethods.byAudit}
-          onChange={toggleFilter}
-        />
-        <Timer startTime={Date.now()} onTimerEnd={handleTimerExpire} />
-      </div>
-    </Box>
-    <Divider className="mt-2 mb-4" />
-    <Box
-      display="flex"
-      flexDirection="row"
-      alignItems="top"
-      justifyContent="center"
-      flexWrap="wrap"
-      gap={2}
-      marginTop="1rem"
-    >
-      {!timerExpired && <Stack>
-        <Stack direction="row" flexWrap="wrap" justifyContent="center" gap="1rem">
-          {bids && bids
-            .sort(sortMethod.algorithm)
-            .map((bid: any, i: number) => (
-              <BidCard
-                hideIfNotAudited={filterMethod === filterMethods.byAudit}
-                key={i}
-                bid={bid}
-                isSelectedProvider={isSelectedProvider(bid.bidId.provider)}
-                onClick={selectProvider(bid.bidId.provider)}
-                onNextButtonClick={onNextButtonClick}
-                {...bid}
-              />
-            ))}
-        </Stack>
-        < Loading />
-      </Stack>
-      }
-      {
-        timerExpired && (<>
-          <PlaceholderCard title="Bids Expired" icon="alert">
-            <p>All bids for the deployment have expired. Please close this deployment, and create a new one.</p>
-          </PlaceholderCard>
-        </>)
-      }
-    </Box >
-  </Stack >
+          <WordSwitch
+            on="Only Audited"
+            off="All"
+            checked={filterMethod === filterMethods.byAudit}
+            onChange={toggleFilter}
+          />
+          <Timer startTime={Date.now()} onTimerEnd={handleTimerExpire} />
+        </div>
+      </Box>
+      <Divider className="mt-2 mb-4" />
+      <Box
+        display="flex"
+        flexDirection="row"
+        alignItems="top"
+        justifyContent="center"
+        flexWrap="wrap"
+        gap={2}
+        marginTop="1rem"
+      >
+        {!timerExpired && (
+          <Stack>
+            <Stack direction="row" flexWrap="wrap" justifyContent="center" gap="1rem">
+              {bids &&
+                bids
+                  .sort(sortMethod.algorithm)
+                  .map((bid: any, i: number) => (
+                    <BidCard
+                      hideIfNotAudited={filterMethod === filterMethods.byAudit}
+                      key={i}
+                      bid={bid}
+                      isSelectedProvider={isSelectedProvider(bid.bidId.provider)}
+                      onClick={selectProvider(bid.bidId.provider)}
+                      onNextButtonClick={onNextButtonClick}
+                      {...bid}
+                    />
+                  ))}
+            </Stack>
+            <Loading />
+          </Stack>
+        )}
+        {timerExpired && (
+          <>
+            <PlaceholderCard title="Bids Expired" icon="alert">
+              <p>
+                All bids for the deployment have expired. Please close this deployment, and create a
+                new one.
+              </p>
+            </PlaceholderCard>
+          </>
+        )}
+      </Box>
+    </Stack>
   );
 }

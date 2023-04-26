@@ -13,7 +13,12 @@ import {
   Typography,
 } from '@mui/material';
 import { Formik } from 'formik';
-import { deploymentDataStale, deploymentSdl, keplrState, myDeployments as myDeploymentsAtom } from '../../recoil/atoms';
+import {
+  deploymentDataStale,
+  deploymentSdl,
+  keplrState,
+  myDeployments as myDeploymentsAtom,
+} from '../../recoil/atoms';
 import { createDeployment, createLease, sendManifest } from '../../recoil/api';
 import { Dialog } from '../Dialog';
 import FeaturedApps from '../../pages/FeaturedApps';
@@ -52,7 +57,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
 
   React.useEffect(() => {
     const params = [folderName, templateId && uriToName(templateId), intentId];
-    const numParams = params.filter(x => x !== undefined).length;
+    const numParams = params.filter((x) => x !== undefined).length;
 
     setActiveStep({ currentCard: numParams });
   }, [folderName, templateId, intentId]);
@@ -101,12 +106,8 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
 
           // if the user refreshed the page, the atom could be empty
           // if that's the case, used the stored version
-          const cachedDetails = JSON.parse(
-            localStorage.getItem(`${lease?.leaseId?.dseq}`) || ''
-          );
-          const _sdl = sdl
-            ? sdl
-            : cachedDetails.sdl;
+          const cachedDetails = JSON.parse(localStorage.getItem(`${lease?.leaseId?.dseq}`) || '');
+          const _sdl = sdl ? sdl : cachedDetails.sdl;
 
           if (lease) {
             return sendManifest(keplr.accounts[0].address, lease, _sdl);
@@ -140,9 +141,10 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   // TODO: this should be changed to use the logging system, and not throw
   // additional exceptions.
   const handleError = async (maybeError: unknown, method: string) => {
-    const error = maybeError && Object.prototype.hasOwnProperty.call(maybeError, 'message')
-      ? (maybeError as Error)
-      : { message: 'Unknown error' };
+    const error =
+      maybeError && Object.prototype.hasOwnProperty.call(maybeError, 'message')
+        ? (maybeError as Error)
+        : { message: 'Unknown error' };
 
     let title = 'Error';
     let message = 'An error occurred while sending your request.';
@@ -243,48 +245,53 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
               {activeStep.currentCard === steps.length
                 ? null
                 : !progressVisible && (
-                  <React.Fragment>
-                    {activeStep.currentCard === 0 && (
-                      <FeaturedApps
-                        onDeployNowClick={(folderName) => {
-                          selectFolder(folderName);
-                        }}
-                        callback={(sdl) =>
-                          navigate('/new-deployment/custom-sdl', { state: { sdl: sdl } })
-                        }
-                        setFieldValue={setFieldValue}
-                      />
-                    )}
-                    {activeStep.currentCard === 1 && folderName && (
-                      <SelectApp
-                        folderName={uriToName(folderName)}
-                        setFieldValue={setFieldValue}
-                        onNextButtonClick={selectTemplate}
-                      />
-                    )}
-                    {activeStep.currentCard === 2 && folderName && templateId && (
-                      <ConfigureApp
-                        folderName={uriToName(folderName)}
-                        templateId={uriToName(templateId)}
-                        onNextButtonClick={handlePreflightCheck}
-                      />
-                    )}
-                    {activeStep.currentCard === 3 && <PreflightCheck />}
-                    {activeStep.currentCard === 4 && deploymentId && (
-                      <Suspense fallback={<Loading />}>
-                        <SelectProvider
-                          deploymentId={deploymentId}
-                          onNextButtonClick={(bidId: any) => acceptBid(bidId)}
+                    <React.Fragment>
+                      {activeStep.currentCard === 0 && (
+                        <FeaturedApps
+                          onDeployNowClick={(folderName) => {
+                            selectFolder(folderName);
+                          }}
+                          callback={(sdl) =>
+                            navigate('/new-deployment/custom-sdl', { state: { sdl: sdl } })
+                          }
+                          setFieldValue={setFieldValue}
                         />
-                      </Suspense>
-                    )}
-                  </React.Fragment>
-                )}
+                      )}
+                      {activeStep.currentCard === 1 && folderName && (
+                        <SelectApp
+                          folderName={uriToName(folderName)}
+                          setFieldValue={setFieldValue}
+                          onNextButtonClick={selectTemplate}
+                        />
+                      )}
+                      {activeStep.currentCard === 2 && folderName && templateId && (
+                        <ConfigureApp
+                          folderName={uriToName(folderName)}
+                          templateId={uriToName(templateId)}
+                          onNextButtonClick={handlePreflightCheck}
+                        />
+                      )}
+                      {activeStep.currentCard === 3 && <PreflightCheck />}
+                      {activeStep.currentCard === 4 && deploymentId && (
+                        <Suspense fallback={<Loading />}>
+                          <SelectProvider
+                            deploymentId={deploymentId}
+                            onNextButtonClick={(bidId: any) => acceptBid(bidId)}
+                          />
+                        </Suspense>
+                      )}
+                    </React.Fragment>
+                  )}
             </>
           );
         }}
       </Formik>
-      <Dialog open={open} onClose={handleClose} title={errorTitle || ''} message={errorMessage || ''} />
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        title={errorTitle || ''}
+        message={errorMessage || ''}
+      />
     </Box>
   );
 };

@@ -10,9 +10,7 @@ import { formatCurrency } from '../../_helpers/formatter-currency';
 import { flattenObject } from '../../_helpers/flatten-object';
 import fetchPriceAndMarketCap from '../../recoil/api/akt';
 import { leaseCalculator } from '../../_helpers/lease-calculations';
-import {
-  QueryDeploymentResponse
-} from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/query';
+import { QueryDeploymentResponse } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/query';
 import { FundDeploymentButton } from './FundDeploymentButton';
 import { CloseDeploymentButton } from './CloseDeploymentButton';
 import { CloneDeploymentButton } from './CloneDeploymentButton';
@@ -21,7 +19,6 @@ import { uniqueName } from '../../_helpers/unique-name';
 import { Icon } from '../Icons';
 import { useLeaseStatus } from '../../hooks/useLeaseStatus';
 import InfoIcon from '@mui/icons-material/Info';
-
 
 const Deployment: React.FC<any> = () => {
   const { dseq } = useParams<any>();
@@ -39,30 +36,30 @@ const Deployment: React.FC<any> = () => {
   const certificate = useRecoilValue(activeCertificate);
 
   const ReDeployTooltip = (
-    <Tooltip title="This will create a whole new replica of this deployment. The existing deployment will not be touched." placement="top">
+    <Tooltip
+      title="This will create a whole new replica of this deployment. The existing deployment will not be touched."
+      placement="top"
+    >
       <div style={{ display: 'inline-flex', alignItems: 'center' }}>
         <InfoIcon style={{ fontSize: '15px', color: 'lightgrey', marginLeft: '8px' }} />
-
       </div>
     </Tooltip>
   );
 
   const UpdateDeploymentTooltip = (
-    <Tooltip title="This will update a limited set of fields in an existing/ active deployment. Compute resources and placement criteria are not updatable." placement="top">
+    <Tooltip
+      title="This will update a limited set of fields in an existing/ active deployment. Compute resources and placement criteria are not updatable."
+      placement="top"
+    >
       <div style={{ display: 'inline-flex', alignItems: 'center' }}>
         <InfoIcon style={{ fontSize: '15px', color: 'lightgrey', marginLeft: '8px' }} />
-
       </div>
     </Tooltip>
   );
 
-  const applicationCache = dseq
-    ? localStorage.getItem(dseq)
-    : null;
+  const applicationCache = dseq ? localStorage.getItem(dseq) : null;
 
-  const application = applicationCache
-    ? JSON.parse(applicationCache)
-    : null;
+  const application = applicationCache ? JSON.parse(applicationCache) : null;
 
   React.useEffect(() => {
     const getDeployment = async () => {
@@ -112,10 +109,12 @@ const Deployment: React.FC<any> = () => {
           },
         ]);
 
-        if (flatLease['lease.leaseId.provider']
-          && akt
-          && getDeployment.deployment.deployment
-          && getDeployment.deployment.escrowAccount) {
+        if (
+          flatLease['lease.leaseId.provider'] &&
+          akt &&
+          getDeployment.deployment.deployment &&
+          getDeployment.deployment.escrowAccount
+        ) {
           const leaseCost = leaseCalculator(
             getDeployment.deployment.deployment,
             getDeployment.deployment.escrowAccount,
@@ -143,7 +142,9 @@ const Deployment: React.FC<any> = () => {
               },
               {
                 label: 'Balance',
-                value: `${formatCurrency.format(leaseCost.balanceUsd)} | ${leaseCost.balanceAkt} AKT`,
+                value: `${formatCurrency.format(leaseCost.balanceUsd)} | ${
+                  leaseCost.balanceAkt
+                } AKT`,
               },
             ]);
           }
@@ -206,10 +207,16 @@ const Deployment: React.FC<any> = () => {
 
   return (
     <Stack>
-      {certificate.$type === 'Invalid Certificate' && <Alert severity="warning" variant="filled">
-        You don&apos;t have a valid certificate. This is required to view the details of your lease.
-        You can create one <Link className="text-[#ffffff] font-bold" to="/settings">here</Link>.
-      </Alert>}
+      {certificate.$type === 'Invalid Certificate' && (
+        <Alert severity="warning" variant="filled">
+          You don&apos;t have a valid certificate. This is required to view the details of your
+          lease. You can create one{' '}
+          <Link className="text-[#ffffff] font-bold" to="/settings">
+            here
+          </Link>
+          .
+        </Alert>
+      )}
       <Grid container spacing={2} style={{ maxWidth: '90vw', width: '90vw', margin: 'auto' }}>
         <Grid item xs={4}>
           <DeploymentCard>
@@ -227,7 +234,7 @@ const Deployment: React.FC<any> = () => {
             </DeploymentSectionWrapper>
             <DeploymentSectionWrapper style={{ borderBottom: 'none' }}>
               <div className="p-3 text-lg font-bold">Actions</div>
-              {deployment?.deployment && deploymentIncomplete &&
+              {deployment?.deployment && deploymentIncomplete && (
                 <Button
                   fullWidth
                   variant="outlined"
@@ -248,10 +255,9 @@ const Deployment: React.FC<any> = () => {
                 >
                   Complete Deployment
                 </Button>
-              }
+              )}
               {deployment?.deployment && !deploymentIncomplete && (
                 <React.Fragment>
-
                   {/* deployment?.state is 1 if it is in active state. It should be that state === 2 is in-active but i am not 100% sure */}
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <ConditionalLinkUpdate
@@ -280,7 +286,6 @@ const Deployment: React.FC<any> = () => {
                           marginBottom: '12px',
                           minWidth: '150px',
                           width: '380px',
-
                         }}
                       >
                         Update Deployment
@@ -311,11 +316,8 @@ const Deployment: React.FC<any> = () => {
                           width: '380px',
                         }}
                       >
-
                         Re-Deploy
-
                       </Button>
-
                     </ConditionalLinkReDeploy>
                     <div style={{ marginLeft: '5px' }}>{ReDeployTooltip}</div>
                   </div>
@@ -335,9 +337,8 @@ const Deployment: React.FC<any> = () => {
                   wallet={keplr}
                   deployment={deployment.deployment}
                   style={{ width: '380px', marginBottom: 12 }}
-                  onDelete={
-                    () => setRefresh(true)
-                  }>
+                  onDelete={() => setRefresh(true)}
+                >
                   Delete Deployment
                 </CloseDeploymentButton>
               )}
@@ -412,7 +413,9 @@ const Deployment: React.FC<any> = () => {
         </Grid>
         <Grid item xs={8}>
           <DeploymentEventsCard>
-            {dseq && lease ? <DeploymentEvents dseq={dseq} lease={lease} leaseStatus={leaseStatus} /> : null}
+            {dseq && lease ? (
+              <DeploymentEvents dseq={dseq} lease={lease} leaseStatus={leaseStatus} />
+            ) : null}
           </DeploymentEventsCard>
         </Grid>
       </Grid>

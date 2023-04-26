@@ -21,7 +21,7 @@ const specSuffixes = {
   Gb: 1000 * 1000 * 1000,
   Tb: 1000 * 1000 * 1000 * 1000,
   Pb: 1000 * 1000 * 1000 * 1000 * 1000,
-  Eb: 1000 * 1000 * 1000 * 1000 * 1000 * 1000
+  Eb: 1000 * 1000 * 1000 * 1000 * 1000 * 1000,
 };
 
 export function ParseServiceProtocol(input: string) {
@@ -51,8 +51,9 @@ export function ParseServiceProtocol(input: string) {
 
 export function parseSizeStr(str: any) {
   try {
-    const suffix = (Object.keys(specSuffixes) as Array<keyof typeof specSuffixes>)
-      .find((s) => str.toString().toLowerCase().endsWith(s.toLowerCase()));
+    const suffix = (Object.keys(specSuffixes) as Array<keyof typeof specSuffixes>).find((s) =>
+      str.toString().toLowerCase().endsWith(s.toLowerCase())
+    );
 
     if (suffix) {
       const suffixPos = str.length - suffix.length;
@@ -84,16 +85,22 @@ function exposeExternalPort(expose: any) {
  * We need to make storage property of SDL as array to be able to manipulate with ephemeral and persistent storage
  * Here we clone whole SDL, transform storage and then return new SDL
  * @param sdl = {}
- * @return transformed SDL 
+ * @return transformed SDL
  */
 export const transformSdl = (sdl: SDLSpec) => {
   const transformedSdl = cloneDeep(sdl);
-  const profiles = toArray(sdl.deployment).map((x: any) => find(x, 'profile')).map((t: any) => t.profile);
+  const profiles = toArray(sdl.deployment)
+    .map((x: any) => find(x, 'profile'))
+    .map((t: any) => t.profile);
   profiles.map((profile: any) => {
-    const isStorageArray = Array.isArray(transformedSdl.profiles.compute[profile].resources.storage);
+    const isStorageArray = Array.isArray(
+      transformedSdl.profiles.compute[profile].resources.storage
+    );
     if (!isStorageArray) {
       // There's no better way than mutating it here directly 🤷
-      transformedSdl.profiles.compute[profile].resources.storage = [transformedSdl.profiles.compute[profile].resources.storage];
+      transformedSdl.profiles.compute[profile].resources.storage = [
+        transformedSdl.profiles.compute[profile].resources.storage,
+      ];
       return true;
     }
     return true;

@@ -2,12 +2,11 @@ import { useRecoilValue } from 'recoil';
 import { Lease } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/lease';
 import { activeCertificate, rpcEndpoint } from '../recoil/atoms';
 import { useCallback, useEffect, useState } from 'react';
-import {
-  QueryProviderResponse
-} from '@akashnetwork/akashjs/build/protobuf/akash/provider/v1beta2/query';
+import { QueryProviderResponse } from '@akashnetwork/akashjs/build/protobuf/akash/provider/v1beta2/query';
 import { fetchProviderInfo } from '../recoil/api/providers';
-import { mtlsFetch } from '../recoil/api/mtls';
+import { mtlsFetch } from '../api/rest/mtls';
 import { leaseStatusPath } from '../recoil/api/paths';
+import { getRpcNode } from './useRpcNode';
 
 interface LeaseStatus {
   services: {
@@ -21,8 +20,8 @@ interface LeaseStatus {
       updated_replicas: number;
       ready_replicas: number;
       available_replicas: number;
-    }
-  }
+    };
+  };
 }
 
 type ProviderInfo = QueryProviderResponse['provider'];
@@ -53,11 +52,14 @@ export function useLeaseStatus(lease: Lease) {
   }, [providerInfoState, certificate, lease]);
 
   useEffect(() => {
+    const { rpcNode } = getRpcNode();
+
     if (lease?.leaseId) {
       const { provider } = lease.leaseId;
 
-      fetchProviderInfo({ owner: provider }, rpcEndpoint())
-        .then(response => setProviderInfo(response?.provider));
+      fetchProviderInfo({ owner: provider }, rpcNode).then((response) =>
+        setProviderInfo(response?.provider)
+      );
     }
   }, [lease]);
 

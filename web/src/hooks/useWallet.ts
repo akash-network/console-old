@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { keplrState, showKeplrWindow } from '../recoil/atoms';
 import { getKeplr } from '../_helpers/keplr-utils';
+import logging from '../logging';
 
 export function useWallet() {
   const [keplr, setKeplr] = useRecoilState(keplrState);
@@ -31,7 +32,9 @@ export function useWallet() {
         setKeplr(res);
         localStorage.setItem('walletConnected', 'true');
       })
-      .catch(() => {
+      .catch((error: { message: string }) => {
+        logging.error(`Error connecting to Keplr wallet: ${error.message}`);
+        console.log(error);
         disconnectWallet();
       });
   };
@@ -41,7 +44,7 @@ export function useWallet() {
       localStorage.setItem('walletConnected', 'false');
       setKeplr({
         isSignedIn: false,
-        accounts: []
+        accounts: [],
       });
     }
   };

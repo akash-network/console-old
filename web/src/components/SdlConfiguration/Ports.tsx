@@ -11,7 +11,7 @@ import {
   FieldWrapper,
   Input,
   SdlSectionWrapper,
-  VariableWrapper
+  VariableWrapper,
 } from './styling';
 
 const PlusSign = () => <img src={PlusIcon} alt="Plus Icon" />;
@@ -28,16 +28,16 @@ const validatePort = (value: number, field: string) => {
 type Service = {
   expose: Array<{
     to: Array<{
-      global: boolean,
-    }>,
-  }>,
-}
+      global: boolean;
+    }>;
+  }>;
+};
 
 type PortsProps = {
-  serviceName: string,
-  services: Record<string, Service>,
-  updatePage?: boolean
-}
+  serviceName: string;
+  services: Record<string, Service>;
+  updatePage?: boolean;
+};
 
 export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage = false }) => {
   return (
@@ -45,7 +45,6 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
       name={`sdl.services.${serviceName}.expose`}
       render={(arrayHelpers) => (
         <SdlSectionWrapper>
-
           <Stack direction="row" columnGap="10px">
             <PortTitle>Port</PortTitle>
             <PortTitle>As</PortTitle>
@@ -61,12 +60,8 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
                 >
                   {({ field, meta }: any) => (
                     <React.Fragment>
-                      <Input type="number"{...field} error={meta?.error} />
-                      {meta?.error && (
-                        <ErrorMessageComponent>
-                          {meta?.error}
-                        </ErrorMessageComponent>
-                      )}
+                      <Input type="number" {...field} error={meta?.error} />
+                      {meta?.error && <ErrorMessageComponent>{meta?.error}</ErrorMessageComponent>}
                     </React.Fragment>
                   )}
                 </Field>
@@ -78,12 +73,8 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
                 >
                   {({ field, meta }: any) => (
                     <React.Fragment>
-                      <Input type="number"{...field} error={meta?.error} />
-                      {meta?.error && (
-                        <ErrorMessageComponent>
-                          {meta?.error}
-                        </ErrorMessageComponent>
-                      )}
+                      <Input type="number" {...field} error={meta?.error} />
+                      {meta?.error && <ErrorMessageComponent>{meta?.error}</ErrorMessageComponent>}
                     </React.Fragment>
                   )}
                 </Field>
@@ -97,7 +88,6 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
 
               <FieldWrapper>
                 <HostFiledWithButton>
-
                   {services[serviceName].expose[index].to?.map((expose, i) => {
                     return (
                       expose?.global && (
@@ -108,7 +98,8 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
                             {({ field }: any) => (
                               <FormControl fullWidth style={{ background: 'white' }}>
                                 <Select
-                                  labelId="to-id"{...field}
+                                  labelId="to-id"
+                                  {...field}
                                   MenuProps={{
                                     PaperProps: {
                                       sx: {
@@ -120,8 +111,8 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
                                   }}
                                   SelectDisplayProps={{
                                     style: {
-                                      padding: '11.5px 14px'
-                                    }
+                                      padding: '11.5px 14px',
+                                    },
                                   }}
                                 >
                                   <MenuItem value="true">
@@ -155,24 +146,25 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
                   </IconButton>
                 </HostFiledWithButton>
               </FieldWrapper>
-
-            </VariableWrapper >
+            </VariableWrapper>
           ))}
           <AddNewButtonWrapper>
             <AddNewButton
               startIcon={<PlusSign />}
               variant="outlined"
               size="small"
-              onClick={() => arrayHelpers.insert((services[serviceName]?.expose?.length + 1) ?? 0, {
-                port: 3000,
-                as: 80,
-                to: [{ global: true }]
-              })}
+              onClick={() =>
+                arrayHelpers.insert(services[serviceName]?.expose?.length + 1 ?? 0, {
+                  port: 3000,
+                  as: 80,
+                  to: [{ global: true }],
+                })
+              }
             >
               Add New Port
             </AddNewButton>
           </AddNewButtonWrapper>
-        </SdlSectionWrapper >
+        </SdlSectionWrapper>
       )}
     />
   );
@@ -186,7 +178,7 @@ const HostFiledWithButton = styled.div`
 const PortTitle = styled.div`
   font-weight: 500;
   font-size: 14px;
-  color: #3D4148;
+  color: #3d4148;
   padding-right: 10px;
   width: 176.5px;
   box-sizing: border-box;

@@ -35,9 +35,9 @@ export const muiTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: '#f9fafb',
-        }
-      }
-    }
+        },
+      },
+    },
   },
   typography: {
     fontFamily: 'Satoshi-Variable',
@@ -45,13 +45,13 @@ export const muiTheme = createTheme({
     h1: {
       fontWeight: '400',
       fontSize: '14px',
-      lineHeight: '20px'
+      lineHeight: '20px',
     },
 
     h2: {
       fontWeight: '400',
       fontSize: '14px',
-      lineHeight: '20px'
+      lineHeight: '20px',
     },
 
     h3: {
@@ -74,7 +74,6 @@ export const muiTheme = createTheme({
       lineHeight: '20px',
       color: '#6B7280',
     },
-
   },
   palette: {
     success: {

@@ -52,7 +52,6 @@ const CustomApp: React.FC = () => {
     if (sdl) {
       navigate(`/new-deployment/custom-sdl/${intentId}`, { state: { sdl } });
     }
-
   };
 
   const acceptBid = async (bidId: any) => {
@@ -128,7 +127,10 @@ const CustomApp: React.FC = () => {
                       <Button variant="outlined" onClick={() => showSdlReview(true)}>
                         <span className="mr-2">Review SDL</span> <Icon type="edit" />
                       </Button>
-                      <Button variant="contained" onClick={() => handlePreflight('preflight-check', values.sdl)}>
+                      <Button
+                        variant="contained"
+                        onClick={() => handlePreflight('preflight-check', values.sdl)}
+                      >
                         Create Deployment
                       </Button>
                     </DeploymentAction>
@@ -136,9 +138,9 @@ const CustomApp: React.FC = () => {
                 />
               )}
 
-              {!progressVisible && activeStep.currentCard === 2 && intentId === 'preflight-check' && (
-                <PreflightCheck />
-              )}
+              {!progressVisible &&
+                activeStep.currentCard === 2 &&
+                intentId === 'preflight-check' && <PreflightCheck />}
 
               {!progressVisible && activeStep.currentCard === 3 && deploymentId && (
                 <Keplr>

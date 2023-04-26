@@ -26,21 +26,12 @@ export default function SelectLabels(props: any) {
           onChange={handleChange}
         >
           <MenuItem value="mainnet3">
-            <div style={{ display: 'inline-block', width: '100px' }}>
-              Production
-            </div>
+            <div style={{ display: 'inline-block', width: '100px' }}>Production</div>
             <Chip color="primary" label="MainNet" variant="outlined" />
           </MenuItem>
           <MenuItem value="testnet3">
-            <div style={{ display: 'inline-block', width: '100px' }}>
-              Development
-            </div>
-            <Chip
-              color="primary"
-              label="TestNet"
-              variant="outlined"
-              sx={{ marginLeft: '5px' }}
-            />
+            <div style={{ display: 'inline-block', width: '100px' }}>Development</div>
+            <Chip color="primary" label="TestNet" variant="outlined" sx={{ marginLeft: '5px' }} />
           </MenuItem>
         </Select>
         <FormHelperText>Select a Network to Deploy.</FormHelperText>

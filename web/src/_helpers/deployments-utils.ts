@@ -15,9 +15,7 @@ function isString(value: object | string): value is string {
 }
 
 function getSdl(yamlJson: string | v2Sdl) {
-  return isString(yamlJson)
-    ? SDL.fromString(yamlJson)
-    : new SDL(yamlJson);
+  return isString(yamlJson) ? SDL.fromString(yamlJson) : new SDL(yamlJson);
 }
 
 export function DeploymentGroups(yamlJson: string | v2Sdl) {

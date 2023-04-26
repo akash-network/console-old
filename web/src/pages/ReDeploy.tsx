@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import {
   CancelButton,
   SaveButton,
-  UpdateDeploymentAction
+  UpdateDeploymentAction,
 } from '../components/UpdateDeployment/styling';
 import { createDeployment } from '../recoil/api';
 import { useRecoilValue } from 'recoil';
@@ -17,7 +17,7 @@ import {
   initialValues,
   InitialValuesProps,
   SdlConfigurationType,
-  SDLSpec
+  SDLSpec,
 } from '../components/SdlConfiguration/settings';
 import { isError } from '../_helpers/types';
 
@@ -30,13 +30,9 @@ const ReDeploy: React.FC<any> = () => {
   const [progressVisible, setProgressVisible] = useState(false);
   const [cardMessage, setCardMessage] = useState('');
 
-  const appCache = dseq
-    ? localStorage.getItem(dseq)
-    : null;
+  const appCache = dseq ? localStorage.getItem(dseq) : null;
 
-  const application = appCache
-    ? JSON.parse(appCache) as { name: string, sdl: SDLSpec }
-    : null;
+  const application = appCache ? (JSON.parse(appCache) as { name: string; sdl: SDLSpec }) : null;
 
   if (application === null) {
     return <></>;
@@ -80,15 +76,9 @@ const ReDeploy: React.FC<any> = () => {
             cardMessage={cardMessage}
             actionItems={() => (
               <UpdateDeploymentAction>
-                <ReviewSdlButton onClick={() => showSdlReview(true)}>
-                  Review SDL
-                </ReviewSdlButton>
-                <CancelButton onClick={() => navigate(-1)}>
-                  Cancel
-                </CancelButton>
-                <SaveButton onClick={() => submitForm()}>
-                  Deploy
-                </SaveButton>
+                <ReviewSdlButton onClick={() => showSdlReview(true)}>Review SDL</ReviewSdlButton>
+                <CancelButton onClick={() => navigate(-1)}>Cancel</CancelButton>
+                <SaveButton onClick={() => submitForm()}>Deploy</SaveButton>
               </UpdateDeploymentAction>
             )}
           />
@@ -105,13 +95,13 @@ const ButtonTemplate = css`
   gap: 8px;
   color: #374151;
   text-transform: capitalize;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #D7D7D7;
+  border: 1px solid #d7d7d7;
   border-radius: 6px;
 
   &:hover {
-    border-color: #3D4148
+    border-color: #3d4148;
   }
 `;
 
@@ -121,9 +111,9 @@ const ReviewSdlButton = styled(Button)`
   border-radius: 8px;
   font-family: 'Satoshi-Medium', sans-serif;
   font-size: 14px;
-  box-shadow: 0px 1px 2px 0px #0000000D;
+  box-shadow: 0px 1px 2px 0px #0000000d;
 
   &:hover {
-    background-color: #F4F5F8
+    background-color: #f4f5f8;
   }
 `;

@@ -12,18 +12,22 @@ import logging from '../../logging';
 const modelUri = Uri.parse('a://b/foo.yaml');
 
 interface MonacoYamlEditorProps {
-  value: string
-  open: boolean
-  appName?: string
-  closeReviewModal: () => void
+  value: string;
+  open: boolean;
+  appName?: string;
+  closeReviewModal: () => void;
   onSaveButtonClick: (value: SDLSpec) => void;
-  disabled: boolean
+  disabled: boolean;
 }
 
-export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
-  {
-    value, open, appName, closeReviewModal, onSaveButtonClick, disabled
-  }) => {
+export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = ({
+  value,
+  open,
+  appName,
+  closeReviewModal,
+  onSaveButtonClick,
+  disabled,
+}) => {
   const comment = '#Copy and paste your SDL here';
   const editorRef = useRef<HTMLDivElement>(null);
   const [isEditorEmpty, setIsEditorEmpty] = React.useState(true);
@@ -61,10 +65,10 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
           model: model,
           scrollBeyondLastLine: false,
           minimap: {
-            enabled: false
+            enabled: false,
           },
           readOnly: disabled,
-          theme: 'vs-dark'
+          theme: 'vs-dark',
         });
       }
     }
@@ -79,8 +83,8 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
         sx: {
           maxWidth: '100%',
           maxHeight: '100%',
-          borderRadius: 4
-        }
+          borderRadius: 4,
+        },
       }}
       onInput={handleInput}
     >
@@ -91,8 +95,9 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
           color: 'white',
           borderBottom: '1px solid #858A92',
           fontSize: 0,
-          display: 'flex'
-        }}>
+          display: 'flex',
+        }}
+      >
         {appName && <DialogTitleText>{appName}</DialogTitleText>}
         <DialogTitleReview>
           {appName && <img src={ArrowRight} alt="Icon Right" />}
@@ -102,11 +107,13 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
       <DialogContent sx={{ p: 0 }}>
         <Editor id="editor" ref={editorRef} />
       </DialogContent>
-      <DialogActions sx={{
-        bgcolor: '#272727',
-        borderTop: '1px solid #858A92',
-        padding: '20px 10px'
-      }}>
+      <DialogActions
+        sx={{
+          bgcolor: '#272727',
+          borderTop: '1px solid #858A92',
+          padding: '20px 10px',
+        }}
+      >
         {!disabled && (
           <SaveAndCloseButton
             variant="outlined"
@@ -120,40 +127,43 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = (
           </SaveAndCloseButton>
         )}
 
-        {!isEditorEmpty && <SaveAndCloseButton
-          variant="outlined"
-          size="small"
-          onClick={() => {
-            if (disabled) {
-              return false;
-            }
-
-            try {
-              const valueFromEditor = editor.getModel(modelUri)?.getValue();
-
-              if (valueFromEditor === undefined) {
-                logging.error('Unable to get SDL value from form. Please return to the previous page and try again.');
+        {!isEditorEmpty && (
+          <SaveAndCloseButton
+            variant="outlined"
+            size="small"
+            onClick={() => {
+              if (disabled) {
                 return false;
               }
 
-              const sdl: unknown = yaml.load(valueFromEditor);
+              try {
+                const valueFromEditor = editor.getModel(modelUri)?.getValue();
 
-              if (isSDLSpec(sdl)) {
-                onSaveButtonClick(sdl);
-                closeReviewModal();
-              } else {
-                logging.error('SDL is invalid. Please check the SDL and try again.');
+                if (valueFromEditor === undefined) {
+                  logging.error(
+                    'Unable to get SDL value from form. Please return to the previous page and try again.'
+                  );
+                  return false;
+                }
+
+                const sdl: unknown = yaml.load(valueFromEditor);
+
+                if (isSDLSpec(sdl)) {
+                  onSaveButtonClick(sdl);
+                  closeReviewModal();
+                } else {
+                  logging.error('SDL is invalid. Please check the SDL and try again.');
+                }
+              } catch (e: unknown) {
+                logging.error(`Cannot parse SDL: ${(e as YAMLException).message}}`);
               }
-            } catch (e: unknown) {
-              logging.error(`Cannot parse SDL: ${(e as YAMLException).message}}`);
-            }
-          }}
-        >
-          {disabled ? 'Close' : 'Save & Close'}
-        </SaveAndCloseButton>
-        }
+            }}
+          >
+            {disabled ? 'Close' : 'Save & Close'}
+          </SaveAndCloseButton>
+        )}
       </DialogActions>
-    </EditorDialog >
+    </EditorDialog>
   );
 };
 
@@ -172,14 +182,14 @@ const SaveAndCloseButton = styled(Button)`
   padding: 5px 20px;
   color: #374151;
   text-transform: capitalize;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #D7D7D7;
+  border: 1px solid #d7d7d7;
   border-radius: 6px;
 
   &:hover {
-    background-color: #F4F5F8;
-    border-color: #e1d9d9
+    background-color: #f4f5f8;
+    border-color: #e1d9d9;
   }
 `;
 
@@ -187,14 +197,14 @@ const DialogTitleText = styled.span`
   font-family: 'Satoshi-Medium', sans-serif;
   font-size: 16px;
   padding: 4px 8px;
-  background: #858A92;
-  border-radius: 6px
+  background: #858a92;
+  border-radius: 6px;
 `;
 
 const DialogSubtitleText = styled.span`
   font-family: 'Satoshi-Medium', sans-serif;
   font-size: 16px;
-  color: #7C8085;
+  color: #7c8085;
   padding-left: 8px;
 `;
 

@@ -3,30 +3,28 @@ import styled from '@emotion/styled';
 import IconTop from '../../assets/images/icon-top.svg';
 import IconDown from '../../assets/images/icon-down.svg';
 
-const ButtonUp = ({onClick}: any) => <img
-  style={{height: 8, cursor: 'pointer'}}
-  onClick={onClick} src={IconTop}
-  alt="Icon Up"
-/>;
+const ButtonUp = ({ onClick }: any) => (
+  <img style={{ height: 8, cursor: 'pointer' }} onClick={onClick} src={IconTop} alt="Icon Up" />
+);
 
-const ButtonDown = ({onClick}: any) => <img
-  style={{height: 8, cursor: 'pointer'}}
-  onClick={onClick}
-  src={IconDown}
-  alt="Icon Down"
-/>;
+const ButtonDown = ({ onClick }: any) => (
+  <img style={{ height: 8, cursor: 'pointer' }} onClick={onClick} src={IconDown} alt="Icon Down" />
+);
 
 interface InputNumberProps {
-  setFieldValue: (name: string, value: string | number) => void
-  disabled: boolean
+  setFieldValue: (name: string, value: string | number) => void;
+  disabled: boolean;
 
-  [key: string]: any
+  [key: string]: any;
 }
 
-export const InputNumber: React.FC<InputNumberProps> = ({setFieldValue, disabled, ...field}) => {
+export const InputNumber: React.FC<InputNumberProps> = ({ setFieldValue, disabled, ...field }) => {
   const size = {
-    value: typeof field.value === 'string' ? Number(field.withOutSuffix ? field.value : field.value.slice(0, -2)) : parseFloat(field.value),
-    suffix: !field.withOutSuffix && typeof field.value === 'string' && field.value.slice(-2)
+    value:
+      typeof field.value === 'string'
+        ? Number(field.withOutSuffix ? field.value : field.value.slice(0, -2))
+        : parseFloat(field.value),
+    suffix: !field.withOutSuffix && typeof field.value === 'string' && field.value.slice(-2),
   };
 
   return (
@@ -38,7 +36,7 @@ export const InputNumber: React.FC<InputNumberProps> = ({setFieldValue, disabled
           disabled
           type="number"
           value={size.value}
-          onChange={({currentTarget}) => {
+          onChange={({ currentTarget }) => {
             setFieldValue(field.name, currentTarget.value + (size?.suffix || ''));
           }}
         />
@@ -55,9 +53,12 @@ export const InputNumber: React.FC<InputNumberProps> = ({setFieldValue, disabled
                 return setFieldValue(field.name, Math.pow(2, exponent + 1) + (size.suffix || ''));
               }
               if (isNumberWithSmallStep && (size.suffix === 'Gi' || field?.withOutSuffix)) {
-                return setFieldValue(field.name, +(size.value + 0.1).toFixed(1) + (size.suffix || ''));
+                return setFieldValue(
+                  field.name,
+                  +(size.value + 0.1).toFixed(1) + (size.suffix || '')
+                );
               }
-              setFieldValue(field.name, (size.value + 1) + (size.suffix || ''));
+              setFieldValue(field.name, size.value + 1 + (size.suffix || ''));
             }}
           />
           <InputIconDown
@@ -72,9 +73,15 @@ export const InputNumber: React.FC<InputNumberProps> = ({setFieldValue, disabled
                 );
               }
               if (isNumberWithSmallStep && (size.suffix === 'Gi' || field?.withOutSuffix)) {
-                return setFieldValue(field.name, +(size.value - 0.1).toFixed(1) + (size.suffix || ''));
+                return setFieldValue(
+                  field.name,
+                  +(size.value - 0.1).toFixed(1) + (size.suffix || '')
+                );
               }
-              setFieldValue(field.name, (size.value - 1 >= 0 ? size.value - 1 : size.value) + (size?.suffix || ''));
+              setFieldValue(
+                field.name,
+                (size.value - 1 >= 0 ? size.value - 1 : size.value) + (size?.suffix || '')
+              );
             }}
           />
         </NumberButtonWrapper>
@@ -84,7 +91,7 @@ export const InputNumber: React.FC<InputNumberProps> = ({setFieldValue, disabled
 };
 
 const NumberInputWrapper = styled.div`
-  border: 1px solid #D1D5DB;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
   height: 2.5rem;
   display: inline-flex;
@@ -95,11 +102,10 @@ const NumberInputWrapper = styled.div`
 
 const InputWithSuffix = styled.div`
   display: flex;
-  border-right: 1px solid #D1D5DB;
-  padding: .5rem;
+  border-right: 1px solid #d1d5db;
+  padding: 0.5rem;
 `;
-const InputSuffix = styled.span`
-`;
+const InputSuffix = styled.span``;
 
 const NumberInput = styled.input`
   appearance: textfield;
@@ -114,7 +120,7 @@ const NumberInput = styled.input`
   width: 40px;
 
   &:after {
-    content: "Gb";
+    content: 'Gb';
     position: relative;
     width: 20px;
     height: 20px;

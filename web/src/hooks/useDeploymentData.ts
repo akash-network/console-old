@@ -22,10 +22,13 @@ export default function useDeploymentData(owner: string) {
   const [deploymentsData, setDeploymentsData] = useState<Array<DeploymentData>>();
 
   const { status, data: deploymentsQuery } = useQuery(
-    ['deployments', { owner }], fetchDeploymentList, {
+    ['deployments', { owner }],
+    fetchDeploymentList,
+    {
       refetchOnWindowFocus: false,
       keepPreviousData: true,
-    });
+    }
+  );
 
   const { data: leasesQuery } = useQuery(['leases', { owner }], fetchLeaseListActive, {
     refetchOnWindowFocus: false,
@@ -99,13 +102,9 @@ export default function useDeploymentData(owner: string) {
           query.deployment?.deploymentId?.dseq?.unsigned
         )?.toString();
 
-        const appCache = dseq
-          ? localStorage.getItem(dseq)
-          : null;
+        const appCache = dseq ? localStorage.getItem(dseq) : null;
 
-        const application = appCache
-          ? JSON.parse(appCache)
-          : null;
+        const application = appCache ? JSON.parse(appCache) : null;
 
         if (application !== null && application.name !== '') {
           name = application.name;

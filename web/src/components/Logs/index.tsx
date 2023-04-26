@@ -7,7 +7,7 @@ import Checkbox from '@mui/material/Checkbox';
 import { watchLeaseLogs } from '../../recoil/api';
 import { QueryLeaseResponse } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/query';
 import { useQuery } from 'react-query';
-import { queryProviderInfo } from '../../recoil/queries';
+import { queryProviderInfo } from '../../api/queries';
 
 export const Logs: React.FC<any> = ({ lease }) => {
   const { data: provider } = useQuery(
@@ -73,7 +73,7 @@ export const Logs: React.FC<any> = ({ lease }) => {
       }}
     >
       <div className="p-2 text-xl font-bold">Application Logs</div>
-      <LogsWrapper className='flex-1'>
+      <LogsWrapper className="flex-1">
         <ul>
           {logs.map((log: any, i: number) => (
             <LogList key={`log-line-${i}`}>

@@ -9,10 +9,13 @@ import Paper from '@mui/material/Paper';
 import { watchLeaseEvents } from '../../recoil/api';
 import { QueryLeaseResponse } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/query';
 import { useQuery } from 'react-query';
-import { queryProviderInfo } from '../../recoil/queries';
+import { queryProviderInfo } from '../../api/queries';
 
 export const EventsTable: React.FC<{ lease: any }> = ({ lease }) => {
-  const { data: provider } = useQuery(['providerInfo', lease?.lease?.leaseId?.provider], queryProviderInfo);
+  const { data: provider } = useQuery(
+    ['providerInfo', lease?.lease?.leaseId?.provider],
+    queryProviderInfo
+  );
   const [rows, setRows] = useState<any[]>([]);
   const address = (lease as QueryLeaseResponse).lease?.leaseId?.owner;
 
