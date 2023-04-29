@@ -39,6 +39,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
   const [loading, setLoading] = React.useState(false);
   const [showVerifiedCert, setShowVerifiedCert] = React.useState(false);
   const [useAuthorizedDepositor, setUseAuthorizedDepositor] = React.useState(false);
+  const { networkType } = getRpcNode();
 
   const hasKeplr = window.keplr !== undefined;
   const sdl = values.sdl;
@@ -66,10 +67,13 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
   /* Attempts to calculate the version of the manifest as a quick validation check */
   React.useEffect(() => {
     const sdlPartial = sdl as unknown;
+    const rpcVersion = networkType === 'testnet'
+      ? 'beta3'
+      : 'beta2';
 
     try {
       // we can safely cast this to v2Sdl because any failure will be caught by the catch block
-      ManifestVersion(sdlPartial as v2Sdl).then(setManifestVersion);
+      ManifestVersion(sdlPartial as v2Sdl, rpcVersion).then(setManifestVersion);
     } catch (e) {
       console.warn('Could not compute manifest version: ', e);
       setManifestVersion(undefined);

@@ -1,4 +1,3 @@
-import React from 'react';
 import { BaseAtomComponent } from '../../../recoil/api/basecomponent';
 
 import {
@@ -8,11 +7,14 @@ import {
 } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta3/query';
 import { getMsgClient, getRpc } from '@akashnetwork/akashjs/build/rpc';
 import {
-  broadcastCertificate,
   createCertificate,
   revokeCertificate,
 } from '@akashnetwork/akashjs/build/certificates';
 import crypto from 'crypto-js';
+import { getTypeUrl } from '@akashnetwork/akashjs/build/stargate';
+
+import { MsgCreateCertificate } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta3/cert';
+import { toBase64 } from 'pvutils';
 
 export interface CertificateFilter {
   owner: string;
@@ -42,22 +44,25 @@ export const createAndBroadcastCertificate = async (rpcEndpoint: string, wallet:
   const signer = wallet.offlineSigner;
   const client = await getMsgClient(rpcEndpoint, signer);
   const certificate = await createCertificate(wallet.accounts[0].address);
-  const response = await broadcastCertificate(
-    {
-      csr: certificate.csr,
-      publicKey: certificate.publicKey,
-    },
-    wallet.accounts[0].address,
-    client
-  );
+  const [account] = wallet.accounts;
 
-  const idx = saveCertificate(wallet.accounts[0].address, certificate);
-  saveActiveSerial(wallet.accounts[0].address, idx);
-
-  return {
-    ...response,
-    certificate: { $type: 'TLS Certificate', ...certificate } as TLSCertificate,
+  const msg = {
+    typeUrl: getTypeUrl(MsgCreateCertificate),
+    value: MsgCreateCertificate.fromPartial({
+      owner: account.address,
+      cert: Buffer.from(toBase64(certificate.csr), 'base64'),
+      pubkey: Buffer.from(toBase64(certificate.publicKey), 'base64'),
+    }),
   };
+
+  const tx = await client.signAndBroadcast(account.address, [msg], 'auto', 'Create new certificate');
+
+  if (tx.code !== undefined && tx.code === 0) {
+    const idx = saveCertificate(wallet.accounts[0].address, certificate);
+    saveActiveSerial(wallet.accounts[0].address, idx);
+  }
+
+  return tx;
 };
 
 export const broadcastRevokeCertificate = async (

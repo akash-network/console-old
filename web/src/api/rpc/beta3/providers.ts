@@ -2,13 +2,14 @@ import {
   QueryClientImpl as ProviderClient,
   QueryProviderRequest,
   QueryProvidersRequest,
-} from '@akashnetwork/akashjs/build/protobuf/akash/provider/v1beta2/query';
+} from '@akashnetwork/akashjs/build/protobuf/akash/provider/v1beta3/query';
 import {
   QueryAuditorAttributesRequest,
   QueryClientImpl as AuditClient,
   QueryProviderAttributesRequest,
   QueryProvidersResponse,
-} from '@akashnetwork/akashjs/build/protobuf/akash/audit/v1beta2/query';
+} from '@akashnetwork/akashjs/build/protobuf/akash/audit/v1beta3/query';
+
 import { getRpc } from '@akashnetwork/akashjs/build/rpc';
 
 export const fetchProvidersList = async (rpcEndpoint: string) => {

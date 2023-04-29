@@ -1,4 +1,4 @@
-import { statusPath } from './paths';
+import { statusPath } from '../../rest/beta2/paths';
 
 export interface RpcNodeStatus {
   node_info: {

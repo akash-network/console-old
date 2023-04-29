@@ -7,7 +7,6 @@ import {
   SaveButton,
   UpdateDeploymentAction,
 } from '../components/UpdateDeployment/styling';
-import { createDeployment } from '../recoil/api';
 import { useRecoilValue } from 'recoil';
 import { keplrState } from '../recoil/atoms';
 import { Button } from '@mui/material';
@@ -20,19 +19,37 @@ import {
   SDLSpec,
 } from '../components/SdlConfiguration/settings';
 import { isError } from '../_helpers/types';
+import { createDeployment } from '../api/mutations';
+import { useMutation } from 'react-query';
 
 const ReDeploy: React.FC<any> = () => {
   const navigate = useNavigate();
   const { dseq } = useParams<any>();
-  const keplr = useRecoilValue(keplrState);
   const [reviewSdl, showSdlReview] = useState(false);
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
-  const [progressVisible, setProgressVisible] = useState(false);
   const [cardMessage, setCardMessage] = useState('');
+  const [appData, setAppData] = useState<{ name: string; sdl?: SDLSpec } | null>(null);
+  const { mutate: mxCreateDeployment, isLoading: progressVisible, data: result } = useMutation(createDeployment);
 
   const appCache = dseq ? localStorage.getItem(dseq) : null;
 
   const application = appCache ? (JSON.parse(appCache) as { name: string; sdl: SDLSpec }) : null;
+
+  const handleSubmit = async (values: InitialValuesProps) => {
+    setCardMessage('Creating deployment');
+    setAppData({ name: values.appName, sdl: values.sdl });
+    mxCreateDeployment({ sdl: values.sdl });
+  };
+
+  React.useEffect(() => {
+    if (progressVisible == false && result && result.deploymentId) {
+      navigate(`/configure-deployment/${result.deploymentId.dseq}`);
+      localStorage.setItem(
+        `${result.deploymentId.dseq}`,
+        JSON.stringify(appData)
+      );
+    }
+  }, [progressVisible, result, appData]);
 
   if (application === null) {
     return <></>;
@@ -42,28 +59,7 @@ const ReDeploy: React.FC<any> = () => {
     <Formik
       enableReinitialize
       initialValues={{ ...initialValues, appName: application.name, sdl: application.sdl }}
-      onSubmit={async (value: InitialValuesProps) => {
-        setProgressVisible(true);
-        setCardMessage('Creating deployment');
-        try {
-          const result = await createDeployment(keplr, value.sdl);
-          if (result.deploymentId) {
-            navigate(`/configure-deployment/${result.deploymentId.dseq}`);
-            localStorage.setItem(
-              `${result.deploymentId.dseq}`,
-              JSON.stringify({
-                name: value.appName,
-                sdl: value.sdl,
-              })
-            );
-          }
-        } catch (error) {
-          if (isError(error) && error.message === 'Request rejected') {
-            setProgressVisible(false);
-            setCardMessage('');
-          }
-        }
-      }}
+      onSubmit={handleSubmit}
     >
       {({ values, submitForm }) => {
         return (

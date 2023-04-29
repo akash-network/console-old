@@ -22,7 +22,7 @@ import {
   MsgUpdateDeployment,
 } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deploymentmsg';
 import { getMsgClient, getRpc } from '@akashnetwork/akashjs/build/rpc';
-import { leaseEventsPath, leaseStatusPath, serviceLogsPath, submitManifestPath } from './paths';
+import { leaseEventsPath, leaseStatusPath, serviceLogsPath, submitManifestPath } from '../../rest/beta2/paths';
 import { KeplrWallet } from '../../../recoil/atoms';
 import {
   Lease,
@@ -87,14 +87,9 @@ export const fetchDeploymentCount = async (
   return Number(response?.pagination?.total?.toString());
 };
 
-export const fetchDeploymentList: QueryFunction<
-  QueryDeploymentsResponse,
-  [string, { owner: string; state?: string; dseq?: string }]
-> = async (params) => {
-  const [, { owner, state, dseq }] = params.queryKey;
+export const fetchDeploymentList = async ({ owner, state }: { owner: string, state?: string }, rpcNode: string) => {
   const pagination = { limit: 100 };
-  const filters = { owner, state, dseq };
-  const { rpcNode } = getRpcNode();
+  const filters = { owner, state };
 
   const deploymentCount = await fetchDeploymentCount({ owner: filters.owner }, rpcNode);
   if (deploymentCount > 100) {
@@ -116,11 +111,7 @@ export const fetchBidsList = async (
   return client.Bids(QueryBidsRequest.fromJSON({ filters }));
 };
 
-export const fetchLeaseListActive: QueryFunction<
-  QueryLeasesResponse,
-  [string, { owner: string }]
-> = async (params) => {
-  const [, { owner }] = params.queryKey;
+export const fetchLeaseListActive = async ({ owner }: { owner: string }) => {
   const { rpcNode } = getRpcNode();
   const rpc = await getRpc(rpcNode);
   const client = new MarketClient(rpc);
@@ -236,10 +227,9 @@ function createCertificateMessage(cert: TLSCertificate): string {
 
 export async function fundDeployment(
   wallet: KeplrWallet,
-  deployment: Deployment,
+  deploymentId: { dseq: number; owner: string },
   quantity: number
 ) {
-  const { deploymentId } = deployment;
   const [account] = wallet.accounts;
   const signer = wallet.offlineSigner;
   const { rpcNode } = getRpcNode();
@@ -303,8 +293,8 @@ export async function createDeployment(
 
   const client = await getMsgClient(rpcNode, signer);
 
-  const groups = DeploymentGroups(sdl);
-  const ver = await ManifestVersion(sdl);
+  const groups = DeploymentGroups(sdl, 'beta2');
+  const ver = await ManifestVersion(sdl, 'beta2');
 
   const msg = {
     typeUrl: getTypeUrl(MsgCreateDeployment),
@@ -344,7 +334,7 @@ export async function updateDeployment(wallet: KeplrWallet, deploymentId: any, s
   }
 
   const client = await getMsgClient(rpcNode, signer);
-  const ver = await ManifestVersion(sdl);
+  const ver = await ManifestVersion(sdl, 'beta2');
 
   const msg = {
     typeUrl: getTypeUrl(MsgUpdateDeployment),
@@ -384,7 +374,7 @@ export async function createLease(wallet: KeplrWallet, bidId: BidID) {
       const queryClient = new MarketClient(rpc);
       const qmsg = QueryLeaseRequest.fromJSON({ id: bidId });
 
-      return queryClient.Lease(qmsg).then((response) => response.lease);
+      return queryClient.Lease(qmsg).then((response: any) => response.lease);
     });
 }
 
@@ -407,7 +397,7 @@ export async function sendManifest(address: string, lease: Lease, sdl: any) {
 
   const provider: any = await client.Provider(request);
   const providerFetch = mtlsFetch(cert, provider.provider.hostUri);
-  const manifest = Manifest(sdl, true);
+  const manifest = Manifest(sdl, 'beta2', true);
 
   let jsonStr = JSON.stringify(manifest);
 
@@ -449,9 +439,9 @@ export async function newDeploymentData(
   deposit = defaultInitialDeposit,
   depositorAddress = null
 ) {
-  const groups = DeploymentGroups(yamlJson);
-  const mani = Manifest(yamlJson);
-  const ver = await ManifestVersion(yamlJson);
+  const groups = DeploymentGroups(yamlJson, 'beta2');
+  const mani = Manifest(yamlJson, 'beta2');
+  const ver = await ManifestVersion(yamlJson, 'beta2');
   const id = {
     owner: fromAddress,
     dseq: dseq,

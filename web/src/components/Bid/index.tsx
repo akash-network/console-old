@@ -14,6 +14,7 @@ import { fetchProviderAttributes, fetchProviderInfo } from '../../recoil/api/pro
 import { useQuery } from 'react-query';
 import { Bid as TBid } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/bid';
 import { getRpcNode } from '../../hooks/useRpcNode';
+import { queryProviderInfo } from '../../api/queries';
 
 const auditors = {
   akash18qa2a2ltfyvkyj0ggj3hkvuj6twzyumuaru9s4: {
@@ -112,12 +113,10 @@ export interface BidCardProps {
 
 export const BidCard: React.FC<BidCardProps> = ({ bid, ...props }) => {
   const { onNextButtonClick, bidId, hideIfNotAudited } = props;
-  const providerId = bid.bidId?.provider;
+  const providerId = bid.bidId?.provider || '';
   const { rpcNode } = getRpcNode();
 
-  const { data: provider } = useQuery(['provider', providerId], () =>
-    fetchProviderInfo({ owner: providerId || '' }, rpcNode)
-  );
+  const { data: provider } = useQuery(['provider', providerId], queryProviderInfo);
 
   const { data: attributes } = useQuery(['providerAttributes', bid.bidId?.provider], () =>
     fetchProviderAttributes({ owner: bid.bidId?.provider || '' }, rpcNode)
@@ -130,12 +129,16 @@ export const BidCard: React.FC<BidCardProps> = ({ bid, ...props }) => {
   const handleOpen = () => navigate(`/provider/${provider?.provider?.owner}`);
 
   if (hideIfNotAudited && !attributes?.providers?.length) {
+    console.log('provider not audited', providerId);
     return <></>;
   }
 
   if (!provider?.provider) {
+    console.log('provider not found', providerId);
     return <></>;
   }
+
+  console.log('bid', bid);
 
   return (
     <BidWrapper onClick={props.onClick} checked={props.isSelectedProvider}>

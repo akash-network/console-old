@@ -37,6 +37,7 @@ import {
   getCurrentHeight,
   Manifest,
   ManifestVersion,
+  ManifestYaml,
 } from '../../../_helpers/deployments-utils';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta3/deployment';
 import { BidID } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta3/bid';
@@ -87,14 +88,9 @@ export const fetchDeploymentCount = async (
   return Number(response?.pagination?.total?.toString());
 };
 
-export const fetchDeploymentList: QueryFunction<
-  QueryDeploymentsResponse,
-  [string, { owner: string; state?: string; dseq?: string }]
-> = async (params) => {
-  const [, { owner, state, dseq }] = params.queryKey;
+export const fetchDeploymentList = async ({ owner, state }: { owner: string, state?: string }, rpcNode: string) => {
   const pagination = { limit: 100 };
-  const filters = { owner, state, dseq };
-  const { rpcNode } = getRpcNode();
+  const filters = { owner, state };
 
   const deploymentCount = await fetchDeploymentCount({ owner: filters.owner }, rpcNode);
   if (deploymentCount > 100) {
@@ -116,11 +112,7 @@ export const fetchBidsList = async (
   return client.Bids(QueryBidsRequest.fromJSON({ filters }));
 };
 
-export const fetchLeaseListActive: QueryFunction<
-  QueryLeasesResponse,
-  [string, { owner: string }]
-> = async (params) => {
-  const [, { owner }] = params.queryKey;
+export const fetchLeaseListActive = async ({ owner }: { owner: string }) => {
   const { rpcNode } = getRpcNode();
   const rpc = await getRpc(rpcNode);
   const client = new MarketClient(rpc);
@@ -236,10 +228,9 @@ function createCertificateMessage(cert: TLSCertificate): string {
 
 export async function fundDeployment(
   wallet: KeplrWallet,
-  deployment: Deployment,
+  deploymentId: { dseq: number; owner: string },
   quantity: number
 ) {
-  const { deploymentId } = deployment;
   const [account] = wallet.accounts;
   const signer = wallet.offlineSigner;
   const { rpcNode } = getRpcNode();
@@ -301,10 +292,16 @@ export async function createDeployment(
     return Promise.reject('Unable to initialize signing client');
   }
 
-  const client = await getMsgClient(rpcNode, signer);
+  // If the SDL does not have a GPU resource set, set it to 0
+  // to avoid a bug in the backend
+  for (const service of Object.keys(sdl.services)) {
+    const profile = sdl.profiles.compute[service];
+    profile.resources.gpu = profile.resources.gpu || 0;
+  }
 
-  const groups = DeploymentGroups(sdl);
-  const ver = await ManifestVersion(sdl);
+  const client = await getMsgClient(rpcNode, signer);
+  const groups = DeploymentGroups(sdl, 'beta3');
+  const ver = await ManifestVersion(sdl, 'beta3');
 
   const msg = {
     typeUrl: getTypeUrl(MsgCreateDeployment),
@@ -325,12 +322,14 @@ export async function createDeployment(
     }),
   };
 
+  const tx = await client.signAndBroadcast(account.address, [msg], 'auto', 'Creating the deployment');
+
   return {
     deploymentId: {
       owner: account.address,
       dseq: status.sync_info.latest_block_height,
     },
-    tx: await client.signAndBroadcast(account.address, [msg], 'auto', 'Creating the deployment'),
+    tx,
   };
 }
 
@@ -344,7 +343,7 @@ export async function updateDeployment(wallet: KeplrWallet, deploymentId: any, s
   }
 
   const client = await getMsgClient(rpcNode, signer);
-  const ver = await ManifestVersion(sdl);
+  const ver = await ManifestVersion(sdl, 'beta3');
 
   const msg = {
     typeUrl: getTypeUrl(MsgUpdateDeployment),
@@ -384,7 +383,7 @@ export async function createLease(wallet: KeplrWallet, bidId: BidID) {
       const queryClient = new MarketClient(rpc);
       const qmsg = QueryLeaseRequest.fromJSON({ id: bidId });
 
-      return queryClient.Lease(qmsg).then((response) => response.lease);
+      return queryClient.Lease(qmsg).then((response: any) => response.lease);
     });
 }
 
@@ -407,14 +406,7 @@ export async function sendManifest(address: string, lease: Lease, sdl: any) {
 
   const provider: any = await client.Provider(request);
   const providerFetch = mtlsFetch(cert, provider.provider.hostUri);
-  const manifest = Manifest(sdl, true);
-
-  let jsonStr = JSON.stringify(manifest);
-
-  jsonStr = jsonStr.replaceAll('"quantity":{"val', '"size":{"val');
-  jsonStr = jsonStr.replaceAll('"mount":', '"readOnlyTmp":');
-  jsonStr = jsonStr.replaceAll('"readOnly":', '"mount":');
-  jsonStr = jsonStr.replaceAll('"readOnlyTmp":', '"readOnly":');
+  const jsonStr = ManifestYaml(sdl, 'beta3');
 
   return new Promise((resolve, reject) => {
     const attemptSend = (retry: number) => {
@@ -449,9 +441,9 @@ export async function newDeploymentData(
   deposit = defaultInitialDeposit,
   depositorAddress = null
 ) {
-  const groups = DeploymentGroups(yamlJson);
-  const mani = Manifest(yamlJson);
-  const ver = await ManifestVersion(yamlJson);
+  const groups = DeploymentGroups(yamlJson, 'beta3');
+  const mani = Manifest(yamlJson, 'beta3');
+  const ver = await ManifestVersion(yamlJson, 'beta3');
   const id = {
     owner: fromAddress,
     dseq: dseq,

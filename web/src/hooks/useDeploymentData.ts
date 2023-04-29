@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import Long from 'long';
-import { fetchDeploymentList, fetchLeaseListActive, fetchLeaseStatus } from '../recoil/api';
-import { activeCertificate, aktMarketCap, deploymentDataStale, keplrState } from '../recoil/atoms';
+import { queryDeploymentList, queryLeaseList } from '../api/queries';
+import { queryLeaseStatus } from '../api/rest/lease';
+import { activeCertificate, aktMarketCap, deploymentDataStale, keplrState, rpcEndpoint } from '../recoil/atoms';
 import { useQuery } from 'react-query';
 import { leaseCalculator } from '../_helpers/lease-calculations';
 import { uniqueName } from '../_helpers/unique-name';
+import { fetchLeaseStatus } from '../api/rpc/beta2/deployments';
+import { getRpcNode } from './useRpcNode';
 
 interface DeploymentData {
   name: string;
@@ -17,20 +20,21 @@ interface DeploymentData {
 }
 
 export default function useDeploymentData(owner: string) {
+  const { rpcNode: rpcEndpoint } = getRpcNode();
   const akt = useRecoilValue(aktMarketCap);
   const keplr = useRecoilValue(keplrState);
   const [deploymentsData, setDeploymentsData] = useState<Array<DeploymentData>>();
 
   const { status, data: deploymentsQuery } = useQuery(
     ['deployments', { owner }],
-    fetchDeploymentList,
+    queryDeploymentList,
     {
       refetchOnWindowFocus: false,
       keepPreviousData: true,
     }
   );
 
-  const { data: leasesQuery } = useQuery(['leases', { owner }], fetchLeaseListActive, {
+  const { data: leasesQuery } = useQuery(['leases', { owner }], queryLeaseList, {
     refetchOnWindowFocus: false,
     keepPreviousData: true,
   });
@@ -60,7 +64,7 @@ export default function useDeploymentData(owner: string) {
     (lease: any) => {
       if (certificate.$type === 'TLS Certificate') {
         // console.log('fetching status for lease', lease);
-        return lease && fetchLeaseStatus(lease);
+        return lease && fetchLeaseStatus(lease, rpcEndpoint);
       }
     },
     [certificate]
@@ -88,9 +92,9 @@ export default function useDeploymentData(owner: string) {
         const lease = getDeploymentLease(query.deployment);
         const status = await getLeaseStatus(lease);
         const leaseInfo = leaseCalculator(
-          query.deployment,
-          query.escrowAccount,
-          lease,
+          query?.deployment as any,
+          query?.escrowAccount as any,
+          lease as any,
           akt?.current_price || 0
         );
         let updatable = 0;

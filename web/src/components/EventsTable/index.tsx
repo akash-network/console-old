@@ -6,18 +6,22 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { watchLeaseEvents } from '../../recoil/api';
-import { QueryLeaseResponse } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/query';
 import { useQuery } from 'react-query';
 import { queryProviderInfo } from '../../api/queries';
 
+import { watchLeaseEvents as watchLeaseEventsBeta2 } from '../../api/rpc/beta2/deployments';
+import { watchLeaseEvents as watchLeaseEventsBeta3 } from '../../api/rpc/beta3/deployments';
+
+import { getRpcNode } from '../../hooks/useRpcNode';
+
 export const EventsTable: React.FC<{ lease: any }> = ({ lease }) => {
+  const { networkType } = getRpcNode();
   const { data: provider } = useQuery(
     ['providerInfo', lease?.lease?.leaseId?.provider],
     queryProviderInfo
   );
   const [rows, setRows] = useState<any[]>([]);
-  const address = (lease as QueryLeaseResponse).lease?.leaseId?.owner;
+  const address = (lease as any).lease?.leaseId?.owner;
 
   useEffect(() => {
     let socket: null | WebSocket = null;
@@ -38,7 +42,11 @@ export const EventsTable: React.FC<{ lease: any }> = ({ lease }) => {
     console.log('Opening event watch socket');
 
     if (address) {
-      watchLeaseEvents(address, provider, lease, onMessage).then((connection) => {
+      const watchFn = networkType === 'testnet'
+        ? watchLeaseEventsBeta3
+        : watchLeaseEventsBeta2;
+
+      watchFn(address, provider, lease, onMessage).then((connection) => {
         connection.onerror = (err) => {
           console.log('Error on event watch socket:', err);
         };

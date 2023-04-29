@@ -20,20 +20,21 @@ import { activeCertificate, keplrState, optIntoAnalytics } from '../recoil/atoms
 import {
   TLSCertificate,
   broadcastRevokeCertificate,
-  createAndBroadcastCertificate,
   getAvailableCertificates,
   getCertificateByIndex,
   saveActiveSerial,
 } from '../recoil/api';
 import { AntSwitch } from '../components/Switch/AntSwitch';
 import { Address } from '../components/Address';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useWallet } from '../hooks/useWallet';
 import { queryCertificates } from '../api/queries';
 import { QueryCertificatesResponse } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/query';
 import { RpcSettings, useRpcNode } from '../hooks/useRpcNode';
 import { Input } from '../components/SdlConfiguration/styling';
 import { isRpcNodeStatus } from '../api/rpc/beta2/rpc';
+import chainInfo from '../_helpers/chain';
+import { createCertificate } from '../api/mutations';
 
 type SortableCertificate = {
   available: boolean;
@@ -75,6 +76,20 @@ type FieldInfo<T> = {
   options: T[];
 };
 
+const AddCustomChainButton: React.FC = () => {
+  const addCustomChain = () => {
+    if (window && window.keplr && window.keplr.experimentalSuggestChain) {
+      window.keplr.experimentalSuggestChain(chainInfo);
+    }
+  };
+
+  return (
+    <Button variant="outlined" onClick={addCustomChain}>
+      Add Custom Chain For Testnet
+    </Button>
+  );
+};
+
 const Settings: React.FC<Record<string, never>> = () => {
   const keplr = useRecoilValue(keplrState);
   const [currentActiveCertificate, setCurrentActiveCertificate] = useRecoilState(activeCertificate);
@@ -98,6 +113,7 @@ const Settings: React.FC<Record<string, never>> = () => {
   const [candiateRpcSettings, setCandidateRpcSettings] = React.useState<RpcSettings>();
   const wallet = useWallet();
   const { rpcNode, chainId } = getRpcNode();
+  const { mutate: mxCreateCertificate } = useMutation(['createCertificate'], createCertificate);
 
   const handleConnectWallet = (): void => {
     wallet.connect();
@@ -133,9 +149,14 @@ const Settings: React.FC<Record<string, never>> = () => {
 
   const handleCreateCertificate = React.useCallback(async () => {
     setShowProgress(true);
-    await createAndBroadcastCertificate(rpcNode, keplr);
-    refetch();
-    setCreateOpen(false);
+    // the query doesn't take any arguments, this little hack keeps
+    // typescript happy
+    mxCreateCertificate(({} as any), {
+      onSuccess: () => {
+        refetch();
+        setCreateOpen(false);
+      }
+    });
   }, [keplr, rpcNode]);
 
   const handleRevokeCertificate = React.useCallback(async () => {
@@ -300,6 +321,7 @@ const Settings: React.FC<Record<string, never>> = () => {
               <Button variant="outlined" onClick={() => setChangeOpen(true)}>
                 Change
               </Button>
+              <AddCustomChainButton />
             </Stack>
           </SettingsField>
           {fields.map((obj: any, i: number) => (

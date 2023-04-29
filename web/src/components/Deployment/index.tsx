@@ -4,8 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { Alert, Button, Grid, Stack, Tooltip } from '@mui/material';
 import { DeploymentEvents } from '../DeploymentEvents';
-import { fetchDeployment } from '../../recoil/api';
-import { activeCertificate, keplrState } from '../../recoil/atoms';
+import { activeCertificate, keplrState, rpcEndpoint } from '../../recoil/atoms';
 import { formatCurrency } from '../../_helpers/formatter-currency';
 import { flattenObject } from '../../_helpers/flatten-object';
 import fetchPriceAndMarketCap from '../../recoil/api/akt';
@@ -19,6 +18,12 @@ import { uniqueName } from '../../_helpers/unique-name';
 import { Icon } from '../Icons';
 import { useLeaseStatus } from '../../hooks/useLeaseStatus';
 import InfoIcon from '@mui/icons-material/Info';
+import { fetchDeployment as beta2FetchDeployment } from '../../api/rpc/beta2/deployments';
+import { fetchDeployment as beta3FetchDeployment } from '../../api/rpc/beta3/deployments';
+import { getRpcNode } from '../../hooks/useRpcNode';
+
+import { QueryDeploymentResponse as Beta3Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta3/query';
+import { QueryDeploymentResponse as Beta2Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/query';
 
 const Deployment: React.FC<any> = () => {
   const { dseq } = useParams<any>();
@@ -63,6 +68,7 @@ const Deployment: React.FC<any> = () => {
 
   React.useEffect(() => {
     const getDeployment = async () => {
+      const { rpcNode, chainId } = getRpcNode();
       try {
         if (!dseq) return;
 
@@ -70,7 +76,18 @@ const Deployment: React.FC<any> = () => {
         let flatLease = {} as any;
         let image = 'n/a';
         const owner = keplr?.accounts[0]?.address;
-        const getDeployment = await fetchDeployment(owner, dseq);
+        let getDeployment: any = null;
+
+        // TOOD: this should use the query to avoid having to do a version
+        // check here
+        if (chainId === 'akashnet-2') {
+          getDeployment = await beta2FetchDeployment(owner, dseq, rpcNode);
+          console.log('deploy', JSON.stringify(Beta2Deployment.toJSON(getDeployment.deployment), null, 2));
+        } else {
+          getDeployment = await beta3FetchDeployment(owner, dseq, rpcNode);
+          console.log('deploy', JSON.stringify(Beta3Deployment.toJSON(getDeployment.deployment), null, 2));
+        }
+
         const deployment = flattenObject(getDeployment.deployment) as any;
         const leases = flattenObject(getDeployment.leases) as any;
         const akt = await fetchPriceAndMarketCap();
@@ -142,9 +159,8 @@ const Deployment: React.FC<any> = () => {
               },
               {
                 label: 'Balance',
-                value: `${formatCurrency.format(leaseCost.balanceUsd)} | ${
-                  leaseCost.balanceAkt
-                } AKT`,
+                value: `${formatCurrency.format(leaseCost.balanceUsd)} | ${leaseCost.balanceAkt
+                  } AKT`,
               },
             ]);
           }

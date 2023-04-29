@@ -1,7 +1,7 @@
 import React, { ChangeEventHandler, useState } from 'react';
 import { Box, Divider, Stack } from '@mui/material';
 import { Bid as BidCard } from '../components/Bid';
-import { fetchBidsList } from '../recoil/api';
+import { queryBidsList } from '../api/queries';
 import { Bid } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/bid';
 import styled from '@emotion/styled';
 import Loading from '../components/Loading';
@@ -9,7 +9,6 @@ import { useQuery } from 'react-query';
 import { WordSwitch } from '../components/Switch/WordSwitch';
 import { Timer } from '../components/Timer';
 import { PlaceholderCard } from '../components/PlaceholderCard';
-import { rpcEndpoint } from '../recoil/atoms';
 import { getRpcNode } from '../hooks/useRpcNode';
 
 export interface SelectProviderProps {
@@ -47,21 +46,26 @@ export default function SelectProvider({
   onNextButtonClick,
   deploymentId,
 }: SelectProviderProps): JSX.Element {
-  const { rpcNode } = getRpcNode();
+  const [refreshInterval, setRefreshInterval] = useState(1000);
+  const [bids, setBids] = useState<Bid[]>([]);
+  const { data: bidsResponse } = useQuery(['bids', deploymentId], queryBidsList, {
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+    refetchInterval: refreshInterval
+  });
 
-  // TODO: this should be moved into queries.ts
-  const { data: bids } = useQuery(
-    ['bids', deploymentId],
-    () =>
-      fetchBidsList(deploymentId, rpcNode).then((resp) =>
-        resp.bids.filter((resp) => resp.bid !== undefined).map((resp) => resp.bid as Bid)
-      ),
-    {
-      refetchOnWindowFocus: false,
-      keepPreviousData: true,
-      refetchInterval: (bids) => (bids && bids.length > 0 ? 5000 : 1000),
+  React.useEffect(() => {
+    const bids = bidsResponse?.bids;
+
+    if (bids && bids.length > 0) {
+      setRefreshInterval(5000);
+      setBids(
+        (bids as unknown as Array<{ bid?: Bid }>)
+          .filter((bid: { bid?: Bid }) => bid.bid !== undefined)
+          .map((bid: { bid?: Bid }) => bid.bid as Bid) // ts has issues with the filter above
+      );
     }
-  );
+  }, [bidsResponse]);
 
   const [timerExpired, setTimerExpired] = React.useState(false);
   const [selectedProvider, setSelectedProvider] = React.useState<string>();

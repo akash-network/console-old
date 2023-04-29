@@ -3,11 +3,12 @@ import styled from '@emotion/styled';
 import { Button, Input } from '@mui/material';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { getAccountBalance } from '../../recoil/api/bank';
-import { fundDeployment } from '../../recoil/api/deployments';
 import { KeplrWallet } from '../../recoil/atoms';
 import { aktToUakt, uaktToAKT } from '../../_helpers/lease-calculations';
 import { IconType, Icon } from '../Icons';
 import { Prompt } from '../Prompt';
+import { useMutation } from 'react-query';
+import { fundDeployment } from '../../api/mutations';
 
 const InputContainer = styled.div`
   display: flex;
@@ -30,7 +31,7 @@ export const FundDeploymentButton: React.FC<FundDeploymentButtonProps> = ({
   const [open, setOpen] = React.useState(false);
   const [amount, setAmount] = React.useState(0);
   const [balance, setBalance] = React.useState(0);
-  const [showProgress, setShowProgress] = React.useState(false);
+  const { mutate: mxFundDeployment, isLoading: showProgress } = useMutation(fundDeployment);
 
   React.useEffect(() => {
     getAccountBalance(wallet.accounts[0].address).then(setBalance);
@@ -50,9 +51,10 @@ export const FundDeploymentButton: React.FC<FundDeploymentButtonProps> = ({
   }, [cleanupState]);
 
   const onSend = React.useCallback(async () => {
-    setShowProgress(true);
-    if (amount !== 0) {
-      await fundDeployment(wallet, deployment, aktToUakt(amount));
+    const dseq = deployment.deploymentId?.dseq?.toString();
+
+    if (amount !== 0 && dseq !== undefined) {
+      await mxFundDeployment({ dseq, amount: aktToUakt(amount) });
       window.location.reload();
     }
   }, [deployment, wallet, amount, cleanupState]);

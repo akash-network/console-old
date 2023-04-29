@@ -4,17 +4,21 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import List from '@mui/material/List';
 import Checkbox from '@mui/material/Checkbox';
-import { watchLeaseLogs } from '../../recoil/api';
-import { QueryLeaseResponse } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/query';
 import { useQuery } from 'react-query';
 import { queryProviderInfo } from '../../api/queries';
 
+import { watchLeaseLogs as watchLeaseLogsBeta2 } from '../../api/rpc/beta2/deployments';
+import { watchLeaseLogs as watchLeaseLogsBeta3 } from '../../api/rpc/beta3/deployments';
+
+import { getRpcNode } from '../../hooks/useRpcNode';
+
 export const Logs: React.FC<any> = ({ lease }) => {
+  const { networkType } = getRpcNode();
   const { data: provider } = useQuery(
     ['providerInfo', lease?.lease?.leaseId?.provider],
     queryProviderInfo
   );
-  const address = (lease as QueryLeaseResponse).lease?.leaseId?.owner;
+  const address = (lease as any).lease?.leaseId?.owner;
   const [logs, setLogs] = useState<any[]>([]);
   const [autoScrollWithOutput, setAutoScrollWithOutput] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -35,7 +39,11 @@ export const Logs: React.FC<any> = ({ lease }) => {
       }
     };
 
-    watchLeaseLogs(address, provider, lease?.lease, onMessage).then((connection) => {
+    const watchFn = networkType === 'testnet'
+      ? watchLeaseLogsBeta3
+      : watchLeaseLogsBeta2;
+
+    watchFn(address, provider, lease?.lease, onMessage).then((connection) => {
       connection.onerror = (error) => {
         console.error('Error on log watch socket:', error);
       };
