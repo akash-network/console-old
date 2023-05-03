@@ -13,7 +13,6 @@ parserOptions:
 plugins:
   - react
   - '@typescript-eslint'
-  # - prettier
 settings:
   react:
     version: detect
