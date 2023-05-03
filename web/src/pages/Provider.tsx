@@ -5,7 +5,9 @@ import ProviderDetails from '../components/ProviderDetails';
 export default function MyDeployments() {
   const { providerId } = useParams();
 
-  return <Suspense fallback={<div className="mt-8 ml-16">Loading...</div>}>
-    {providerId && <ProviderDetails providerId={providerId} />}
-  </Suspense>;
+  return (
+    <Suspense fallback={<div className="mt-8 ml-16">Loading...</div>}>
+      {providerId && <ProviderDetails providerId={providerId} />}
+    </Suspense>
+  );
 }

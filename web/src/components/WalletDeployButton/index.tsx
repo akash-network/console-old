@@ -6,53 +6,49 @@ import CheckedImage from '../../assets/images/checkmark-red.svg';
 import { Template } from '../SdlConfiguration/settings';
 
 export interface WalletDeployButtonProps {
-  selected: Template | undefined
-  typology: Template
-  onButtonSelect: (template: Template) => void
-  index: number
-  length: number
+  selected: Template | undefined;
+  typology: Template;
+  onButtonSelect: (template: Template) => void;
+  index: number;
+  length: number;
 
-  [key: string]: any
+  [key: string]: any;
 }
 
-export const WalletDeployButtons: React.FC<WalletDeployButtonProps> = (
-  {
-    selected,
-    typology,
-    onButtonSelect,
-    index,
-    length,
-    ...field
-  }) => {
+export const WalletDeployButtons: React.FC<WalletDeployButtonProps> = ({
+  selected,
+  typology,
+  onButtonSelect,
+  index,
+  length,
+  ...field
+}) => {
   return (
     <Box
       sx={{
-        width: '100%'
-      }}>
+        width: '100%',
+      }}
+    >
       <WalletDeployButtonWrapper
         checked={selected?.title === typology.title}
         length={length}
         onClick={() => onButtonSelect(typology)}
       >
         <WalletDeployHeadline>
-          <WalletDeployButtonTitle>
-            {typology.title}
-          </WalletDeployButtonTitle>
+          <WalletDeployButtonTitle>{typology.title}</WalletDeployButtonTitle>
           {selected?.title === typology.title && (
             <WalletCheckmarkButton
               id={typology.title}
               src={CheckedImage}
               checked={selected.title === typology.title}
-              onChange={({ currentTarget }) =>
-                onButtonSelect(typology)
-              }
+              onChange={({ currentTarget }) => onButtonSelect(typology)}
             />
           )}
         </WalletDeployHeadline>
         <WalletDeployButtonDescription>
           {truncate(typology.description, {
-            'length': 200,
-            'separator': '...'
+            length: 200,
+            separator: '...',
           })}
         </WalletDeployButtonDescription>
       </WalletDeployButtonWrapper>
@@ -60,7 +56,7 @@ export const WalletDeployButtons: React.FC<WalletDeployButtonProps> = (
   );
 };
 
-const WalletDeployButtonWrapper = styled.div<{ checked?: boolean, length?: number }>`
+const WalletDeployButtonWrapper = styled.div<{ checked?: boolean; length?: number }>`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -73,8 +69,7 @@ const WalletDeployButtonWrapper = styled.div<{ checked?: boolean, length?: numbe
 
   background: #ffffff;
   border: ${(props) => (props.checked ? '1px solid #F43F5E' : '1px solid #B7C1CF')};
-  box-shadow: ${(props) =>
-    props.checked ? '0px 1px 2px 0px #0000000D' : 'none'};
+  box-shadow: ${(props) => (props.checked ? '0px 1px 2px 0px #0000000D' : 'none')};
   border-radius: 8px;
   flex: none;
   order: 0;

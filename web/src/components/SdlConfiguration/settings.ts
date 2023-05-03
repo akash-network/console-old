@@ -3,16 +3,16 @@ import { Attribute } from '@akashnetwork/akashjs/build/protobuf/akash/base/v1bet
 import { v2Sdl } from '@akashnetwork/akashjs/build/sdl/types';
 
 export interface InitialValuesProps {
-  folderName?: string | undefined,
-  appName: string,
-  sdl: SDLSpec | undefined,
-  depositor: string | undefined,
+  folderName?: string | undefined;
+  appName: string;
+  sdl: SDLSpec | undefined;
+  depositor: string | undefined;
 }
 
 export interface Template {
-  title: string,
-  description: string,
-  url: string
+  title: string;
+  description: string;
+  url: string;
 }
 
 export const initialValues: InitialValuesProps = {
@@ -25,7 +25,7 @@ export const initialValues: InitialValuesProps = {
 export enum SdlConfigurationType {
   Create = 'Create',
   Update = 'Update',
-  ReDeploy = 'ReDeploy'
+  ReDeploy = 'ReDeploy',
 }
 
 export interface Service {
@@ -34,15 +34,15 @@ export interface Service {
   Command: string[] | null;
   Args: string[] | null;
   Env: string[] | null;
-  Resources: ResourceUnits
+  Resources: ResourceUnits;
   Count: number;
-  Expose: ServiceExpose[] | null
+  Expose: ServiceExpose[] | null;
 }
 
 export interface ServiceExpose {
   Port: number; // Port on the container
   ExternalPort?: number; // Port on the service definition (default 0?)
-  Proto: ServiceProtocol // 
+  Proto: ServiceProtocol; //
   Service: string; // default ""
   Global: boolean; // default false
   Hosts: string[] | null;
@@ -84,8 +84,10 @@ export type SDLSpec = v2Sdl & {
 export function isSDLSpec(sdl: unknown): sdl is SDLSpec {
   const sdlSpec = sdl as SDLSpec;
 
-  return sdlSpec.version === '2.0' &&
+  return (
+    sdlSpec.version === '2.0' &&
     typeof sdlSpec.services === 'object' &&
     typeof sdlSpec.profiles === 'object' &&
-    typeof sdlSpec.deployment === 'object';
+    typeof sdlSpec.deployment === 'object'
+  );
 }

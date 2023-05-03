@@ -15,24 +15,29 @@ const validatePricing = (value: any) => {
 type PricingAmount = {
   amount: number;
   denom: string;
-}
+};
 
 type PricingPlacement = {
   pricing: Record<string, PricingAmount>;
-}
+};
 
 type PricingProfile = {
   placement: Record<string, PricingPlacement>;
-}
+};
 
 type PricingProps = {
   profiles: PricingProfile;
   placement: string;
   currentProfile: string;
   disabled: boolean;
-}
+};
 
-export const Pricing: React.FC<PricingProps> = ({ profiles, placement, currentProfile, disabled }) => {
+export const Pricing: React.FC<PricingProps> = ({
+  profiles,
+  placement,
+  currentProfile,
+  disabled,
+}) => {
   return (
     <Field
       name={`sdl.profiles.placement.${placement}.pricing.${currentProfile}.amount`}
@@ -42,22 +47,21 @@ export const Pricing: React.FC<PricingProps> = ({ profiles, placement, currentPr
       {({ field, meta }: any) => (
         <React.Fragment>
           <FieldWrapperAmountCurrency>
-            <FieldAmountCurrency>{profiles?.placement[placement]?.pricing[currentProfile].denom}</FieldAmountCurrency>
-            <InputField error={meta?.error}
+            <FieldAmountCurrency>
+              {profiles?.placement[placement]?.pricing[currentProfile].denom}
+            </FieldAmountCurrency>
+            <InputField
+              error={meta?.error}
               style={{
                 borderStartStartRadius: 0,
-                borderEndStartRadius: 0
+                borderEndStartRadius: 0,
               }}
               type="number"
               disabled={disabled}
               {...field}
             />
           </FieldWrapperAmountCurrency>
-          {meta?.error && (
-            <ErrorMessageComponent>
-              {meta?.error}
-            </ErrorMessageComponent>
-          )}
+          {meta?.error && <ErrorMessageComponent>{meta?.error}</ErrorMessageComponent>}
         </React.Fragment>
       )}
     </Field>
@@ -71,15 +75,15 @@ const FieldWrapperAmountCurrency = styled(FieldWrapper)`
 
 const FieldAmountCurrency = styled.div`
   padding: 10px 16px;
-  border: 1px solid #D7D7D7;
+  border: 1px solid #d7d7d7;
   border-radius: 6px;
   border-right: none;
   border-start-end-radius: 0;
   border-end-end-radius: 0;
-  background: #F9FAFB;
+  background: #f9fafb;
 `;
 
-const InputField = styled(Input) <{ error?: boolean }>`
+const InputField = styled(Input)<{ error?: boolean }>`
   width: 100%;
 
   &:disabled {

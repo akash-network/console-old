@@ -13,27 +13,16 @@ const validateImage = (value: any) => {
 };
 
 type ImageProps = {
-  currentProfile: string
-}
+  currentProfile: string;
+};
 
 export const Image: React.FC<ImageProps> = ({ currentProfile }) => {
   return (
-    <Field
-      name={`sdl.services.${currentProfile}.image`}
-      validate={validateImage}
-      id="image"
-    >
+    <Field name={`sdl.services.${currentProfile}.image`} validate={validateImage} id="image">
       {({ field, meta }: any) => (
         <FieldWrapperImage>
-          <InputField error={meta?.error}
-            type="text"
-            {...field}
-          />
-          {meta?.error && (
-            <ErrorMessageComponent>
-              {meta?.error}
-            </ErrorMessageComponent>
-          )}
+          <InputField error={meta?.error} type="text" {...field} />
+          {meta?.error && <ErrorMessageComponent>{meta?.error}</ErrorMessageComponent>}
         </FieldWrapperImage>
       )}
     </Field>
@@ -46,7 +35,7 @@ const FieldWrapperImage = styled(FieldWrapper)`
   flex-direction: column;
 `;
 
-const InputField = styled(Input) <{ error?: boolean }>`
+const InputField = styled(Input)<{ error?: boolean }>`
   width: 100%;
 
   &:focus {

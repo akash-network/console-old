@@ -1,5 +1,6 @@
 import { SigningCosmosClient } from '@cosmjs/launchpad';
-import { KeplrWallet, rpcEndpoint } from '../recoil/atoms';
+import { KeplrWallet } from '../recoil/atoms';
+import { getRpcNode } from '../hooks/useRpcNode';
 
 const initalState = {
   accounts: [],
@@ -10,11 +11,11 @@ const initalState = {
 };
 
 export const getKeplr = async (): Promise<KeplrWallet> => {
+  const { chainId, rpcNode } = getRpcNode();
+
   if (!window.keplr) {
     return initalState;
   } else {
-    const chainId = 'akashnet-2';
-
     // Enabling before using the Keplr is recommended.
     // This method will ask the user whether to allow access if they haven't visited this website.
     // Also, it will request that the user unlock the wallet if the wallet is locked.
@@ -29,11 +30,7 @@ export const getKeplr = async (): Promise<KeplrWallet> => {
     const accounts = await offlineSigner.getAccounts();
 
     // Initialize the gaia api with the offline signer that is injected by Keplr extension.
-    const cosmJS = new SigningCosmosClient(
-      rpcEndpoint(),
-      accounts[0].address,
-      offlineSigner
-    );
+    const cosmJS = new SigningCosmosClient(rpcNode, accounts[0].address, offlineSigner);
 
     return {
       accounts: [...accounts],

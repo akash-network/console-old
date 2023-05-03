@@ -1,6 +1,4 @@
-import {
-  Deployment
-} from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
+import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { Account } from '@akashnetwork/akashjs/build/protobuf/akash/escrow/v1beta2/types';
 import { Lease } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/lease';
 import { DecCoin } from '@akashnetwork/akashjs/build/protobuf/cosmos/base/v1beta1/coin';
@@ -49,12 +47,19 @@ export function getTimeLeft(leasePriceAmount: number, balance: number) {
   return `${(difference / (1000 * 3600 * 24)).toFixed(0)} days`;
 }
 
-export function leaseCalculator(deployment: Deployment | undefined, escrowAccount: Required<Account> | undefined, lease: Lease | undefined, aktCurrentPrice: number) {
+export function leaseCalculator(
+  deployment: Deployment | undefined,
+  escrowAccount: Required<Account> | undefined,
+  lease: Lease | undefined,
+  aktCurrentPrice: number
+) {
   if (!deployment || !lease || !escrowAccount) return;
 
   const leasePriceAmount = lease.price ? decCoinToNum(lease.price) : 0;
   const escrowBalanceAmount = escrowAccount.balance ? decCoinToNum(escrowAccount.balance) : 0;
-  const escrowTransferredAmount = escrowAccount.transferred ? decCoinToNum(escrowAccount.transferred) : 0;
+  const escrowTransferredAmount = escrowAccount.transferred
+    ? decCoinToNum(escrowAccount.transferred)
+    : 0;
 
   // data returned
   const costAkt = getAvgAktCostPerMonth(leasePriceAmount);

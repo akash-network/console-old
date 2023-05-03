@@ -3,11 +3,12 @@ import styled from '@emotion/styled';
 import { Button, Input } from '@mui/material';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { getAccountBalance } from '../../recoil/api/bank';
-import { fundDeployment } from '../../recoil/api/deployments';
 import { KeplrWallet } from '../../recoil/atoms';
 import { aktToUakt, uaktToAKT } from '../../_helpers/lease-calculations';
 import { IconType, Icon } from '../Icons';
 import { Prompt } from '../Prompt';
+import { useMutation } from 'react-query';
+import { fundDeployment } from '../../api/mutations';
 
 const InputContainer = styled.div`
   display: flex;
@@ -19,17 +20,21 @@ export type FundDeploymentButtonProps = React.PropsWithChildren<{
   icon?: IconType;
   deployment: Deployment;
   wallet: KeplrWallet;
-}>
+}>;
 
-export const FundDeploymentButton: React.FC<FundDeploymentButtonProps> = ({ icon, deployment, wallet, children }) => {
+export const FundDeploymentButton: React.FC<FundDeploymentButtonProps> = ({
+  icon,
+  deployment,
+  wallet,
+  children,
+}) => {
   const [open, setOpen] = React.useState(false);
   const [amount, setAmount] = React.useState(0);
   const [balance, setBalance] = React.useState(0);
-  const [showProgress, setShowProgress] = React.useState(false);
+  const { mutate: mxFundDeployment, isLoading: showProgress } = useMutation(fundDeployment);
 
   React.useEffect(() => {
-    getAccountBalance(wallet.accounts[0].address)
-      .then(setBalance);
+    getAccountBalance(wallet.accounts[0].address).then(setBalance);
   }, [wallet]);
 
   const onButtonClick = React.useCallback(() => {
@@ -46,9 +51,10 @@ export const FundDeploymentButton: React.FC<FundDeploymentButtonProps> = ({ icon
   }, [cleanupState]);
 
   const onSend = React.useCallback(async () => {
-    setShowProgress(true);
-    if (amount !== 0) {
-      await fundDeployment(wallet, deployment, aktToUakt(amount));
+    const dseq = deployment.deploymentId?.dseq?.toString();
+
+    if (amount !== 0 && dseq !== undefined) {
+      await mxFundDeployment({ dseq, amount: aktToUakt(amount) });
       window.location.reload();
     }
   }, [deployment, wallet, amount, cleanupState]);
@@ -57,45 +63,44 @@ export const FundDeploymentButton: React.FC<FundDeploymentButtonProps> = ({ icon
     setAmount(Number(event.target.value));
   };
 
-  return <>
-    <Button fullWidth={true}
-      variant="outlined"
-      color="secondary"
-      aria-label="account of current user"
-      aria-controls="menu-appbar"
-      aria-haspopup="true"
-      sx={{
-        justifyContent: 'left',
-        gap: '10px',
-        backgroundColor: '#FFF1F2',
-        color: '#F43F5E',
-        border: '1px solid #D1D5DB'
-      }}
-      onClick={onButtonClick}
-    >
-      {icon && <Icon type={icon} />}
-      {children}
-    </Button>
-    <Prompt
-      title="Add Funds"
-      open={open}
-      onClose={onCancel}
-      showProgress={showProgress}
-      actions={[
-        { label: 'Cancel', callback: onCancel },
-        { label: 'Send', callback: onSend, disabled: amount <= 0 || amount >= balance },
-      ]}
-    >
-      <div>
-        <div>How much of {uaktToAKT(balance)} AKT do you want to send?</div>
-        <InputContainer>
-          <Input
-            type="number"
-            placeholder="5"
-            onChange={handleChange}
-          /> AKT
-        </InputContainer>
-      </div>
-    </Prompt>
-  </>;
+  return (
+    <>
+      <Button
+        fullWidth={true}
+        variant="outlined"
+        color="secondary"
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        sx={{
+          justifyContent: 'left',
+          gap: '10px',
+          backgroundColor: '#FFF1F2',
+          color: '#F43F5E',
+          border: '1px solid #D1D5DB',
+        }}
+        onClick={onButtonClick}
+      >
+        {icon && <Icon type={icon} />}
+        {children}
+      </Button>
+      <Prompt
+        title="Add Funds"
+        open={open}
+        onClose={onCancel}
+        showProgress={showProgress}
+        actions={[
+          { label: 'Cancel', callback: onCancel },
+          { label: 'Send', callback: onSend, disabled: amount <= 0 || amount >= balance },
+        ]}
+      >
+        <div>
+          <div>How much of {uaktToAKT(balance)} AKT do you want to send?</div>
+          <InputContainer>
+            <Input type="number" placeholder="5" onChange={handleChange} /> AKT
+          </InputContainer>
+        </div>
+      </Prompt>
+    </>
+  );
 };

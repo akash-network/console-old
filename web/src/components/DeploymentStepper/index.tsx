@@ -13,8 +13,12 @@ import {
   Typography,
 } from '@mui/material';
 import { Formik } from 'formik';
-import { deploymentDataStale, deploymentSdl, keplrState, myDeployments as myDeploymentsAtom } from '../../recoil/atoms';
-import { createDeployment, createLease, sendManifest } from '../../recoil/api';
+import {
+  deploymentDataStale,
+  deploymentSdl,
+  keplrState,
+  myDeployments as myDeploymentsAtom,
+} from '../../recoil/atoms';
 import { Dialog } from '../Dialog';
 import FeaturedApps from '../../pages/FeaturedApps';
 import SelectApp from '../../pages/SelectApp';
@@ -27,6 +31,12 @@ import { myDeploymentFormat } from '../../_helpers/my-deployment-utils';
 import logging from '../../logging';
 import Loading from '../Loading';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
+import { useMutation } from 'react-query';
+import { createDeployment, createLease } from '../../api/mutations';
+
+import { sendManifest as sendManifestBeta2 } from '../../api/rpc/beta2/deployments';
+import { sendManifest as sendManifestBeta3 } from '../../api/rpc/beta3/deployments';
+import { getRpcNode } from '../../hooks/useRpcNode';
 
 const steps = ['Featured Apps', 'Select', 'Configure', 'Review', 'Deploy'];
 
@@ -41,7 +51,6 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   const [deploymentId, setDeploymentId] = React.useState<{ owner: string; dseq: string }>();
   const { folderName, templateId, intentId, dseq } = useParams();
   const [sdl, setSdl] = useRecoilState(deploymentSdl);
-  const [progressVisible, setProgressVisible] = useState(false);
   const [cardMessage, setCardMessage] = useState('');
   const [activeStep, setActiveStep] = useState({ currentCard: 0 });
   const [open, setOpen] = React.useState(false);
@@ -49,10 +58,15 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   const [errorMessage, setErrorMessage] = React.useState<string>();
   const [myDeployments, setMyDeployments] = useRecoilState(myDeploymentsAtom);
   const [, setDeploymentRefresh] = useRecoilState(deploymentDataStale);
+  const { mutate: mxCreateDeployment, isLoading: deploymentProgressVisible } = useMutation(createDeployment);
+  const { mutate: mxCreateLease, isLoading: leaseProgressVisible } = useMutation(createLease);
+  const { networkType } = getRpcNode();
+
+  const progressVisible = deploymentProgressVisible || leaseProgressVisible;
 
   React.useEffect(() => {
     const params = [folderName, templateId && uriToName(templateId), intentId];
-    const numParams = params.filter(x => x !== undefined).length;
+    const numParams = params.filter((x) => x !== undefined).length;
 
     setActiveStep({ currentCard: numParams });
   }, [folderName, templateId, intentId]);
@@ -91,43 +105,39 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   };
 
   const acceptBid = async (bidId: any) => {
-    setProgressVisible(true);
     setCardMessage('Deploying');
 
-    createLease(keplr, bidId)
-      .then(
-        (lease) => {
-          logging.success('Create lease: successful');
+    mxCreateLease(bidId, {
+      onSuccess: (lease) => {
+        logging.success('Create lease: successful');
 
-          // if the user refreshed the page, the atom could be empty
-          // if that's the case, used the stored version
-          const cachedDetails = JSON.parse(
-            localStorage.getItem(`${lease?.leaseId?.dseq}`) || ''
-          );
-          const _sdl = sdl
-            ? sdl
-            : cachedDetails.sdl;
+        // if the user refreshed the page, the atom could be empty
+        // if that's the case, used the stored version
+        const cachedDetails = JSON.parse(localStorage.getItem(`${lease?.leaseId?.dseq}`) || '');
+        const _sdl = sdl ? sdl : cachedDetails.sdl;
+        const sendManifest = networkType === 'testnet'
+          ? sendManifestBeta2
+          : sendManifestBeta3;
 
-          if (lease) {
-            return sendManifest(keplr.accounts[0].address, lease, _sdl);
-          }
-        },
-        (error) => {
-          logging.log(`Failed to create lease: ${error}`);
-          return null;
+        if (lease) {
+          return sendManifest(keplr.accounts[0].address, lease, _sdl)
+            .then(
+              (result) => {
+                if (result) {
+                  logging.success('Manifest sending: successful');
+                  setDeploymentRefresh(true);
+                  navigate(`/my-deployments/${dseq}`);
+                }
+              },
+              (error) => logging.log(`Failed to send manifest: ${error}`)
+            )
+            .finally(() => navigate(`/my-deployments/${dseq}`));
         }
-      )
-      .then(
-        (result) => {
-          if (result) {
-            logging.success('Manifest sending: successful');
-            setDeploymentRefresh(true);
-            navigate(`/my-deployments/${dseq}`);
-          }
-        },
-        (error) => logging.log(`Failed to send manifest: ${error}`)
-      )
-      .finally(() => navigate(`/my-deployments/${dseq}`));
+      },
+      onError: (error) => {
+        logging.log(`Failed to create lease: ${error}`);
+      }
+    });
   };
 
   // Error handling dialog
@@ -140,9 +150,10 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   // TODO: this should be changed to use the logging system, and not throw
   // additional exceptions.
   const handleError = async (maybeError: unknown, method: string) => {
-    const error = maybeError && Object.prototype.hasOwnProperty.call(maybeError, 'message')
-      ? (maybeError as Error)
-      : { message: 'Unknown error' };
+    const error =
+      maybeError && Object.prototype.hasOwnProperty.call(maybeError, 'message')
+        ? (maybeError as Error)
+        : { message: 'Unknown error' };
 
     let title = 'Error';
     let message = 'An error occurred while sending your request.';
@@ -159,7 +170,6 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
     }
     setErrorTitle(title);
     setErrorMessage(message);
-    setProgressVisible(false);
     setCardMessage('');
     setOpen(true);
     throw new Error(`${method}: ${error.message}`);
@@ -174,29 +184,32 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
           // the onSubmit method is called from the component PreflightCheck.
           // it uses the useFormikContext hook.
           // const { submitForm } = useFormikContext();
-          setProgressVisible(true);
           setCardMessage('Creating deployment');
 
           try {
-            const result = await createDeployment(keplr, value.sdl, value.depositor);
-            if (result && result.deploymentId) {
-              setDeploymentId(result.deploymentId);
-              setSdl(value.sdl);
+            const result = mxCreateDeployment({ sdl: value.sdl, depositor: value.depositor },
+              {
+                onSuccess: async (result) => {
+                  if (result && result.deploymentId) {
+                    setDeploymentId(result.deploymentId);
+                    setSdl(value.sdl);
 
-              // wait a second to give the blockchain a chance to setup
-              // the bids for the deployment
-              setTimeout(() => {
-                setProgressVisible(false);
-                navigate(`/configure-deployment/${result.deploymentId.dseq}`);
-              }, 2000);
+                    // wait a second to give the blockchain a chance to setup
+                    // the bids for the deployment
+                    setTimeout(() => {
+                      navigate(`/configure-deployment/${result.deploymentId.dseq}`);
+                    }, 2000);
 
-              // set deployment to localStorage object using Atom
-              const _deployment = await myDeploymentFormat(result, value);
-              handleDeployment(_deployment.key, JSON.stringify(_deployment.data));
+                    // set deployment to localStorage object using Atom
+                    const _deployment = await myDeploymentFormat(result, value);
+                    handleDeployment(_deployment.key, JSON.stringify(_deployment.data));
 
-              // set deployment to localStorage item by dseq (deprecate ?)
-              localStorage.setItem(_deployment.key, JSON.stringify(_deployment.data));
-            }
+                    // set deployment to localStorage item by dseq (deprecate ?)
+                    localStorage.setItem(_deployment.key, JSON.stringify(_deployment.data));
+                  }
+                }
+              }
+            );
           } catch (error) {
             await handleError(error, 'createDeployment');
           }
@@ -284,7 +297,12 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
           );
         }}
       </Formik>
-      <Dialog open={open} onClose={handleClose} title={errorTitle || ''} message={errorMessage || ''} />
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        title={errorTitle || ''}
+        message={errorMessage || ''}
+      />
     </Box>
   );
 };

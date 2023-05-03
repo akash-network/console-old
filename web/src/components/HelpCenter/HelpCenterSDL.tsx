@@ -5,7 +5,10 @@ interface HelpCenterSDLProps {
   onClose: () => void;
 }
 
-export const HelpCenterSDL: React.FC<HelpCenterSDLProps> = ({ isOpen, onClose }: HelpCenterSDLProps) => {
+export const HelpCenterSDL: React.FC<HelpCenterSDLProps> = ({
+  isOpen,
+  onClose,
+}: HelpCenterSDLProps) => {
   return (
     <HelpCenter
       isOpen={isOpen}
@@ -14,7 +17,8 @@ export const HelpCenterSDL: React.FC<HelpCenterSDLProps> = ({ isOpen, onClose }:
         {
           type: 'contentBody',
           contentTitle: 'What is SDL?',
-          contentBody: 'SDL stands for “Stack Definition Language” and, as the name suggests, is a way for you (as a user or tenant) to specify what infrastructure stack you need for your application. The SDL file includes compute needs, locations, pricing and other things that help Akash determine the best provider(s) for you to run your application on.',
+          contentBody:
+            'SDL stands for “Stack Definition Language” and, as the name suggests, is a way for you (as a user or tenant) to specify what infrastructure stack you need for your application. The SDL file includes compute needs, locations, pricing and other things that help Akash determine the best provider(s) for you to run your application on.',
           footer: true,
         },
         {
