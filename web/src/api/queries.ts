@@ -60,7 +60,7 @@ export const queryProviders = createQueryFunction(() => {
   return Promise.any([ret]);
 });
 
-export const queryProviderInfo = createQueryFunction((owner: string) => {
+export const queryProviderInfo = createQueryFunction((owner: string | undefined) => {
   const { networkType, rpcNode } = getRpcNode();
   let ret = null;
 
