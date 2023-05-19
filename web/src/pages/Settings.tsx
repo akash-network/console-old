@@ -110,10 +110,13 @@ const Settings: React.FC<Record<string, never>> = () => {
   const [rpcNodeStatus, setRpcNodeStatus] = React.useState('');
   const [candidateRpcNode, setCandidateRpcNode] = React.useState('');
   const [rpcNodeValid, setRpcNodeValid] = React.useState(false);
-  const [candiateRpcSettings, setCandidateRpcSettings] = React.useState<RpcSettings>();
+  const [candidateRpcSettings, setCandidateRpcSettings] = React.useState<RpcSettings>();
   const wallet = useWallet();
-  const { rpcNode, chainId } = getRpcNode();
   const { mutate: mxCreateCertificate } = useMutation(['createCertificate'], createCertificate);
+
+  // this is updated to force a refresh
+  const [chainInfo, setChainInfo] = React.useState(getRpcNode());
+  const { rpcNode, chainId } = chainInfo;
 
   const handleConnectWallet = (): void => {
     wallet.connect();
@@ -210,14 +213,16 @@ const Settings: React.FC<Record<string, never>> = () => {
 
   const handleSubmitRpcNode = React.useCallback(async () => {
     const rpcNode = candidateRpcNode.trim();
-    if (!rpcNode || !candiateRpcSettings) {
+
+    if (!rpcNode || !candidateRpcSettings) {
       return;
     }
 
-    setRpcNode(candiateRpcSettings);
-
+    setRpcNode(candidateRpcSettings);
+    setChainInfo(candidateRpcSettings);
     setChangeOpen(false);
-  }, [candidateRpcNode]);
+    location.reload();
+  }, [candidateRpcNode, candidateRpcSettings, setRpcNode, setChainInfo, setChangeOpen]);
 
   // if the candidate rpc node changes, reset the validation
   React.useEffect(() => {
@@ -305,7 +310,7 @@ const Settings: React.FC<Record<string, never>> = () => {
       },
     ];
     setFields(_fields);
-  }, []);
+  }, [chainId, certificatesList]);
 
   return (
     <Grid container sx={{ flexGrow: 1, paddingTop: 4 }} justifyContent="center" spacing={2}>
@@ -317,11 +322,10 @@ const Settings: React.FC<Record<string, never>> = () => {
           <SettingsField>
             <div className="text-base font-bold text-[#111827]">RPC Endpoint</div>
             <Stack direction="row" alignItems="center" gap="1rem">
-              <div>{getRpcNode().rpcNode}</div>
+              <div>{rpcNode}</div>
               <Button variant="outlined" onClick={() => setChangeOpen(true)}>
                 Change
               </Button>
-              <AddCustomChainButton />
             </Stack>
           </SettingsField>
           {fields.map((obj: any, i: number) => (
@@ -546,6 +550,9 @@ const Settings: React.FC<Record<string, never>> = () => {
             </div>
           ) : (
             <>
+                {candidateRpcSettings?.networkType == 'testnet' && <div className="flex justify-center p-3">
+                  <AddCustomChainButton />
+                </div>}
               <div className="flex justify-center">
                 <Button
                   className="w-[180px]"
@@ -557,6 +564,7 @@ const Settings: React.FC<Record<string, never>> = () => {
                   Cancel
                 </Button>
                 <div className="w-[20px]">{/* spacer */}</div>
+
                 {!rpcNodeValid ? (
                   <Button className="w-[180px]" variant="contained" onClick={handleVerifyRpcNode}>
                     Verify
