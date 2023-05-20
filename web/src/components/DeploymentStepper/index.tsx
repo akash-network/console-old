@@ -32,7 +32,7 @@ import logging from '../../logging';
 import Loading from '../Loading';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { useMutation } from 'react-query';
-import { createDeployment, createLease } from '../../api/mutations';
+import { createDeployment, createLease, sendManifest } from '../../api/mutations';
 
 import { sendManifest as sendManifestBeta2 } from '../../api/rpc/beta2/deployments';
 import { sendManifest as sendManifestBeta3 } from '../../api/rpc/beta3/deployments';
@@ -61,6 +61,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   const { mutate: mxCreateDeployment, isLoading: deploymentProgressVisible } = useMutation(createDeployment);
   const { mutate: mxCreateLease, isLoading: leaseProgressVisible } = useMutation(createLease);
   const { networkType } = getRpcNode();
+  const { mutate: mxSendManifest } = useMutation(sendManifest);
 
   const progressVisible = deploymentProgressVisible || leaseProgressVisible;
 
@@ -115,23 +116,27 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
         // if that's the case, used the stored version
         const cachedDetails = JSON.parse(localStorage.getItem(`${lease?.leaseId?.dseq}`) || '');
         const _sdl = sdl ? sdl : cachedDetails.sdl;
+      
         const sendManifest = networkType === 'testnet'
           ? sendManifestBeta2
           : sendManifestBeta3;
 
         if (lease) {
-          return sendManifest(keplr.accounts[0].address, lease, _sdl)
-            .then(
-              (result) => {
+          mxSendManifest({ address: keplr.accounts[0].address, lease, sdl: _sdl}, {
+            onSuccess: (result) => {
                 if (result) {
                   logging.success('Manifest sending: successful');
                   setDeploymentRefresh(true);
                   navigate(`/my-deployments/${dseq}`);
                 }
               },
-              (error) => logging.log(`Failed to send manifest: ${error}`)
-            )
-            .finally(() => navigate(`/my-deployments/${dseq}`));
+            onError: (error) => {
+              logging.log(`Failed to send manifest: ${error}`);
+            },
+            onSettled: () => {
+              navigate(`/my-deployments/${dseq}`);
+            }
+          });
         }
       },
       onError: (error) => {
