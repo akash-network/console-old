@@ -3,7 +3,7 @@ import { proxyURL } from '../api/rest/mtls';
 const storageKey = 'rpc_settings';
 
 const defaultRpcSettings = {
-  rpcNode: 'https://rpc.ny.akash.farm/token/TBWM93ZB',
+  rpcNode: 'https://rpc.akashnet.net/',
   chainId: 'akashnet-2',
   networkType: 'mainnet',
 };
