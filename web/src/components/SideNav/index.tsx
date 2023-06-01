@@ -142,7 +142,7 @@ export default function SideNav(props: any) {
             paddingX="10px"
             paddingY="10px"
           >
-            <Link to="new-deployment" id="link_new_deployment" className="block_default_hover">
+            <Link to="landing/node-deployment" id="link_new_deployment" className="block_default_hover">
               <SideNavMenuItemRed>
                 <AddIcon style={{ color: '#F43F5E' }} />
                 <SideNavMenuItemLabel style={{ color: '#F43F5E' }}>
