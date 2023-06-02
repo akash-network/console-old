@@ -90,7 +90,14 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                   <LabelTitle>Name Your App</LabelTitle>
                 </Label>
                 <Field name="appName" id="appName">
-                  {({ field }: any) => <InputField {...field} className="mt-2" disabled={forbidEditing} placeholder="Optional. We will auto-generate one for you, if you don't provide a name." />}
+                  {({ field }: any) => (
+                    <InputField
+                      {...field}
+                      className="mt-2"
+                      disabled={forbidEditing}
+                      placeholder="Optional. We will auto-generate one for you, if you don't provide a name."
+                    />
+                  )}
                 </Field>
               </FieldWrapper>
             </DeploymentFormWrapper>
@@ -101,7 +108,6 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                 <Tooltip
                   title="This is where you can specify various parameters (one per service) that make up your SDL file. The number and name of the services will vary depending on the application/ SDL"
                   placement="right"
-
                   sx={{
                     fontSize: '25px',
                     color: 'rgb(207, 205, 204)',
@@ -139,7 +145,6 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                             <Tooltip
                               title="The value you specify here is the maximum you would like to pay for the compute resources you are requesting for this service. uakt allows you to specify an amount that is a fraction of 1AKT"
                               placement="right"
-
                               sx={{
                                 fontSize: '25px',
                                 color: 'rgb(207, 205, 204)',
@@ -162,7 +167,6 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                             <Tooltip
                               title="This is where you specify how much CPU, memory and storage you would like to lease from the provider, to host your application."
                               placement="right"
-
                               sx={{
                                 fontSize: '25px',
                                 color: 'rgb(207, 205, 204)',
@@ -243,7 +247,7 @@ const AppAccordion = styled(Accordion)`
 
   & .${accordionClasses.expanded} {
     border-bottom: none;
-    background: #F9FAFB;
+    background: #f9fafb;
   }
 
   & .${accordionClasses.region} {

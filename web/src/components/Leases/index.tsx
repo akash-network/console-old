@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import { DeploymentMissing } from '../SdlConfiguration/DeploymentMissing';
-import { queryProviderInfo } from '../../recoil/queries';
+import { queryProviderInfo } from '../../api/queries';
 import { useQuery } from 'react-query';
 
 interface LeaseProps {
@@ -16,12 +16,12 @@ interface LeaseProps {
 
 type LabeledValue = { label: string; value: any };
 
-function formatPorts(services: Record<string, Array<{ externalPort: string, port: string, host: string }>> | undefined) {
+function formatPorts(
+  services: Record<string, Array<{ externalPort: string; port: string; host: string }>> | undefined
+) {
   if (services) {
     return Object.values(services)
-      .map((service) => (
-        service.map(rule => `${rule.externalPort}: ${rule.port}`)
-      ))
+      .map((service) => service.map((rule) => `${rule.externalPort}: ${rule.port}`))
       .join('');
   }
 
@@ -37,13 +37,14 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus 
   const [details, setDetails] = React.useState<Array<LabeledValue>>([]);
   const [capacity, setCapacity] = React.useState<Array<LabeledValue>>([]);
   const [, setInfo] = React.useState<Array<LabeledValue>>([]);
-  const { data: provider } = useQuery(['providerInfo', lease?.lease?.leaseId?.provider], queryProviderInfo);
+  const { data: provider } = useQuery(
+    ['providerInfo', lease?.lease?.leaseId?.provider],
+    queryProviderInfo
+  );
   const attributes = provider?.provider?.attributes as any;
 
   const applicationCache = localStorage.getItem(dseq);
-  const application = applicationCache
-    ? JSON.parse(applicationCache)
-    : null;
+  const application = applicationCache ? JSON.parse(applicationCache) : null;
 
   React.useEffect(() => {
     const formatData = async () => {
@@ -75,7 +76,7 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus 
             { label: 'Data Center', value: _attributes?.data_center },
             { label: 'Generation', value: _attributes?.generation },
             { label: 'Host URI', value: provider?.provider?.hostUri },
-            { label: 'Forwarded Ports', value: formatPorts(leaseStatus?.forwarded_ports) }
+            { label: 'Forwarded Ports', value: formatPorts(leaseStatus?.forwarded_ports) },
           ]);
           setNetwork([
             { label: 'Network Download', value: _attributes?.network_download },

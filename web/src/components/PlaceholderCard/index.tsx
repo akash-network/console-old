@@ -9,11 +9,7 @@ export interface PlaceholderCardProps {
   children: React.ReactNode;
 }
 
-export const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
-  icon,
-  title,
-  children
-}) => {
+export const PlaceholderCard: React.FC<PlaceholderCardProps> = ({ icon, title, children }) => {
   return (
     <Card>
       <CardContent>
@@ -21,10 +17,10 @@ export const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
           <Box padding="1rem">
             <Icon type={icon} />
           </Box>
-          <Typography variant='h3' component='h3'>{title}</Typography>
-          <Box textAlign="center">
-            {children}
-          </Box>
+          <Typography variant="h3" component="h3">
+            {title}
+          </Typography>
+          <Box textAlign="center">{children}</Box>
         </Stack>
       </CardContent>
     </Card>

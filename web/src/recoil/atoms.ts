@@ -1,11 +1,9 @@
 import { atom, AtomEffect, RecoilLoadable } from 'recoil';
 import pkg from '../../package.json';
-import {
-  loadActiveCertificate,
-} from './api';
+import { loadActiveCertificate } from './api';
 
 import { AccountData, CosmosClient, OfflineSigner } from '@cosmjs/launchpad';
-import { proxyURL } from './api/mtls';
+import { proxyURL } from '../api/rest/mtls';
 import fetchPriceAndMarketCap from './api/akt';
 import { SDLSpec } from '../components/SdlConfiguration/settings';
 import { getRpcNode } from '../hooks/useRpcNode';
@@ -21,9 +19,9 @@ export interface KeplrWallet {
 // Deprecated. Use getRpcNode instead.
 export const rpcEndpointBase = 'https://rpc.ny.akash.farm/token/TBWM93ZB';
 export const rpcEndpointURL = new URL(rpcEndpointBase);
-export const rpcProxyEndpoint = (
-  `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${rpcEndpointURL.port || '443'}${rpcEndpointURL.pathname}`
-);
+export const rpcProxyEndpoint = `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${
+  rpcEndpointURL.hostname
+}/${rpcEndpointURL.port || '443'}${rpcEndpointURL.pathname}`;
 
 // Located in this file for backwards compatibility
 // TODO: Move to a more appropriate location
@@ -70,18 +68,18 @@ export const activeCertificate = atom({
   default: RecoilLoadable.of(loadActiveCertificate()),
 });
 
-export const localStorageEffect: <T>(key: string) => AtomEffect<T>
-  = (key: string) =>
-    ({ setSelf, onSet }) => {
-      const savedValue = localStorage.getItem(key);
-      if (savedValue !== null) {
-        setSelf(JSON.parse(savedValue));
-      }
+export const localStorageEffect: <T>(key: string) => AtomEffect<T> =
+  (key: string) =>
+  ({ setSelf, onSet }) => {
+    const savedValue = localStorage.getItem(key);
+    if (savedValue !== null) {
+      setSelf(JSON.parse(savedValue));
+    }
 
-      onSet((newValue, _, isReset) => {
-        isReset ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(newValue));
-      });
-    };
+    onSet((newValue, _, isReset) => {
+      isReset ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(newValue));
+    });
+  };
 
 export const optIntoAnalytics = atom<boolean>({
   key: 'optIntoAnalytics',
@@ -97,10 +95,10 @@ export const myDeployments = atom({
 
 export const showKeplrWindow = atom({
   key: 'ShowKeplrWindow',
-  default: false
+  default: false,
 });
 
 export const deploymentDataStale = atom({
   key: 'DeploymentDataStale',
-  default: false
+  default: false,
 });

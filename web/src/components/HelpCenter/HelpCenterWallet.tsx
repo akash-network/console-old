@@ -5,7 +5,10 @@ interface HelpCenterWalletProps {
   onClose: () => void;
 }
 
-export const HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({ isOpen, onClose }: HelpCenterWalletProps) => {
+export const HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({
+  isOpen,
+  onClose,
+}: HelpCenterWalletProps) => {
   return (
     <HelpCenter
       isOpen={isOpen}
@@ -14,7 +17,8 @@ export const HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({ isOpen, onCl
         {
           type: 'contentBody',
           contentTitle: 'Why Keplr Wallet?',
-          contentBody: 'Deplying workloads on Akash Network requires you to pay in <strong> Akash Token ($AKT) </strong> using a <strong>Keplr Wallet </strong>'
+          contentBody:
+            'Deplying workloads on Akash Network requires you to pay in <strong> Akash Token ($AKT) </strong> using a <strong>Keplr Wallet </strong>',
         },
         {
           type: 'card',
@@ -26,7 +30,7 @@ export const HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({ isOpen, onCl
         {
           type: 'contentBody',
           // Make body more consisted with contentBody
-          contentBody: 'There are two main ways to fund your Keplr Wallet with AKT:'
+          contentBody: 'There are two main ways to fund your Keplr Wallet with AKT:',
         },
         {
           type: 'largeCard',
@@ -38,13 +42,13 @@ export const HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({ isOpen, onCl
             { title: 'AscendEx', link: 'https://ascendex.com/' },
             { title: 'Gate.io', link: 'https://www.gate.io/' },
             { title: 'DigiFinex', link: 'https://www.digifinex.com/' },
-            { title: 'Bittrex', link: 'https://bittrex.com/' }
+            { title: 'Bittrex', link: 'https://bittrex.com/' },
           ],
 
           contentBody: 'Purchase them from one of the exchanges listed below: ',
           body: 'If you have tokens of other Cosmos chains you can exchange them for AKT using the Osmosis App',
           title: 'Osmosis App',
-          link: 'https://app.osmosis.zone/'
+          link: 'https://app.osmosis.zone/',
         },
         {
           type: 'card',

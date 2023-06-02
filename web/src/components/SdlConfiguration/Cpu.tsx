@@ -15,7 +15,7 @@ const validateCpu = (value: number) => {
 type CpuProps = {
   currentProfile: string;
   disabled: boolean;
-}
+};
 
 export const Cpu: React.FC<CpuProps> = ({ currentProfile, disabled }) => {
   return (
@@ -37,11 +37,7 @@ export const Cpu: React.FC<CpuProps> = ({ currentProfile, disabled }) => {
               disabled={disabled}
               {...field}
             />
-            {meta?.error && (
-              <ErrorMessageComponent>
-                {meta?.error}
-              </ErrorMessageComponent>
-            )}
+            {meta?.error && <ErrorMessageComponent>{meta?.error}</ErrorMessageComponent>}
           </React.Fragment>
         )}
       </Field>

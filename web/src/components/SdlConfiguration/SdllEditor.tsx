@@ -5,19 +5,18 @@ import yaml from 'js-yaml';
 import { FieldWrapper } from './styling';
 
 interface SdlEditorProps {
-  reviewSdl: boolean
-  closeReviewModal: () => void
-  disabled?: boolean
-  callback?: (sdl: any) => void
+  reviewSdl: boolean;
+  closeReviewModal: () => void;
+  disabled?: boolean;
+  callback?: (sdl: any) => void;
 }
 
-export const SdlEditor: React.FC<SdlEditorProps> = (
-  {
-    reviewSdl,
-    closeReviewModal,
-    disabled,
-    callback
-  }) => {
+export const SdlEditor: React.FC<SdlEditorProps> = ({
+  reviewSdl,
+  closeReviewModal,
+  disabled,
+  callback,
+}) => {
   return (
     <FieldWrapper>
       <Field name={'sdl'}>
@@ -26,7 +25,7 @@ export const SdlEditor: React.FC<SdlEditorProps> = (
             <MonacoYamlEditor
               // This option in dump is needed cause some ENV can have more than default of 80 characters
               // In that cause, dump will cut the line with >- character
-              // Here we tell the dump function than line can have up to 200 characters 
+              // Here we tell the dump function than line can have up to 200 characters
               value={yaml.dump(field.value, { lineWidth: 200 })}
               appName={form.values?.appName}
               open={reviewSdl}

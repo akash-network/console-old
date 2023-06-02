@@ -4,6 +4,4 @@ const importAll = (require: __WebpackModuleApi.RequireContext) =>
     return acc;
   }, {} as Record<string, string>);
 
-export const templateIcons = importAll(
-  require.context('./', false, /\.(png)$/)
-);
+export const templateIcons = importAll(require.context('./', false, /\.(png)$/));

@@ -12,8 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import { useWallet } from '../hooks/useWallet';
 
 type MyDeploymentsPlaceholderProps = {
-  hidden: number,
-}
+  hidden: number;
+};
 
 const MyDeploymentsPlaceholder: React.FC<MyDeploymentsPlaceholderProps> = ({ hidden }) => {
   const navigate = useNavigate();
@@ -27,33 +27,39 @@ const MyDeploymentsPlaceholder: React.FC<MyDeploymentsPlaceholderProps> = ({ hid
     connect();
   };
 
-  return <PlaceholderCard
-    icon="newDeploy"
-    title="Nothing here yet">
-    <Typography variant="body2">
-      {(hidden > 0
-        ? <>No active deployments to show for this wallet.<br />Create a new deployment, or view past deployments.</>
-        : <>No deployments to show for this wallet.<br />Create a new deployment to get started.</>
-      )}
-    </Typography >
-    <Stack direction="row" padding="1.5rem" gap="1rem" justifyContent="center">
-      {isConnected
-        ? (
+  return (
+    <PlaceholderCard icon="newDeploy" title="Nothing here yet">
+      <Typography variant="body2">
+        {hidden > 0 ? (
+          <>
+            No active deployments to show for this wallet.
+            <br />
+            Create a new deployment, or view past deployments.
+          </>
+        ) : (
+          <>
+            No deployments to show for this wallet.
+            <br />
+            Create a new deployment to get started.
+          </>
+        )}
+      </Typography>
+      <Stack direction="row" padding="1.5rem" gap="1rem" justifyContent="center">
+        {isConnected ? (
           <Button variant="contained" onClick={handleCreateDeployment}>
             <Box paddingRight="0.5rem">
               <Icon type="add" />
             </Box>
             Create New Deployment
           </Button>
-        )
-        : (
+        ) : (
           <Button variant="contained" onClick={handleConnectWallet}>
             Connect Wallet
           </Button>
-        )
-      }
-    </Stack>
-  </PlaceholderCard >;
+        )}
+      </Stack>
+    </PlaceholderCard>
+  );
 };
 
 const MyDeploymentsTable: React.FC<{ showAll: boolean }> = ({ showAll }) => {
@@ -62,10 +68,9 @@ const MyDeploymentsTable: React.FC<{ showAll: boolean }> = ({ showAll }) => {
   const deployments = useDeploymentData(keplr?.accounts[0].address);
 
   const tableData = useMemo(() => {
-    const filtered = (
+    const filtered =
       deployments &&
-      deployments.filter((deployment) => showAll || deployment.status === 1).map((obj) => obj)
-    );
+      deployments.filter((deployment) => showAll || deployment.status === 1).map((obj) => obj);
 
     return filtered;
   }, [deployments, showAll, akt]);
@@ -74,12 +79,15 @@ const MyDeploymentsTable: React.FC<{ showAll: boolean }> = ({ showAll }) => {
     return <Loading />;
   }
 
-  return <>
-    {tableData.length > 0
-      ? <DeploymentTable rows={tableData} showAll={showAll} />
-      : <MyDeploymentsPlaceholder hidden={deployments.length - tableData.length} />
-    }
-  </>;
+  return (
+    <>
+      {tableData.length > 0 ? (
+        <DeploymentTable rows={tableData} showAll={showAll} />
+      ) : (
+        <MyDeploymentsPlaceholder hidden={deployments.length - tableData.length} />
+      )}
+    </>
+  );
 };
 
 const MyDeployments: React.FC<Record<string, never>> = () => {
@@ -95,10 +103,11 @@ const MyDeployments: React.FC<Record<string, never>> = () => {
       <Stack direction="row" spacing={1} alignItems="center" sx={{ marginBottom: '24px' }}>
         <WordSwitch on="Active only" off="All" checked={!showAll} onChange={handleToggleAll} />
       </Stack>
-      {wallet.isConnected
-        ? <MyDeploymentsTable showAll={showAll} />
-        : <MyDeploymentsPlaceholder hidden={0} />
-      }
+      {wallet.isConnected ? (
+        <MyDeploymentsTable showAll={showAll} />
+      ) : (
+        <MyDeploymentsPlaceholder hidden={0} />
+      )}
     </div>
   );
 };

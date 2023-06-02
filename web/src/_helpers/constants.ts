@@ -31,4 +31,3 @@ export function setNetworkVersion() {
 }
 
 export const aktPriceApi = 'https://api.coingecko.com/api/v3/coins/akash-network';
-

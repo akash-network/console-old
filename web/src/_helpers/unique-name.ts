@@ -10,6 +10,6 @@ export function uniqueName(address: string, dseq: string | number) {
     style: 'capital',
     seed,
   };
-  
+
   return uniqueNamesGenerator(customConfig);
 }

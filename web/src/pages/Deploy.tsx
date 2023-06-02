@@ -23,9 +23,7 @@ export default function DeployPage() {
               <ProfileMenu user={user} />
             </div>
           </div>
-          <div className="akt-card">
-            
-          </div>
+          <div className="akt-card"></div>
         </Stack>
       </Box>
       <Typography variant="caption" align="center" component="p" mt={2}>
