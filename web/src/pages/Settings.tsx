@@ -34,7 +34,9 @@ import { RpcSettings, useRpcNode } from '../hooks/useRpcNode';
 import { Input } from '../components/SdlConfiguration/styling';
 import { isRpcNodeStatus } from '../api/rpc/beta2/rpc';
 import chainInfo from '../_helpers/chain';
-import { createCertificate } from '../api/mutations';
+import { createCertificate, revokeCertificate } from '../api/mutations';
+import { set } from 'lodash';
+import logging from '../logging';
 
 type SortableCertificate = {
   available: boolean;
@@ -113,6 +115,7 @@ const Settings: React.FC<Record<string, never>> = () => {
   const [candidateRpcSettings, setCandidateRpcSettings] = React.useState<RpcSettings>();
   const wallet = useWallet();
   const { mutate: mxCreateCertificate } = useMutation(['createCertificate'], createCertificate);
+  const { mutate: mxRevokeCertificate } = useMutation(['revokeCertificate'], revokeCertificate);
 
   // this is updated to force a refresh
   const [chainInfo, setChainInfo] = React.useState(getRpcNode());
@@ -164,11 +167,19 @@ const Settings: React.FC<Record<string, never>> = () => {
 
   const handleRevokeCertificate = React.useCallback(async () => {
     setShowProgress(true);
-    await broadcastRevokeCertificate(rpcNode, keplr, revokeCert);
-    refetch();
-    setRevokeOpen(false);
-    setShowProgress(false);
-    setRevokeCert('');
+
+    mxRevokeCertificate(revokeCert, {
+      onSuccess: () => {
+        refetch();
+        setRevokeOpen(false);
+        setShowProgress(false);
+        setRevokeCert('');
+      },
+      onError: (error: any) => {
+        logging.error('Failed to revoke certificate: ' + error);
+        setShowProgress(false);
+      }
+    });
   }, [keplr, revokeCert, rpcNode]);
 
   const handleVerifyRpcNode = React.useCallback(async () => {
