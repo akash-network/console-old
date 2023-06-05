@@ -60,6 +60,17 @@ export const createCertificate = async () => {
   return mutateMethod(rpcNode, wallet);
 };
 
+export const revokeCertificate = async (certificate: string) => {
+  const { rpcNode, networkType } = getRpcNode();
+  const wallet = await getKeplr();
+
+  const mutateMethod = networkType === 'testnet'
+    ? beta3.certificates.broadcastRevokeCertificate
+    : beta2.certificates.broadcastRevokeCertificate;
+
+  return mutateMethod(rpcNode, wallet, certificate);
+};
+
 export const createLease = async (bidId: {
   owner: string;
   dseq: Long;

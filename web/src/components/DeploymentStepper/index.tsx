@@ -116,10 +116,6 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
         // if that's the case, used the stored version
         const cachedDetails = JSON.parse(localStorage.getItem(`${lease?.leaseId?.dseq}`) || '');
         const _sdl = sdl ? sdl : cachedDetails.sdl;
-      
-        const sendManifest = networkType === 'testnet'
-          ? sendManifestBeta2
-          : sendManifestBeta3;
 
         if (lease) {
           mxSendManifest({ address: keplr.accounts[0].address, lease, sdl: _sdl}, {
