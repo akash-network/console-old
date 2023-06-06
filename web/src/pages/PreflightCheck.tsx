@@ -98,7 +98,20 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
         return certificate.$type === 'TLS Certificate' && certificate.publicKey === pubKey;
       });
 
-      setIsValidCert(!!(activeCert && activeCert?.certificate?.state === Certificate_State.valid));
+      if (!activeCert) {
+        console.warn('Unable to find certificate: ', certificate);
+      }
+
+      const isValid = !!(
+        activeCert &&
+        activeCert?.certificate?.state === Certificate_State.valid
+      );
+
+      if (!isValid) {
+        console.warn('Certificate is not valid: ', activeCert?.certificate?.state);
+      }
+
+      setIsValidCert(isValid);
     }
   }, [certificate, accountCertificates]);
 
