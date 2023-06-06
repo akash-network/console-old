@@ -32,7 +32,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
     sdl: SDLSpec;
   }>();
   const [certificate, setCertificate] = useRecoilState(activeCertificate);
-  const { data: accountCertificates } = useQuery(
+  const { data: accountCertificates, refetch: refetchCertificates } = useQuery(
     ['certificates', keplr?.accounts[0]?.address],
     queryCertificates
   );
@@ -137,6 +137,9 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
         setCertificate(await loadActiveCertificate(keplr?.accounts[0]?.address));
         setShowVerifiedCert(true);
         setLoading(false);
+        logging.success('Certificate created successfully');
+        
+        refetchCertificates();
       },
       onError: (error: any) => {
         setLoading(false);
