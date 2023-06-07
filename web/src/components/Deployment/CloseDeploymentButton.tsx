@@ -10,6 +10,7 @@ import { Prompt } from '../Prompt';
 import { pendo } from '../../recoil/api/pendo';
 import { useMutation } from 'react-query';
 import { closeDeployment } from '../../api/mutations';
+import logging from '../../logging';
 
 const InputContainer = styled.div`
   display: flex;
@@ -56,10 +57,18 @@ export const CloseDeploymentButton: React.FC<CloseDeploymentButtonProps> = ({
   const onSend = React.useCallback(async () => {
     if (name !== '' && name === deployment.deploymentId?.dseq.toString()) {
       await pendo(deployment.deploymentId?.dseq.low, 'close_deployment', optInto);
-      await mxCloseDeployment(deployment.deploymentId.dseq.toString());
 
-      setDeploymentsStale(true);
-      onDelete();
+      mxCloseDeployment(deployment.deploymentId.dseq.toString(), {
+        onSuccess: () => {
+          setDeploymentsStale(true);
+          cleanupState();
+          onDelete();
+        },
+        onError: (error: any) => {
+          logging.error('Error closing deployment: ' + error);
+
+        },
+      });
     }
   }, [deployment, wallet, name, cleanupState]);
 
