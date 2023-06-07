@@ -16,7 +16,7 @@ const DocumentIcon = () => <img src={Document} alt="Document Icon" />;
 export interface FeaturedAppsProps {
   onDeployNowClick: (dir: string) => void;
   callback: (sdl: any) => void;
-  setFieldValue: (name: string, value: any) => void
+  setFieldValue: (name: string, value: any) => void;
 }
 
 export default function FeaturedApps(
@@ -44,9 +44,7 @@ export default function FeaturedApps(
     <div className="container akt-card">
       <FeaturedAppsPageHeader>
         <PageTitleWrapper style={{ marginRight: 12 }}>
-          <PageTitle>
-            Get started with a ready template or upload your own SDL
-          </PageTitle>
+          <PageTitle>Get started with a ready template or upload your own SDL</PageTitle>
           <StyledHelpIcon onClick={toggleHelpCenter} />
         </PageTitleWrapper>
         <ImportSdlButton
@@ -88,15 +86,8 @@ export default function FeaturedApps(
           </ViewAllButton>
         )}
       </ViewAllButtonContainer>
-      <SdlEditor
-        reviewSdl={reviewSdl}
-        closeReviewModal={closeReviewModal}
-        callback={callback}
-      />
-      <HelpCenterSDL
-        isOpen={isHelpCenterOpen}
-        onClose={toggleHelpCenter}
-      />
+      <SdlEditor reviewSdl={reviewSdl} closeReviewModal={closeReviewModal} callback={callback} />
+      <HelpCenterSDL isOpen={isHelpCenterOpen} onClose={toggleHelpCenter} />
     </div>
   );
 }
@@ -108,7 +99,7 @@ const PageTitleWrapper = styled.div`
 
 const Divider = styled.div`
   width: 100%;
-  background: #E5E7EB;
+  background: #e5e7eb;
   height: 2px;
 `;
 
@@ -146,19 +137,19 @@ const GeneralButtonStyle = css`
   font-size: 16px;
   padding: 13px 25px 13px 25px;
   line-height: 15px;
-  color: #1C1B1B;
+  color: #1c1b1b;
   width: auto;
   margin-top: 20px;
   gap: 8px;
   text-transform: capitalize;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #D7D7D7;
+  border: 1px solid #d7d7d7;
   border-radius: 6px;
 
   &:hover {
-    background-color: #F9FAFB;
-    border: 1px solid #D1D5DB;
+    background-color: #f9fafb;
+    border: 1px solid #d1d5db;
   }
 `;
 

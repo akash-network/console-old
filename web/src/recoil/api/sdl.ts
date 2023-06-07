@@ -2,23 +2,25 @@ import { QueryFunction } from 'react-query';
 // import { templateIcons } from '../../assets/templates';
 import { Octokit } from '@octokit/rest';
 
-export const fetchSdlList: QueryFunction<any, [string, { folderName: string }]> = async ({ queryKey }) => {
+export const fetchSdlList: QueryFunction<any, [string, { folderName: string }]> = async ({
+  queryKey,
+}) => {
   const [, { folderName }] = queryKey;
 
   if (!folderName) return;
 
   const octokit = new Octokit({});
 
-  const repository = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}/metadata.json', {
-    owner: 'akash-network',
-    repo: 'deploy-templates',
-    path: folderName,
-  });
+  const repository = await octokit.request(
+    'GET /repos/{owner}/{repo}/contents/{path}/metadata.json',
+    {
+      owner: 'akash-network',
+      repo: 'deploy-templates',
+      path: folderName,
+    }
+  );
 
-  const data = Buffer.from(
-    repository.data.content,
-    repository.data.encoding
-  ).toString('utf-8');
+  const data = Buffer.from(repository.data.content, repository.data.encoding).toString('utf-8');
 
   return JSON.parse(data);
 };

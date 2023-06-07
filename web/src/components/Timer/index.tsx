@@ -40,27 +40,27 @@ export const Timer: React.FC<TimerProps> = ({ startTime, onTimerEnd }) => {
 
   return (
     <TimerWrapper>
-      {timeRemaining !== null
-        ? (<>
-          <Typography component="span">
-            Time Left on Bid:
-          </Typography>
-          <Typography component="span" sx={{ display: 'inline-block', width: '2.125rem', fontWeight: 700 }}>
+      {timeRemaining !== null ? (
+        <>
+          <Typography component="span">Time Left on Bid:</Typography>
+          <Typography
+            component="span"
+            sx={{ display: 'inline-block', width: '2.125rem', fontWeight: 700 }}
+          >
             {timeRemaining}
           </Typography>
-        </>)
-        : (<>
-          <Typography component="span">
-            Bid Expired
-          </Typography>
-        </>)
-      }
-    </TimerWrapper >
+        </>
+      ) : (
+        <>
+          <Typography component="span">Bid Expired</Typography>
+        </>
+      )}
+    </TimerWrapper>
   );
 };
 
 const TimerWrapper = styled(Box)`
-  background-color: ${props => props.theme.palette.secondary.light};
+  background-color: ${(props) => props.theme.palette.secondary.light};
   padding: 0.3rem 1rem;
   display: flex;
   justify-content: center;
@@ -68,7 +68,7 @@ const TimerWrapper = styled(Box)`
   border-radius: 0.5rem;
 
   & span {
-    color: #F43F5E;
+    color: #f43f5e;
   }
 `;
 

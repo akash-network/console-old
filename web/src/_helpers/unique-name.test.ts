@@ -4,7 +4,7 @@ test('uniqueName: A unique name generated from a Keplr address and a deployment 
   const address = 'akash1annwm34rgxtkmt9tk32tj0shy5jtm3tzdsqvrj';
   const dseqNumber = 7720576;
   const dseqString = '7720576';
-  
+
   const uniqueNameNumber = uniqueName(address, dseqNumber);
   const uniqueNameString = uniqueName(address, dseqString);
 

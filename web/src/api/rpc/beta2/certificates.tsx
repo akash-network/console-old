@@ -1,5 +1,5 @@
 import React from 'react';
-import { BaseAtomComponent } from './basecomponent';
+import { BaseAtomComponent } from '../../../recoil/api/basecomponent';
 
 import {
   QueryCertificatesRequest,
@@ -10,7 +10,7 @@ import { getMsgClient, getRpc } from '@akashnetwork/akashjs/build/rpc';
 import {
   broadcastCertificate,
   createCertificate,
-  revokeCertificate
+  revokeCertificate,
 } from '@akashnetwork/akashjs/build/certificates';
 import crypto from 'crypto-js';
 
@@ -45,7 +45,7 @@ export const createAndBroadcastCertificate = async (rpcEndpoint: string, wallet:
   const response = await broadcastCertificate(
     {
       csr: certificate.csr,
-      publicKey: certificate.publicKey
+      publicKey: certificate.publicKey,
     },
     wallet.accounts[0].address,
     client
@@ -54,18 +54,21 @@ export const createAndBroadcastCertificate = async (rpcEndpoint: string, wallet:
   const idx = saveCertificate(wallet.accounts[0].address, certificate);
   saveActiveSerial(wallet.accounts[0].address, idx);
 
-  return { ...response, certificate: { $type: 'TLS Certificate', ...certificate } as TLSCertificate };
+  return {
+    ...response,
+    certificate: { $type: 'TLS Certificate', ...certificate } as TLSCertificate,
+  };
 };
 
-export const broadcastRevokeCertificate = async (rpcEndpoint: string, wallet: any, certSerial: string) => {
+export const broadcastRevokeCertificate = async (
+  rpcEndpoint: string,
+  wallet: any,
+  certSerial: string
+) => {
   const signer = wallet.offlineSigner;
   const client = await getMsgClient(rpcEndpoint, signer);
 
-  return revokeCertificate(
-    wallet.accounts[0].address,
-    certSerial,
-    client
-  );
+  return revokeCertificate(wallet.accounts[0].address, certSerial, client);
 };
 
 export const fetchCertificates = async (filter: CertificateFilter, rpcEndpoint: string) => {
@@ -75,7 +78,10 @@ export const fetchCertificates = async (filter: CertificateFilter, rpcEndpoint: 
   const response = await client.Certificates(request);
 
   for (const cert of response.certificates) {
-    if (typeof cert?.certificate?.pubkey === 'object' && cert.certificate.pubkey.length === undefined) {
+    if (
+      typeof cert?.certificate?.pubkey === 'object' &&
+      cert.certificate.pubkey.length === undefined
+    ) {
       cert.certificate.pubkey = Uint8Array.from(Object.values(cert.certificate.pubkey as object));
     }
   }
@@ -87,23 +93,22 @@ export const getActiveSerial = (walletId: string) => {
   const key = `active-certificate-serial-${walletId}`;
   const raw = localStorage.getItem(key);
 
-  const index = raw !== null
-    ? JSON.parse(raw)
-    : 0;
+  const index = raw !== null ? JSON.parse(raw) : 0;
 
   return index as number;
 };
 
 export const loadCertificates = (walletId?: string) => {
   const raw = localStorage.getItem('certificates');
-  const certs = (typeof raw === 'string'
-    ? JSON.parse(raw)
-    : []) as Array<CertificateRecord>;
+  const certs = (typeof raw === 'string' ? JSON.parse(raw) : []) as Array<CertificateRecord>;
 
-  return certs.filter(cert => walletId === undefined || cert.walletId === walletId);
+  return certs.filter((cert) => walletId === undefined || cert.walletId === walletId);
 };
 
-export const getCertificateByIndex = (walletId: string, index: number): TLSCertificate | NoCertificate => {
+export const getCertificateByIndex = (
+  walletId: string,
+  index: number
+): TLSCertificate | NoCertificate => {
   const certificates = loadCertificates(walletId);
   const cert = certificates[index];
 
@@ -143,19 +148,18 @@ export const saveCertificate = (walletId: string, certificate: any) => {
   const certificateList = loadCertificates();
 
   const certificateMap = Object.fromEntries([
-    ...certificateList.map(cert => ([cert.hash, cert])),
-    [hash, { walletId, hash, cypher }]
+    ...certificateList.map((cert) => [cert.hash, cert]),
+    [hash, { walletId, hash, cypher }],
   ]);
 
   const certSet = new Set(Object.keys(certificateMap));
-  const marshaledCerts = [...certSet].map(hash => certificateMap[hash]);
+  const marshaledCerts = [...certSet].map((hash) => certificateMap[hash]);
 
-  localStorage.setItem(
-    'certificates',
-    JSON.stringify(marshaledCerts)
-  );
+  localStorage.setItem('certificates', JSON.stringify(marshaledCerts));
 
-  return marshaledCerts.findIndex(cert => cert.hash === hash);
+  // reload the certificate list to ensure the index is correct
+  const certList = loadCertificates(walletId);
+  return certList.findIndex((cert) => cert.hash === hash);
 };
 
 // Returns a list of the public keys for all available certificates
@@ -164,20 +168,19 @@ export const getAvailableCertificates = (walletId: string) => {
   const certificateList = loadCertificates(walletId);
 
   return certificateList
-    .map(cert => cert.cypher)
+    .map((cert) => cert.cypher)
     .map(decodeCertificate)
-    .map(cert => cert.publicKey);
+    .map((cert) => cert.publicKey);
 };
 
 // DANGER: Be very careful modifying this function, as it will
 // make all existing certificates unavailable.
 const loadOrCreateHostKey = () => {
   const raw = localStorage.getItem('host-key');
-  const key = raw !== null
-    ? raw
-    : [...new Array(5)]
-      .map(() => (Math.random() + 1).toString(36).slice(2))
-      .join('/');
+  const key =
+    raw !== null
+      ? raw
+      : [...new Array(5)].map(() => (Math.random() + 1).toString(36).slice(2)).join('/');
 
   localStorage.setItem('host-key', key);
 

@@ -5,9 +5,8 @@ import styled from '@emotion/styled';
 import {
   CancelButton,
   SaveButton,
-  UpdateDeploymentAction
+  UpdateDeploymentAction,
 } from '../components/UpdateDeployment/styling';
-import { createDeployment } from '../recoil/api';
 import { useRecoilValue } from 'recoil';
 import { keplrState } from '../recoil/atoms';
 import { Button } from '@mui/material';
@@ -17,26 +16,40 @@ import {
   initialValues,
   InitialValuesProps,
   SdlConfigurationType,
-  SDLSpec
+  SDLSpec,
 } from '../components/SdlConfiguration/settings';
 import { isError } from '../_helpers/types';
+import { createDeployment } from '../api/mutations';
+import { useMutation } from 'react-query';
 
 const ReDeploy: React.FC<any> = () => {
   const navigate = useNavigate();
   const { dseq } = useParams<any>();
-  const keplr = useRecoilValue(keplrState);
   const [reviewSdl, showSdlReview] = useState(false);
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
-  const [progressVisible, setProgressVisible] = useState(false);
   const [cardMessage, setCardMessage] = useState('');
+  const [appData, setAppData] = useState<{ name: string; sdl?: SDLSpec } | null>(null);
+  const { mutate: mxCreateDeployment, isLoading: progressVisible, data: result } = useMutation(createDeployment);
 
-  const appCache = dseq
-    ? localStorage.getItem(dseq)
-    : null;
+  const appCache = dseq ? localStorage.getItem(dseq) : null;
 
-  const application = appCache
-    ? JSON.parse(appCache) as { name: string, sdl: SDLSpec }
-    : null;
+  const application = appCache ? (JSON.parse(appCache) as { name: string; sdl: SDLSpec }) : null;
+
+  const handleSubmit = async (values: InitialValuesProps) => {
+    setCardMessage('Creating deployment');
+    setAppData({ name: values.appName, sdl: values.sdl });
+    mxCreateDeployment({ sdl: values.sdl });
+  };
+
+  React.useEffect(() => {
+    if (progressVisible == false && result && result.deploymentId) {
+      navigate(`/configure-deployment/${result.deploymentId.dseq}`);
+      localStorage.setItem(
+        `${result.deploymentId.dseq}`,
+        JSON.stringify(appData)
+      );
+    }
+  }, [progressVisible, result, appData]);
 
   if (application === null) {
     return <></>;
@@ -46,28 +59,7 @@ const ReDeploy: React.FC<any> = () => {
     <Formik
       enableReinitialize
       initialValues={{ ...initialValues, appName: application.name, sdl: application.sdl }}
-      onSubmit={async (value: InitialValuesProps) => {
-        setProgressVisible(true);
-        setCardMessage('Creating deployment');
-        try {
-          const result = await createDeployment(keplr, value.sdl);
-          if (result.deploymentId) {
-            navigate(`/configure-deployment/${result.deploymentId.dseq}`);
-            localStorage.setItem(
-              `${result.deploymentId.dseq}`,
-              JSON.stringify({
-                name: value.appName,
-                sdl: value.sdl,
-              })
-            );
-          }
-        } catch (error) {
-          if (isError(error) && error.message === 'Request rejected') {
-            setProgressVisible(false);
-            setCardMessage('');
-          }
-        }
-      }}
+      onSubmit={handleSubmit}
     >
       {({ values, submitForm }) => {
         return (
@@ -80,15 +72,9 @@ const ReDeploy: React.FC<any> = () => {
             cardMessage={cardMessage}
             actionItems={() => (
               <UpdateDeploymentAction>
-                <ReviewSdlButton onClick={() => showSdlReview(true)}>
-                  Review SDL
-                </ReviewSdlButton>
-                <CancelButton onClick={() => navigate(-1)}>
-                  Cancel
-                </CancelButton>
-                <SaveButton onClick={() => submitForm()}>
-                  Deploy
-                </SaveButton>
+                <ReviewSdlButton onClick={() => showSdlReview(true)}>Review SDL</ReviewSdlButton>
+                <CancelButton onClick={() => navigate(-1)}>Cancel</CancelButton>
+                <SaveButton onClick={() => submitForm()}>Deploy</SaveButton>
               </UpdateDeploymentAction>
             )}
           />
@@ -105,13 +91,13 @@ const ButtonTemplate = css`
   gap: 8px;
   color: #374151;
   text-transform: capitalize;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #D7D7D7;
+  border: 1px solid #d7d7d7;
   border-radius: 6px;
 
   &:hover {
-    border-color: #3D4148
+    border-color: #3d4148;
   }
 `;
 
@@ -121,9 +107,9 @@ const ReviewSdlButton = styled(Button)`
   border-radius: 8px;
   font-family: 'Satoshi-Medium', sans-serif;
   font-size: 14px;
-  box-shadow: 0px 1px 2px 0px #0000000D;
+  box-shadow: 0px 1px 2px 0px #0000000d;
 
   &:hover {
-    background-color: #F4F5F8
+    background-color: #f4f5f8;
   }
 `;

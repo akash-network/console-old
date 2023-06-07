@@ -16,6 +16,9 @@ import {
   Tooltip,
 } from '@mui/material';
 import { Icon } from '../Icons';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import green from '@mui/material/colors/green';
 
 interface Data {
   name: string;
@@ -23,6 +26,7 @@ interface Data {
   url: string;
   lease: string;
   status: number;
+  updatable: number;
 }
 
 type Order = 'asc' | 'desc';
@@ -47,6 +51,7 @@ interface DeploymentTableProps {
     status: string | number;
     name: string | number;
     url: string | number;
+    updatable: string | number;
   }>;
   showAll: boolean;
 }
@@ -101,6 +106,12 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: 'STATUS',
   },
+  {
+    id: 'updatable',
+    alignRight: false,
+    disablePadding: false,
+    label: 'UPDATABLE',
+  }
 ];
 
 function DeploymentTableHead(props: DeploymentTableHeadProps) {
@@ -124,7 +135,13 @@ function DeploymentTableHead(props: DeploymentTableHeadProps) {
               direction={order}
               onClick={createSortHandler(headCell.id)}
             >
-              {headCell.label}
+              {headCell.label === 'UPDATABLE'
+                ? (<>
+                  {headCell.label}
+                  <Tooltip title="If the initial deployment was done using a different client (not console) it cannot be updated by Console." placement="bottom">
+                    <InfoOutlinedIcon sx={{ color: '#666666', fontSize: '18px', ml: '4px' }} />
+                  </Tooltip></>)
+                : headCell.label}
               {orderBy === headCell.id ? (
                 <Box component="span" sx={visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -217,6 +234,13 @@ export const DeploymentTable: React.FC<DeploymentTableProps> = (props) => {
                           <DeploymentTableActive>Active</DeploymentTableActive>
                         ) : (
                           <DeploymentTableInActive>Inactive</DeploymentTableInActive>
+                        )}
+                      </DeploymentTableCell>
+                      <DeploymentTableCell >
+                        {row?.updatable ? (
+                          <CheckCircleIcon sx={{ color: green[500] }} />
+                        ) : (
+                          ''
                         )}
                       </DeploymentTableCell>
                     </DeploymentTableRow>

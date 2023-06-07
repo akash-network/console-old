@@ -2,15 +2,14 @@ import * as React from 'react';
 import { useRecoilState } from 'recoil';
 import styled from '@emotion/styled';
 import { Button, ButtonProps, Input } from '@mui/material';
-import {
-  Deployment
-} from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
-import { closeDeployment } from '../../recoil/api';
+import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { deploymentDataStale, KeplrWallet, optIntoAnalytics } from '../../recoil/atoms';
 import { updateStr } from '../../_helpers/callback-utils';
 import { Icon, IconType } from '../Icons';
 import { Prompt } from '../Prompt';
 import { pendo } from '../../recoil/api/pendo';
+import { useMutation } from 'react-query';
+import { closeDeployment } from '../../api/mutations';
 
 const InputContainer = styled.div`
   display: flex;
@@ -18,27 +17,28 @@ const InputContainer = styled.div`
   margin-top: 16px;
 `;
 
-export type CloseDeploymentButtonProps = React.PropsWithChildren<{
-  icon?: IconType;
-  deployment: Deployment;
-  wallet: KeplrWallet;
-  onDelete: () => any;
-} & ButtonProps>;
-
-export const CloseDeploymentButton: React.FC<CloseDeploymentButtonProps> = (
+export type CloseDeploymentButtonProps = React.PropsWithChildren<
   {
-    icon,
-    deployment,
-    wallet,
-    onDelete,
-    children,
-    ...rest
-  }) => {
+    icon?: IconType;
+    deployment: Deployment;
+    wallet: KeplrWallet;
+    onDelete: () => any;
+  } & ButtonProps
+>;
+
+export const CloseDeploymentButton: React.FC<CloseDeploymentButtonProps> = ({
+  icon,
+  deployment,
+  wallet,
+  onDelete,
+  children,
+  ...rest
+}) => {
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState('');
-  const [showProgress, setShowProgress] = React.useState(false);
   const [optInto] = useRecoilState(optIntoAnalytics);
   const [, setDeploymentsStale] = useRecoilState(deploymentDataStale);
+  const { mutate: mxCloseDeployment, isLoading: showProgress } = useMutation(closeDeployment);
 
   const onButtonClick = React.useCallback(() => {
     setOpen(true);
@@ -54,10 +54,9 @@ export const CloseDeploymentButton: React.FC<CloseDeploymentButtonProps> = (
   }, [cleanupState]);
 
   const onSend = React.useCallback(async () => {
-    setShowProgress(true);
     if (name !== '' && name === deployment.deploymentId?.dseq.toString()) {
       await pendo(deployment.deploymentId?.dseq.low, 'close_deployment', optInto);
-      await closeDeployment(wallet, deployment);
+      await mxCloseDeployment(deployment.deploymentId.dseq.toString());
 
       setDeploymentsStale(true);
       onDelete();

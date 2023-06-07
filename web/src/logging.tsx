@@ -4,12 +4,16 @@ export type LoggingCallback = (msg: string, sev: LoggingSeverity) => void;
 const listeners = new Set<LoggingCallback>();
 
 const loggingMethod = (severity: LoggingSeverity) => {
-  return (msg: string) => listeners.forEach(cb => cb(msg, severity));
+  return (msg: string) => listeners.forEach((cb) => cb(msg, severity));
 };
 
 const logging = {
-  subscribe: (cb: LoggingCallback) => { listeners.add(cb); },
-  unsubscribe: (cb: LoggingCallback) => { listeners.delete(cb); },
+  subscribe: (cb: LoggingCallback) => {
+    listeners.add(cb);
+  },
+  unsubscribe: (cb: LoggingCallback) => {
+    listeners.delete(cb);
+  },
 
   // utility methods
   debug: loggingMethod('debug'),

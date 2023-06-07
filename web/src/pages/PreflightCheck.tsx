@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Box, Button, Card, Stack, Tooltip, CircularProgress } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { useFormikContext } from 'formik';
-import { KeplrWallet, activeCertificate, keplrState, rpcEndpoint } from '../recoil/atoms';
+import { activeCertificate, keplrState } from '../recoil/atoms';
 import { getAccountBalance } from '../recoil/api/bank';
 import { createAndBroadcastCertificate } from '../recoil/api';
 import { Icon } from '../components/Icons';
@@ -13,19 +13,26 @@ import { uaktToAKT } from '../_helpers/lease-calculations';
 import { useWallet } from '../hooks/useWallet';
 import { ManifestVersion } from '../_helpers/deployments-utils';
 import { SDLSpec } from '../components/SdlConfiguration/settings';
-import { queryCertificates } from '../recoil/queries';
-import { useQuery } from 'react-query';
+import { queryCertificates } from '../api/queries';
+import { useMutation, useQuery } from 'react-query';
 import { Certificate_State } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/cert';
 import { Input, Label } from '../components/SdlConfiguration/styling';
 import { AntSwitch } from '../components/Switch/AntSwitch';
 import { v2Sdl } from '@akashnetwork/akashjs/build/sdl/types';
+import { getRpcNode } from '../hooks/useRpcNode';
+import { createCertificate } from '../api/mutations';
+import logging from '../logging';
+import { loadActiveCertificate } from '../api/rpc/beta3/certificates';
 
 export const PreflightCheck: React.FC<Record<string, never>> = () => {
-  const [keplr,] = useRecoilState(keplrState);
+  const [keplr] = useRecoilState(keplrState);
   const [balance, setBalance] = React.useState(0);
-  const { submitForm, values, setFieldValue } = useFormikContext<{ depositor: string | undefined, sdl: SDLSpec }>();
+  const { submitForm, values, setFieldValue } = useFormikContext<{
+    depositor: string | undefined;
+    sdl: SDLSpec;
+  }>();
   const [certificate, setCertificate] = useRecoilState(activeCertificate);
-  const { data: accountCertificates } = useQuery(
+  const { data: accountCertificates, refetch: refetchCertificates } = useQuery(
     ['certificates', keplr?.accounts[0]?.address],
     queryCertificates
   );
@@ -35,6 +42,8 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
   const [loading, setLoading] = React.useState(false);
   const [showVerifiedCert, setShowVerifiedCert] = React.useState(false);
   const [useAuthorizedDepositor, setUseAuthorizedDepositor] = React.useState(false);
+  const { networkType } = getRpcNode();
+  const { mutate: mxCreateCertificate } = useMutation(['createCertificate'], createCertificate);
 
   const hasKeplr = window.keplr !== undefined;
   const sdl = values.sdl;
@@ -62,10 +71,13 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
   /* Attempts to calculate the version of the manifest as a quick validation check */
   React.useEffect(() => {
     const sdlPartial = sdl as unknown;
+    const rpcVersion = networkType === 'testnet'
+      ? 'beta3'
+      : 'beta2';
 
     try {
       // we can safely cast this to v2Sdl because any failure will be caught by the catch block
-      ManifestVersion(sdlPartial as v2Sdl).then(setManifestVersion);
+      ManifestVersion(sdlPartial as v2Sdl, rpcVersion).then(setManifestVersion);
     } catch (e) {
       console.warn('Could not compute manifest version: ', e);
       setManifestVersion(undefined);
@@ -75,12 +87,31 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
   /* Check if the current active certificate is valid */
   React.useEffect(() => {
     if (accountCertificates && accountCertificates.certificates) {
-      const activeCert = accountCertificates.certificates.find((cert: any) => {
-        const pubKey = Buffer.from(Object.values(cert.certificate.pubkey) as any, 'base64').toString('ascii');
+      const certs: any[] = accountCertificates.certificates;
+
+      const activeCert = certs.find((cert: any) => {
+        const pubKey = Buffer.from(
+          Object.values(cert.certificate.pubkey) as any,
+          'base64'
+        ).toString('ascii');
+
         return certificate.$type === 'TLS Certificate' && certificate.publicKey === pubKey;
       });
 
-      setIsValidCert(!!(activeCert && activeCert?.certificate?.state === Certificate_State.valid));
+      if (!activeCert) {
+        console.warn('Unable to find certificate: ', certificate);
+      }
+
+      const isValid = !!(
+        activeCert &&
+        activeCert?.certificate?.state === Certificate_State.valid
+      );
+
+      if (!isValid) {
+        console.warn('Certificate is not valid: ', activeCert?.certificate?.state);
+      }
+
+      setIsValidCert(isValid);
     }
   }, [certificate, accountCertificates]);
 
@@ -111,12 +142,23 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
   /* Action handler for creating a certificate */
   const handleCreateCertificate = async () => {
     setLoading(true);
-    const result = await createAndBroadcastCertificate(rpcEndpoint(), keplr);
 
-    if (result.code === 0 && result.certificate) {
-      setCertificate(result.certificate);
-      setShowVerifiedCert(true);
-    }
+    // the query doesn't take any arguments, this little hack keeps
+    // typescript happy
+    mxCreateCertificate(({} as any), {
+      onSuccess: async (result: any) => {
+        setCertificate(await loadActiveCertificate(keplr?.accounts[0]?.address));
+        setShowVerifiedCert(true);
+        setLoading(false);
+        logging.success('Certificate created successfully');
+        
+        refetchCertificates();
+      },
+      onError: (error: any) => {
+        setLoading(false);
+        logging.error(error);
+      }
+    });
   };
 
   return (
@@ -137,7 +179,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
           </Title>
           <Delayed>
             {/* Check Keplr & Login */}
-            <Stack sx={{ width: '100%' }} spacing='1rem'>
+            <Stack sx={{ width: '100%' }} spacing="1rem">
               {!hasKeplr && (
                 <PreflightCheckItemContainer>
                   <div className="flex mb-2">
@@ -148,7 +190,8 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
                     <div className="grow">{/* spacer - do not remove */}</div>
                     <a
                       href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap"
-                      target="_blank" rel="noreferrer"
+                      target="_blank"
+                      rel="noreferrer"
                     >
                       <PreflightActionButton>Get Keplr</PreflightActionButton>
                     </a>
@@ -212,9 +255,14 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
                     specify an authorized depositor. Foo
                   </Text>
                   {useAuthorizedDepositor ? (
-                    <div className='flex items-center gap-2'>
-                      <Label className='pt-2'>Depositor Address:</Label>
-                      <Input value={values.depositor} className="mt-2 grow" placeholder="Enter AKT address" onChange={setDepositorAddress} />
+                    <div className="flex items-center gap-2">
+                      <Label className="pt-2">Depositor Address:</Label>
+                      <Input
+                        value={values.depositor}
+                        className="mt-2 grow"
+                        placeholder="Enter AKT address"
+                        onChange={setDepositorAddress}
+                      />
                     </div>
                   ) : null}
                 </PreflightCheckItemContainer>
@@ -233,9 +281,14 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
                     </div>
                   </div>
                   {useAuthorizedDepositor ? (
-                    <div className='flex items-center gap-2'>
-                      <Label className='pt-2'>Depositor Address:</Label>
-                      <Input value={values.depositor} className="mt-2 grow" placeholder="Enter AKT address" onChange={setDepositorAddress} />
+                    <div className="flex items-center gap-2">
+                      <Label className="pt-2">Depositor Address:</Label>
+                      <Input
+                        value={values.depositor}
+                        className="mt-2 grow"
+                        placeholder="Enter AKT address"
+                        onChange={setDepositorAddress}
+                      />
                     </div>
                   ) : null}
                 </PreflightCheckItemContainer>
@@ -251,7 +304,8 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
                     <div className="grow">{/* spacer - do not remove */}</div>
                   </div>
                   <Text size={14}>
-                    SDL could not be validated. Please double-check and ensure all values are correct.
+                    SDL could not be validated. Please double-check and ensure all values are
+                    correct.
                     {manifestVersion}
                   </Text>
                 </PreflightCheckItemContainer>
@@ -288,7 +342,16 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
                       </div>
                     </Tooltip>
                   </div>
-                  <Text size={14}>{loading ? <div className="flex justify-center"> <CircularProgress /> </div> : 'In order to deploy you will need to create a certificate.'}</Text>
+                  <Text size={14}>
+                    {loading ? (
+                      <div className="flex justify-center">
+                        {' '}
+                        <CircularProgress />{' '}
+                      </div>
+                    ) : (
+                      'In order to deploy you will need to create a certificate.'
+                    )}
+                  </Text>
                 </PreflightCheckItemContainer>
               )}
               {isValidCert ? (
@@ -305,13 +368,13 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
             </Stack>
           </Delayed>
         </div>
-      </PreflightCheckWrapper >
+      </PreflightCheckWrapper>
       <DeploymentAction>
         <Button variant="contained" onClick={submitForm}>
           Next
         </Button>
       </DeploymentAction>
-    </Box >
+    </Box>
   );
 };
 

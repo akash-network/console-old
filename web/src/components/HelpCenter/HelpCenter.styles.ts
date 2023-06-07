@@ -15,11 +15,10 @@ export const HelpCenterWrapper = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); // Add a box shadow for depth
   display: flex;
   flex-direction: column;
-
 `;
 export const CloseButton = styled.button`
   position: absolute;
- 
+
   right: 15px;
   background: transparent;
   border: none;
@@ -50,10 +49,7 @@ export const ContentTitle = styled.h3`
   align-items: center;
 `;
 
-
-export const HelpCenterContent = styled.div`
- 
-`;
+export const HelpCenterContent = styled.div``;
 
 export const ContentBody = styled.p`
   // Add your content styles here
@@ -96,7 +92,7 @@ export const CardTitle2 = styled.div`
   }
 
   // Add the marginBottom property here
-  marginBottom: 16px;
+  marginbottom: 16px;
 `;
 export const CardTitle3 = styled.div`
   font-size: 12px;
@@ -114,7 +110,7 @@ export const CardTitle3 = styled.div`
   }
 
   // Add the marginBottom property here
-  marginBottom: 16px;
+  marginbottom: 16px;
 `;
 export const CardBody = styled.p`
   font-weight: 100;
@@ -122,9 +118,6 @@ export const CardBody = styled.p`
   line-height: 20px;
   color: black;
 `;
-
-
-
 
 export const HelpCenterFooter = styled.div`
   display: flex;
@@ -136,7 +129,7 @@ export const HelpCenterFooter = styled.div`
 export const FooterEntry = styled.a`
   font-size: 12px; // Reduce the font size
   color: black; // Change the font color to black
-  text-decoration: none; 
+  text-decoration: none;
   &:hover {
     text-decoration: underline; // Add underline on hover
   }
@@ -147,7 +140,6 @@ export const FooterWrapper = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   height: 100%;
-  
 `;
 export const HelpCenterOverlay = styled.div`
   position: fixed;

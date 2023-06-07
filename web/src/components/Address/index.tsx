@@ -57,7 +57,12 @@ export const Address: React.FC<AddressProps> = (props) => {
       </button>
       {address.includes('akash') ? <span className="text-[#adadad]">akash</span> : null}
       {truncatedAddress}
-      <Snackbar open={open} autoHideDuration={2500} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+      <Snackbar
+        open={open}
+        autoHideDuration={2500}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
         <SnackbarCard>
           <Icon type="success" />
           <SnackbarCardText>{message}</SnackbarCardText>

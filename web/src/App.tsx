@@ -55,51 +55,16 @@ const AppRouter = () => {
               <Route path="custom-sdl" element={<CustomApp />} />
               <Route path="custom-sdl/:intentId" element={<CustomApp />} />
             </Route>
-            <Route
-              path="configure-deployment/:dseq/"
-              element={
-                <DeploymentStepper />
-              }
-            />
-            <Route
-              path="provider/:providerId"
-              element={
-                <Provider />
-              }
-            />
+            <Route path="configure-deployment/:dseq/" element={<DeploymentStepper />} />
+            <Route path="provider/:providerId" element={<Provider />} />
             <Route path="my-deployments">
-              <Route
-                path=""
-                element={
-                  <MyDeployments />
-                }
-              />
-              <Route
-                path=":dseq"
-                element={
-                  <Deployment />
-                }
-              />
-              <Route
-                path=":dseq/update-deployment"
-                element={
-                  <UpdateDeployment />
-                }
-              />
-              <Route
-                path=":dseq/re-deploy"
-                element={
-                  <ReDeploy />
-                }
-              />
+              <Route path="" element={<MyDeployments />} />
+              <Route path=":dseq" element={<Deployment />} />
+              <Route path=":dseq/update-deployment" element={<UpdateDeployment />} />
+              <Route path=":dseq/re-deploy" element={<ReDeploy />} />
             </Route>
-            <Route
-              path="settings"
-              element={
-                <Settings />
-              }
-            />
-            <Route path='help' element={<Help />}/>
+            <Route path="settings" element={<Settings />} />
+            <Route path="help" element={<Help />} />
           </Routes>
         </SideNav>
       </div>

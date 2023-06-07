@@ -12,7 +12,7 @@ import {
   FieldWrapper,
   Input,
   SdlSectionWrapper,
-  VariableWrapper
+  VariableWrapper,
 } from './styling';
 
 interface TabPanelProps {
@@ -44,22 +44,27 @@ const validateStorageData = (value: any) => {
 type StorageProfile = {
   resources: {
     storage: Array<{
-      name: string,
+      name: string;
       attributes: string[];
     }>;
-  },
-}
+  };
+};
 
 type StorageProps = {
-  serviceName: string,
+  serviceName: string;
   profiles: {
-    compute: Record<string, StorageProfile>,
-  },
-  currentProfile: string,
-  disabled?: boolean,
-}
+    compute: Record<string, StorageProfile>;
+  };
+  currentProfile: string;
+  disabled?: boolean;
+};
 
-export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, currentProfile, disabled }) => {
+export const Storage: React.FC<StorageProps> = ({
+  serviceName,
+  profiles,
+  currentProfile,
+  disabled,
+}) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -69,86 +74,96 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
   return (
     <SdlSectionWrapper>
       <StorageType>Storage Type</StorageType>
-      <Tabs variant="fullWidth" value={value} onChange={handleChange} sx={{ marginBottom: '16px', borderBottom: '1px solid #D1D5DB' }}>
-        <Tab
-          sx={{ textTransform: 'none' }}
-          label={'Ephemeral'}
-          {...a11yProps(0)}
-        />
+      <Tabs
+        variant="fullWidth"
+        value={value}
+        onChange={handleChange}
+        sx={{ marginBottom: '16px', borderBottom: '1px solid #D1D5DB' }}
+      >
+        <Tab sx={{ textTransform: 'none' }} label={'Ephemeral'} {...a11yProps(0)} />
         <Tab sx={{ textTransform: 'none' }} label="Persistent" {...a11yProps(1)} />
       </Tabs>
       <TabPanel value={value} index={0}>
         <FieldArray
           name={`sdl.profiles.compute.${currentProfile}.resources.storage`}
-          render={arrayHelpers => {
+          render={(arrayHelpers) => {
             const storages = profiles.compute[currentProfile]?.resources.storage;
             return (
               <>
-                {storages?.map((storage, index) => !storage?.attributes && (
-                  <FieldWrapper
-                    key={`${currentProfile}-ephemeral-${index}`}
-                    style={{
-                      display: 'flex',
-                      columnGap: '10px',
-                      paddingBottom: '10px'
-                    }}
-                  >
-                    <Field
-                      name={`sdl.profiles.compute.${currentProfile}.resources.storage.${index}.size`}
-                      validate={validateStorage}
-                      id="disk"
-                    >
-                      {({ field, form, meta }: any) => (
-                        <>
-                          <MeasurementControl
-                            error={meta?.error}
-                            title="Disk"
-                            subTitle="Disk Required"
-                            setFieldValue={form.setFieldValue}
-                            disabled={disabled}
-                            smallIncrement
-                            {...field}
-                          />
-                        </>
-                      )}
-                    </Field>
-                    {!disabled && (
-                      <Tooltip
-                        title={storages.length === 1 && index === 0 && 'This is your only storage, you have to have at least one to be able to deploy the SDL'}
+                {storages?.map(
+                  (storage, index) =>
+                    !storage?.attributes && (
+                      <FieldWrapper
+                        key={`${currentProfile}-ephemeral-${index}`}
+                        style={{
+                          display: 'flex',
+                          columnGap: '10px',
+                          paddingBottom: '10px',
+                        }}
                       >
-                        <IconButton
-                          sx={{
-                            background: '#FFFFFF',
-                            border: '1px solid #D1D5DB',
-                            boxShadow: '0px 1px 2px rgb(0 0 0 / 5%)',
-                            borderRadius: '6px',
-                            width: '46px'
-                          }}
-                          onClick={() => {
-                            // Remove selected ephemeral storage but only if it is not the only storage
-                            // otherwise inform the user that deploy can't be successful and forbid delete
-                            storages.length !== 1 && arrayHelpers.remove(index);
-                          }}
-                          aria-label="Delete storage"
+                        <Field
+                          name={`sdl.profiles.compute.${currentProfile}.resources.storage.${index}.size`}
+                          validate={validateStorage}
+                          id="disk"
                         >
-                          <TrashIcon />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                  </FieldWrapper>
-                ))}
+                          {({ field, form, meta }: any) => (
+                            <>
+                              <MeasurementControl
+                                error={meta?.error}
+                                title="Disk"
+                                subTitle="Disk Required"
+                                setFieldValue={form.setFieldValue}
+                                disabled={disabled}
+                                smallIncrement
+                                {...field}
+                              />
+                            </>
+                          )}
+                        </Field>
+                        {!disabled && (
+                          <Tooltip
+                            title={
+                              storages.length === 1 &&
+                              index === 0 &&
+                              'This is your only storage, you have to have at least one to be able to deploy the SDL'
+                            }
+                          >
+                            <IconButton
+                              sx={{
+                                background: '#FFFFFF',
+                                border: '1px solid #D1D5DB',
+                                boxShadow: '0px 1px 2px rgb(0 0 0 / 5%)',
+                                borderRadius: '6px',
+                                width: '46px',
+                              }}
+                              onClick={() => {
+                                // Remove selected ephemeral storage but only if it is not the only storage
+                                // otherwise inform the user that deploy can't be successful and forbid delete
+                                storages.length !== 1 && arrayHelpers.remove(index);
+                              }}
+                              aria-label="Delete storage"
+                            >
+                              <TrashIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                      </FieldWrapper>
+                    )
+                )}
                 {!disabled && (
                   <AddNewButtonWrapper>
                     <AddNewButton
                       startIcon={<PlusSign />}
                       variant="outlined"
                       size="small"
-                      onClick={() => arrayHelpers.insert(
-                        (profiles.compute[currentProfile]?.resources.storage?.length + 1) ?? 0,
-                        {
-                          size: '512Mi',
-                        }
-                      )}
+                      onClick={() =>
+                        arrayHelpers.insert(
+                          profiles.compute[currentProfile]?.resources.storage?.length + 1 ?? 0,
+                          {
+                            size: '512Mi',
+                          }
+                        )
+                      }
                     >
                       Add New Ephemeral Storage
                     </AddNewButton>
@@ -158,7 +173,6 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
             );
           }}
         />
-
       </TabPanel>
 
       <TabPanel value={value} index={1}>
@@ -166,11 +180,10 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
           name={`sdl.profiles.compute.${currentProfile}.resources.storage`}
           render={(arrayHelpers) => (
             <React.Fragment>
-              {
-                profiles.compute[currentProfile]?.resources.storage?.map((storage, index) => {
-                  return storage?.attributes && (
-                    <VariableWrapper
-                      key={`${currentProfile}-persistent-${index}`}>
+              {profiles.compute[currentProfile]?.resources.storage?.map((storage, index) => {
+                return (
+                  storage?.attributes && (
+                    <VariableWrapper key={`${currentProfile}-persistent-${index}`}>
                       <Field
                         name={`sdl.profiles.compute.${currentProfile}.resources.storage.${index}.name`}
                         validate={validateStorageData}
@@ -199,18 +212,23 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                         name={`sdl.profiles.compute.${currentProfile}.resources.storage.${index}.attributes.class`}
                       >
                         {({ field }: any) => (
-                          <FormControl fullWidth style={{
-                            background: 'white', ...disabled && {
-                              backgroundColor: '#d7d7d73d',
-                              pointerEvents: 'none'
-                            }
-                          }}>
+                          <FormControl
+                            fullWidth
+                            style={{
+                              background: 'white',
+                              ...(disabled && {
+                                backgroundColor: '#d7d7d73d',
+                                pointerEvents: 'none',
+                              }),
+                            }}
+                          >
                             <Select
-                              labelId="to-id"{...field}
+                              labelId="to-id"
+                              {...field}
                               SelectDisplayProps={{
                                 style: {
                                   padding: '11.5px 14px',
-                                }
+                                },
                               }}
                             >
                               <MenuItem value="beta1">
@@ -233,7 +251,7 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                             border: '1px solid #D1D5DB',
                             boxShadow: '0px 1px 2px rgb(0 0 0 / 5%)',
                             borderRadius: '6px',
-                            width: '46px'
+                            width: '46px',
                           }}
                           onClick={() => {
                             // Here we have to update parent sdl.services form and manipulate with service data bound to this persistent storage
@@ -252,7 +270,7 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                               }
 
                               // -1 because we delete key after this loop
-                              if ((storages.length - 1) === 0) {
+                              if (storages.length - 1 === 0) {
                                 delete sdl.services[serviceName].params;
                               }
                             }
@@ -266,12 +284,11 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                         >
                           <TrashIcon />
                         </IconButton>
-                      )
-                      }
+                      )}
                     </VariableWrapper>
-                  );
-                })
-              }
+                  )
+                );
+              })}
               {!disabled && (
                 <AddNewButtonWrapper>
                   <AddNewButton
@@ -280,14 +297,14 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
                     size="small"
                     onClick={() => {
                       arrayHelpers.insert(
-                        (profiles.compute[currentProfile]?.resources.storage?.length + 1) ?? 0,
+                        profiles.compute[currentProfile]?.resources.storage?.length + 1 ?? 0,
                         {
                           size: '1Gi',
                           name: '',
                           attributes: {
                             persistent: true,
-                            class: 'beta1'
-                          }
+                            class: 'beta1',
+                          },
                         }
                       );
                     }}
@@ -300,7 +317,7 @@ export const Storage: React.FC<StorageProps> = ({ serviceName, profiles, current
           )}
         />
       </TabPanel>
-    </SdlSectionWrapper >
+    </SdlSectionWrapper>
   );
 };
 
@@ -327,7 +344,7 @@ function a11yProps(index: number) {
   };
 }
 
-const InputField = styled(Input) <{ error?: boolean }>`
+const InputField = styled(Input)<{ error?: boolean }>`
   width: 100%;
 
   &:disabled {
@@ -342,5 +359,5 @@ const StorageType = styled.p`
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
-  color: #6B7280;
+  color: #6b7280;
 `;

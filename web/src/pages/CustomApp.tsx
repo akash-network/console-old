@@ -4,7 +4,6 @@ import { Box, Button } from '@mui/material';
 import { Formik } from 'formik';
 import { SdlConfiguration } from '../components/SdlConfiguration/SdlConfiguration';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { createDeployment, createLease, sendManifest } from '../recoil/api';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { deploymentSdl, keplrState } from '../recoil/atoms';
 import Keplr from '../components/KeplrLogin';
@@ -19,14 +18,18 @@ import {
 import { Icon } from '../components/Icons';
 import { isError } from '../_helpers/types';
 import { PreflightCheck } from './PreflightCheck';
+import { createDeployment, createLease, sendManifest } from '../api/mutations';
+import { useMutation } from 'react-query';
+import { getRpcNode } from '../hooks/useRpcNode';
+import logging from '../logging';
 
 const CustomApp: React.FC = () => {
+  const { networkType } = getRpcNode();
   const navigate = useNavigate();
   const keplr = useRecoilValue(keplrState);
   const [deploymentId, setDeploymentId] = React.useState<{ owner: string; dseq: string }>();
   const { intentId, dseq } = useParams();
   const [sdl, setSdl] = useRecoilState(deploymentSdl);
-  const [progressVisible, setProgressVisible] = useState(false);
   const [cardMessage, setCardMessage] = useState('');
   const [activeStep, setActiveStep] = useState({ currentCard: 1 });
 
@@ -34,6 +37,12 @@ const CustomApp: React.FC = () => {
   // prevent function being recreated on state change
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
   const { state } = useLocation();
+
+  const { mutate: mxCreateDeployment, isLoading: isCreatingDeployment } = useMutation(createDeployment);
+  const { mutate: mxCreateLease, isLoading: isCreatingLease } = useMutation(createLease);
+  const { mutate: mxSendManifest, isLoading: isSendingManifest } = useMutation(sendManifest);
+
+  const progressVisible = isCreatingDeployment || isCreatingLease || isSendingManifest;
 
   useEffect(() => {
     if (intentId && !dseq) {
@@ -52,21 +61,22 @@ const CustomApp: React.FC = () => {
     if (sdl) {
       navigate(`/new-deployment/custom-sdl/${intentId}`, { state: { sdl } });
     }
-
   };
 
   const acceptBid = async (bidId: any) => {
-    setProgressVisible(true);
     setCardMessage('Creating lease');
-    try {
-      const lease = await createLease(keplr, bidId);
 
-      if (lease) {
-        setCardMessage('Sending manifest');
-        sendManifest(keplr.accounts[0].address, lease, sdl).then(() => setProgressVisible(false));
-      } else {
-        setCardMessage('Could not create lease.');
-      }
+    try {
+      mxCreateLease(bidId, {
+        onSuccess: (lease) => {
+          if (lease) {
+            setCardMessage('Sending manifest');
+            mxSendManifest({ address: keplr.accounts[0].address, lease, sdl });
+          } else {
+            setCardMessage('Could not create lease.');
+          }
+        }
+      });
     } catch (error: unknown) {
       // TODO: Implement appropriate error handling
       // Here we need to check it error.message is "Request rejected" which mean user clicked reject button
@@ -74,7 +84,7 @@ const CustomApp: React.FC = () => {
       if (isError(error)) {
         console.log('CustomApp.tsx' + error.message);
       }
-      setProgressVisible(false);
+
       setCardMessage('');
     }
   };
@@ -85,29 +95,35 @@ const CustomApp: React.FC = () => {
         enableReinitialize
         initialValues={{ ...initialValues, sdl: transformSdl(state.sdl) }}
         onSubmit={async (value: InitialValuesProps) => {
-          setProgressVisible(true);
           setCardMessage('Creating deployment');
           try {
-            const result = await createDeployment(keplr, value.sdl);
-            if (result && result.deploymentId) {
-              setDeploymentId(result.deploymentId);
-              setSdl(value.sdl);
-              setProgressVisible(false);
-              navigate(`/configure-deployment/${result.deploymentId.dseq}`);
-              localStorage.setItem(
-                `${result.deploymentId.dseq}`,
-                JSON.stringify({
-                  name: value.appName,
-                  sdl: value.sdl,
-                })
-              );
+            if (!value.sdl) {
+              logging.error('No SDL found');
+              return;
             }
+
+            mxCreateDeployment({ sdl: value.sdl }, {
+              onSuccess: (result) => {
+                if (result && result.deploymentId) {
+                  setDeploymentId(result.deploymentId);
+                  setSdl(value.sdl);
+                  navigate(`/configure-deployment/${result.deploymentId.dseq}`);
+
+                  localStorage.setItem(
+                    `${result.deploymentId.dseq}`,
+                    JSON.stringify({
+                      name: value.appName,
+                      sdl: value.sdl,
+                    })
+                  );
+                }
+              }
+            });
           } catch (error) {
             // TODO: Implement appropriate error handling
             if (isError(error)) {
               console.log('CustomApp.tsx' + error.message);
             }
-            setProgressVisible(false);
             setCardMessage('');
           }
         }}
@@ -128,7 +144,10 @@ const CustomApp: React.FC = () => {
                       <Button variant="outlined" onClick={() => showSdlReview(true)}>
                         <span className="mr-2">Review SDL</span> <Icon type="edit" />
                       </Button>
-                      <Button variant="contained" onClick={() => handlePreflight('preflight-check', values.sdl)}>
+                      <Button
+                        variant="contained"
+                        onClick={() => handlePreflight('preflight-check', values.sdl)}
+                      >
                         Create Deployment
                       </Button>
                     </DeploymentAction>
@@ -136,9 +155,9 @@ const CustomApp: React.FC = () => {
                 />
               )}
 
-              {!progressVisible && activeStep.currentCard === 2 && intentId === 'preflight-check' && (
-                <PreflightCheck />
-              )}
+              {!progressVisible &&
+                activeStep.currentCard === 2 &&
+                intentId === 'preflight-check' && <PreflightCheck />}
 
               {!progressVisible && activeStep.currentCard === 3 && deploymentId && (
                 <Keplr>

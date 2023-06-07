@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useState} from 'react';
+import React, { Suspense, useCallback, useState } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { startCase, toLower } from 'lodash';
@@ -33,7 +33,7 @@ export default function SideNav(props: any) {
   const [, setShowKeplrPopup] = useRecoilState(showKeplrWindow);
 
   const toggleHelpCenter = useCallback(() => {
-    setIsHelpCenterOpen((prevIsOpen : boolean) => !prevIsOpen);
+    setIsHelpCenterOpen((prevIsOpen: boolean) => !prevIsOpen);
   }, []);
 
   const handleDrawerOpen = () => {
@@ -113,7 +113,7 @@ export default function SideNav(props: any) {
                 </Box>
                 Connect Wallet
               </Button>
-              
+
               <StyledHelpIcon onClick={handleShowKeplrHelp} />
             </>
           )}
@@ -142,7 +142,7 @@ export default function SideNav(props: any) {
             paddingX="10px"
             paddingY="10px"
           >
-            <Link to="new-deployment" id="link_new_deployment" className="block_default_hover">
+            <Link to="landing/node-deployment" id="link_new_deployment" className="block_default_hover">
               <SideNavMenuItemRed>
                 <AddIcon style={{ color: '#F43F5E' }} />
                 <SideNavMenuItemLabel style={{ color: '#F43F5E' }}>
@@ -193,7 +193,7 @@ export default function SideNav(props: any) {
 
             <SideNavMenuItem>
               <IconWrapper onClick={toggleHelpCenter}>
-                <Icon  type="help" />
+                <Icon type="help" />
               </IconWrapper>
               <SideNavMenuItemLabel>Help</SideNavMenuItemLabel>
             </SideNavMenuItem>
@@ -213,11 +213,7 @@ export default function SideNav(props: any) {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         {children}
       </Box>
-      <HelpCenterSideHelp
-        isOpen={isHelpCenterOpen}
-        onClose={toggleHelpCenter}
-        
-      />
+      <HelpCenterSideHelp isOpen={isHelpCenterOpen} onClose={toggleHelpCenter} />
     </Box>
   );
 }

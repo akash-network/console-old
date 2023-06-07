@@ -14,9 +14,9 @@ import { fetchSdlList, fetchTemplateList } from '../recoil/api/sdl';
 import { templateIcons } from '../assets/templates';
 
 type SocialNetwork = {
-  socialNetwork: string,
-  url: string
-}
+  socialNetwork: string;
+  url: string;
+};
 
 export interface SelectAppProps {
   folderName: string;
@@ -132,10 +132,9 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
                     />
                   );
                 })}
-
             </TypologyWrapper>
             <DeployButton
-              variant='contained'
+              variant="contained"
               disabled={!selectedSdl}
               onClick={() => onNextButtonClick(selectedSdl.title.toLowerCase())}
             >

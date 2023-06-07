@@ -4,22 +4,21 @@ import ArrowRight from '../../assets/images/arrow-right-gray.svg';
 import React from 'react';
 
 interface TemplateProps {
-  id: string
-  title: string
-  description: string
-  logo?: string
-  onNextButtonClick?: () => void
+  id: number;
+  title: string;
+  description: string;
+  logo?: string;
+  onNextButtonClick?: () => void;
 }
 
 const IconRight = () => <img src={ArrowRight} alt="Icon Right" />;
 
-export const Template: React.FC<TemplateProps> = (
-  {
-    title,
-    description,
-    logo,
-    onNextButtonClick,
-  }) => {
+export const Template: React.FC<TemplateProps> = ({
+  title,
+  description,
+  logo,
+  onNextButtonClick,
+}) => {
   return (
     <TemplateWrapper>
       <TemplateHeaderWrapper>
@@ -47,7 +46,7 @@ const TemplateFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid #E5E7EB;
+  border-top: 1px solid #e5e7eb;
   padding: 19px 0;
   cursor: pointer;
 `;
@@ -62,14 +61,14 @@ const TemplateWrapper = styled.div`
   min-width: 325px;
   height: 266px;
 
-  background: #FFFFFF;
+  background: #ffffff;
 
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   border-radius: 8px;
 
   &:hover {
     ${TemplateFooter} {
-      background-color: #F9FAFB;
+      background-color: #f9fafb;
       border-radius: 8px;
     }
   }
@@ -98,7 +97,7 @@ const TemplateHeaderTitle = styled.div`
   align-items: center;
   letter-spacing: 0.01em;
 
-  color: #3D4148;
+  color: #3d4148;
 `;
 
 const TemplateLogo = styled.div`
@@ -119,7 +118,7 @@ const TemplateBodyText = styled.p`
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0.015em;
-  color: #6B7280;
+  color: #6b7280;
 `;
 
 const TemplateDeployText = styled.p`

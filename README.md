@@ -11,9 +11,11 @@ Akash Console is an easy to use deployment tool for deploying workloads on to Ak
 If you would like to contribute to Akash Console, here are some ways to do so:
 
 1. Beta test the [public facing app](https://console.akash.network/) and [report issues](https://github.com/akash-network/console/issues).
-2. Run it locally (instructions below) to get acquainted with the application.
-3. Review the list of issues at https://github.com/akash-network/console/issues and comment on one that you wish to work on.
-4. Join the [Akash Networks Clients SIG](https://github.com/akash-network/community/tree/main/sig-clients) meetings to learn about other issues or features you can help build.
+2. Read up on [Akash Console Strategy & Roadmap doc](strategy-roadmap.md)
+3. Run it locally (instructions below) to get acquainted with the application.
+4. Review the project board at https://github.com/orgs/akash-network/projects/2/ and comment on any issue that you wish to work on.
+5. Join the [Akash Networks Clients SIG](https://github.com/akash-network/community/tree/main/sig-clients) meetings to learn about other issues or features you can help build.
+6. Reach out to anil [at] akash.network to get access to our discord channel for Console OSS devs
 
 NOTE: If you need AKT for deployment, share your Keplr wallet ID in the comment for the specific issue and we'll drop you 10AKT to test with (should let you test deploys 100s of times)
 

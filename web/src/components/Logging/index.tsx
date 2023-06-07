@@ -11,7 +11,7 @@ const severityMap: Map<LoggingSeverity, Severity> = new Map([
 
 type LoggingProps = {
   children: React.ReactNode;
-}
+};
 
 type Severity = AlertProps['severity'];
 
@@ -20,11 +20,8 @@ const Logging: React.FC<LoggingProps> = function ({ children }) {
   const [message, setMessage] = React.useState<string>('');
   const [severity, setSeverity] = React.useState<Severity>('info');
 
-  const remapSeverity: (type: LoggingSeverity) => Severity = (type) => (
-    severityMap.has(type)
-      ? severityMap.get(type)
-      : 'info'
-  );
+  const remapSeverity: (type: LoggingSeverity) => Severity = (type) =>
+    severityMap.has(type) ? severityMap.get(type) : 'info';
 
   const onOpen: LoggingCallback = (msg, severity) => {
     setMessage(msg);
@@ -45,19 +42,22 @@ const Logging: React.FC<LoggingProps> = function ({ children }) {
     };
   });
 
-  return <>
-    {children}
+  return (
+    <>
+      {children}
 
-    <Snackbar
-      open={open}
-      autoHideDuration={null}
-      onClose={onClose}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-      <Box className="w-128">
-        <Alert severity={severity}>{message}</Alert>
-      </Box>
-    </Snackbar>
-  </>;
+      <Snackbar
+        open={open}
+        autoHideDuration={null}
+        onClose={onClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Box className="w-128">
+          <Alert severity={severity}>{message}</Alert>
+        </Box>
+      </Snackbar>
+    </>
+  );
 };
 
 export default Logging;

@@ -3,7 +3,7 @@ import { Button, Card, CardContent, Divider, Grid, Stack, Typography } from '@mu
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { Address } from '../Address';
-import { queryProviderInfo } from '../../recoil/queries';
+import { queryProviderInfo } from '../../api/queries';
 import { useQuery } from 'react-query';
 
 export interface ProviderDetailsProps {
@@ -12,9 +12,7 @@ export interface ProviderDetailsProps {
 
 function attributeByName(attributes: any) {
   return function AttributeByName(key: string) {
-    return attributes[key] !== 'undefined'
-      ? attributes[key]
-      : <span>not found</span>;
+    return attributes[key] !== 'undefined' ? attributes[key] : <span>not found</span>;
   };
 }
 
@@ -23,19 +21,19 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({ providerId }) => {
   const { data: response } = useQuery(['providerInfo', providerId], queryProviderInfo);
   const provider = response?.provider;
 
-  const attributes = useMemo(() => (
-    provider?.attributes
-      ? Object.fromEntries(
-        provider.attributes.map(attr => [attr.key.toLowerCase(), attr.value])
-      )
-      : null
-  ), [provider]);
+  const attributes = useMemo(
+    () =>
+      provider?.attributes
+        ? Object.fromEntries(
+          provider.attributes.map((attr) => [attr.key.toLowerCase(), attr.value])
+        )
+        : null,
+    [provider]
+  );
 
   const AttributeValue = useMemo(() => {
     const attrValue = attributeByName(attributes);
-    const AttributeValue = ({ name }: { name: string }) => (
-      <span>{attrValue(name)}</span>
-    );
+    const AttributeValue = ({ name }: { name: string }) => <span>{attrValue(name)}</span>;
 
     return AttributeValue;
   }, [attributes]);
@@ -48,7 +46,6 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({ providerId }) => {
 
   return (
     <Grid container spacing={5}>
-
       {/* Header */}
       <Grid item xs={14}>
         <Heading>
@@ -67,14 +64,24 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({ providerId }) => {
               <Divider />
               <Stack spacing={1}>
                 <Header>Info</Header>
-                <Field label="Region"><AttributeValue name="region" /></Field>
-                <Field label="Address"><Address address={provider.owner} /></Field>
-                <Field label="Organization"><AttributeValue name="organization" /></Field>
+                <Field label="Region">
+                  <AttributeValue name="region" />
+                </Field>
+                <Field label="Address">
+                  <Address address={provider.owner} />
+                </Field>
+                <Field label="Organization">
+                  <AttributeValue name="organization" />
+                </Field>
               </Stack>
               <Stack spacing={1}>
                 <Header>Contact</Header>
-                <Field label="Website"><AttributeValue name="website" /></Field>
-                <Field label="Email"><AttributeValue name="email" /></Field>
+                <Field label="Website">
+                  <AttributeValue name="website" />
+                </Field>
+                <Field label="Email">
+                  <AttributeValue name="email" />
+                </Field>
               </Stack>
             </Stack>
           </CardContent>
@@ -90,14 +97,16 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({ providerId }) => {
               <Divider />
               <Stack>
                 {Object.entries(attributes).map(([key, value]) => (
-                  <Attribute label={key} key={key}>{value}</Attribute>
+                  <Attribute label={key} key={key}>
+                    {value}
+                  </Attribute>
                 ))}
               </Stack>
             </Stack>
           </CardContent>
         </Card>
       </Grid>
-    </Grid >
+    </Grid>
   );
 };
 
@@ -106,39 +115,48 @@ export default ProviderDetails;
 const ReturnArrow = (props: any) => (
   <Button {...props}>
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 19L3 12M3 12L10 5M3 12L21 12" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M10 19L3 12M3 12L10 5M3 12L21 12"
+        stroke="#6B7280"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   </Button>
 );
 
-const Field = ({ label, children }: { label: string, children: React.ReactNode }) => {
-  return <FieldContainer>
-    <Stack direction="row" justifyContent="space-between">
-      <Typography color="#6B7280">{label}:</Typography>
-      {children}
-    </Stack>
-  </FieldContainer>;
+const Field = ({ label, children }: { label: string; children: React.ReactNode }) => {
+  return (
+    <FieldContainer>
+      <Stack direction="row" justifyContent="space-between">
+        <Typography color="#6B7280">{label}:</Typography>
+        {children}
+      </Stack>
+    </FieldContainer>
+  );
 };
 
-const Attribute = ({ label, children }: { label: string, children: any }) => {
-  return <AttributeContainer>
-    <Stack direction="row">
-      <Typography width="18rem">{label[0].toUpperCase() + label.slice(1)}:</Typography>
-      {children}
-    </Stack>
-  </AttributeContainer>;
+const Attribute = ({ label, children }: { label: string; children: any }) => {
+  return (
+    <AttributeContainer>
+      <Stack direction="row">
+        <Typography width="18rem">{label[0].toUpperCase() + label.slice(1)}:</Typography>
+        {children}
+      </Stack>
+    </AttributeContainer>
+  );
 };
 
 const FieldContainer = styled.div`
   padding: 9px 13px;
-  border: 1px solid #D1D5DB;
-  border-radius: 6px; 
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
 `;
 
 const AttributeContainer = styled.div`
   padding: 9px 13px;
 `;
-
 
 const Heading = styled.h1`
   font-weight: 500;
@@ -146,7 +164,7 @@ const Heading = styled.h1`
   line-height: 24px;
   color: #111827;
   padding-bottom: 28px;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid #e5e7eb;
 `;
 
 const ProviderName = styled.h2`
