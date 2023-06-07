@@ -150,7 +150,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
         refetchCertificates();
       },
       onError: (error: any) => {
-        logging.error("Couldn't create certificate: " + error);
+        logging.error('Couldn\'t create certificate: ' + error);
       }
     });
   };
