@@ -79,6 +79,8 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = ({
       keepMounted
       open={open}
       onClose={closeReviewModal}
+      onInput={handleInput}
+      onPaste={handleInput}
       PaperProps={{
         sx: {
           maxWidth: '100%',
@@ -86,7 +88,6 @@ export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = ({
           borderRadius: 4,
         },
       }}
-      onInput={handleInput}
     >
       <DialogTitle
         sx={{
