@@ -70,7 +70,7 @@ export default function SelectProvider({
   const [timerExpired, setTimerExpired] = React.useState(false);
   const [selectedProvider, setSelectedProvider] = React.useState<string>();
   const [sortMethod] = useState(sortingMethods.byPrice);
-  const [filterMethod, setFilterMethod] = React.useState(filterMethods.byAudit);
+  const [filterMethod, setFilterMethod] = React.useState(filterMethods.none);
 
   const isSelectedProvider = (providerId: string) =>
     selectedProvider && providerId === selectedProvider;
