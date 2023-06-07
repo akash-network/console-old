@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Box, Button, Card, Stack, Tooltip, CircularProgress } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { useFormikContext } from 'formik';
-import { KeplrWallet, activeCertificate, keplrState, rpcEndpoint } from '../recoil/atoms';
+import { activeCertificate, keplrState } from '../recoil/atoms';
 import { getAccountBalance } from '../recoil/api/bank';
 import { createAndBroadcastCertificate } from '../recoil/api';
 import { Icon } from '../components/Icons';
@@ -14,12 +14,15 @@ import { useWallet } from '../hooks/useWallet';
 import { ManifestVersion } from '../_helpers/deployments-utils';
 import { SDLSpec } from '../components/SdlConfiguration/settings';
 import { queryCertificates } from '../api/queries';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { Certificate_State } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/cert';
 import { Input, Label } from '../components/SdlConfiguration/styling';
 import { AntSwitch } from '../components/Switch/AntSwitch';
 import { v2Sdl } from '@akashnetwork/akashjs/build/sdl/types';
 import { getRpcNode } from '../hooks/useRpcNode';
+import { createCertificate } from '../api/mutations';
+import logging from '../logging';
+import { loadActiveCertificate } from '../api/rpc/beta3/certificates';
 
 export const PreflightCheck: React.FC<Record<string, never>> = () => {
   const [keplr] = useRecoilState(keplrState);
@@ -29,7 +32,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
     sdl: SDLSpec;
   }>();
   const [certificate, setCertificate] = useRecoilState(activeCertificate);
-  const { data: accountCertificates } = useQuery(
+  const { data: accountCertificates, refetch: refetchCertificates } = useQuery(
     ['certificates', keplr?.accounts[0]?.address],
     queryCertificates
   );
@@ -40,6 +43,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
   const [showVerifiedCert, setShowVerifiedCert] = React.useState(false);
   const [useAuthorizedDepositor, setUseAuthorizedDepositor] = React.useState(false);
   const { networkType } = getRpcNode();
+  const { mutate: mxCreateCertificate } = useMutation(['createCertificate'], createCertificate);
 
   const hasKeplr = window.keplr !== undefined;
   const sdl = values.sdl;
@@ -90,10 +94,24 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
           Object.values(cert.certificate.pubkey) as any,
           'base64'
         ).toString('ascii');
+
         return certificate.$type === 'TLS Certificate' && certificate.publicKey === pubKey;
       });
 
-      setIsValidCert(!!(activeCert && activeCert?.certificate?.state === Certificate_State.valid));
+      if (!activeCert) {
+        console.warn('Unable to find certificate: ', certificate);
+      }
+
+      const isValid = !!(
+        activeCert &&
+        activeCert?.certificate?.state === Certificate_State.valid
+      );
+
+      if (!isValid) {
+        console.warn('Certificate is not valid: ', activeCert?.certificate?.state);
+      }
+
+      setIsValidCert(isValid);
     }
   }, [certificate, accountCertificates]);
 
@@ -123,14 +141,24 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
 
   /* Action handler for creating a certificate */
   const handleCreateCertificate = async () => {
-    const { rpcNode } = getRpcNode();
     setLoading(true);
-    const result = await createAndBroadcastCertificate(rpcNode, keplr);
 
-    if (result.code === 0 && result.certificate) {
-      setCertificate(result.certificate);
-      setShowVerifiedCert(true);
-    }
+    // the query doesn't take any arguments, this little hack keeps
+    // typescript happy
+    mxCreateCertificate(({} as any), {
+      onSuccess: async (result: any) => {
+        setCertificate(await loadActiveCertificate(keplr?.accounts[0]?.address));
+        setShowVerifiedCert(true);
+        setLoading(false);
+        logging.success('Certificate created successfully');
+        
+        refetchCertificates();
+      },
+      onError: (error: any) => {
+        setLoading(false);
+        logging.error(error);
+      }
+    });
   };
 
   return (

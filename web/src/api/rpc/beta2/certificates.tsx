@@ -157,7 +157,9 @@ export const saveCertificate = (walletId: string, certificate: any) => {
 
   localStorage.setItem('certificates', JSON.stringify(marshaledCerts));
 
-  return marshaledCerts.findIndex((cert) => cert.hash === hash);
+  // reload the certificate list to ensure the index is correct
+  const certList = loadCertificates(walletId);
+  return certList.findIndex((cert) => cert.hash === hash);
 };
 
 // Returns a list of the public keys for all available certificates

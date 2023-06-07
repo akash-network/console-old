@@ -5,15 +5,16 @@ import {
   QueryCertificatesResponse,
   QueryClientImpl,
 } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta3/query';
+
+import { 
+  MsgCreateCertificate,
+  MsgRevokeCertificate 
+} from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta3/cert';
+
 import { getMsgClient, getRpc } from '@akashnetwork/akashjs/build/rpc';
-import {
-  createCertificate,
-  revokeCertificate,
-} from '@akashnetwork/akashjs/build/certificates';
+import { createCertificate } from '@akashnetwork/akashjs/build/certificates';
 import crypto from 'crypto-js';
 import { getTypeUrl } from '@akashnetwork/akashjs/build/stargate';
-
-import { MsgCreateCertificate } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta3/cert';
 import { toBase64 } from 'pvutils';
 
 export interface CertificateFilter {
@@ -72,8 +73,25 @@ export const broadcastRevokeCertificate = async (
 ) => {
   const signer = wallet.offlineSigner;
   const client = await getMsgClient(rpcEndpoint, signer);
+  const [account] = wallet.accounts;
 
-  return revokeCertificate(wallet.accounts[0].address, certSerial, client);
+  const msg = {
+    typeUrl: getTypeUrl(MsgRevokeCertificate),
+    value: MsgRevokeCertificate.fromPartial({
+      id: {
+        owner: account.address,
+        serial: certSerial,
+      }
+    }),
+  };
+
+  const tx = await client.signAndBroadcast(account.address, [msg], 'auto', 'Revoke certificate');
+
+  if (tx.code !== undefined && tx.code === 0) {
+    // TODO: remove certificate from local storage and update active serial
+  }
+
+  return tx;
 };
 
 export const fetchCertificates = async (filter: CertificateFilter, rpcEndpoint: string) => {
@@ -162,7 +180,9 @@ export const saveCertificate = (walletId: string, certificate: any) => {
 
   localStorage.setItem('certificates', JSON.stringify(marshaledCerts));
 
-  return marshaledCerts.findIndex((cert) => cert.hash === hash);
+  // reload the certificate list to ensure the index is correct
+  const certList = loadCertificates(walletId);
+  return certList.findIndex((cert) => cert.hash === hash);
 };
 
 // Returns a list of the public keys for all available certificates
