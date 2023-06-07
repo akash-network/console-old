@@ -5,7 +5,6 @@ import { useRecoilState } from 'recoil';
 import { useFormikContext } from 'formik';
 import { activeCertificate, keplrState } from '../recoil/atoms';
 import { getAccountBalance } from '../recoil/api/bank';
-import { createAndBroadcastCertificate } from '../recoil/api';
 import { Icon } from '../components/Icons';
 import Delayed from '../components/Delayed';
 import { Text, Title } from '../components/Text';
@@ -39,11 +38,10 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
   const wallet = useWallet();
   const [isValidCert, setIsValidCert] = React.useState(false);
   const [manifestVersion, setManifestVersion] = React.useState<Uint8Array>();
-  const [loading, setLoading] = React.useState(false);
   const [showVerifiedCert, setShowVerifiedCert] = React.useState(false);
   const [useAuthorizedDepositor, setUseAuthorizedDepositor] = React.useState(false);
   const { networkType } = getRpcNode();
-  const { mutate: mxCreateCertificate } = useMutation(['createCertificate'], createCertificate);
+  const { mutate: mxCreateCertificate, isLoading } = useMutation(['createCertificate'], createCertificate);
 
   const hasKeplr = window.keplr !== undefined;
   const sdl = values.sdl;
@@ -141,22 +139,18 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
 
   /* Action handler for creating a certificate */
   const handleCreateCertificate = async () => {
-    setLoading(true);
-
     // the query doesn't take any arguments, this little hack keeps
     // typescript happy
     mxCreateCertificate(({} as any), {
       onSuccess: async (result: any) => {
         setCertificate(await loadActiveCertificate(keplr?.accounts[0]?.address));
         setShowVerifiedCert(true);
-        setLoading(false);
         logging.success('Certificate created successfully');
         
         refetchCertificates();
       },
       onError: (error: any) => {
-        setLoading(false);
-        logging.error(error);
+        logging.error("Couldn't create certificate: " + error);
       }
     });
   };
@@ -327,7 +321,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
                   <div className="flex mb-2">
                     <Icon type="alert" />
                     <Title size={14} className="pl-2">
-                      {loading ? 'Please wait, creating certificate...' : 'Missing Certificate'}
+                      {isLoading ? 'Please wait, creating certificate...' : 'Missing Certificate'}
                     </Title>
                     <div className="grow">{/* spacer - do not remove */}</div>
                     <PreflightActionButton onClick={handleCreateCertificate}>
@@ -343,7 +337,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
                     </Tooltip>
                   </div>
                   <Text size={14}>
-                    {loading ? (
+                    {isLoading ? (
                       <div className="flex justify-center">
                         {' '}
                         <CircularProgress />{' '}
