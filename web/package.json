@@ -11,7 +11,7 @@
         "css": "npx tailwindcss -i ./src/style/app.scss -o ./src/style/app.css --watch"
     },
     "dependencies": {
-        "@akashnetwork/akashjs": "^0.4.3",
+        "@akashnetwork/akashjs": "^0.4.4",
         "@cosmjs/launchpad": "^0.27.1",
         "@cosmjs/proto-signing": "0.25.4",
         "@craco/craco": "^6.4.5",
