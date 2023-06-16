@@ -162,10 +162,11 @@ export const migrateCertificates = (walletId: string) => {
 };
 
 export const saveActiveSerial = (walletId: string, idx: number) => {
+  console.log(`Settings active certificate for wallet ${walletId} to index ${idx}`);
   localStorage.setItem(`active-certificate-serial-${walletId}`, JSON.stringify(idx));
 };
 
-export const saveCertificate = (walletId: string, certificate: any) => {
+export const saveCertificate = (walletId: string, certificate: any): number => {
   const hash = crypto.SHA256(JSON.stringify(certificate)).toString();
   const cypher = encodeCertificate(certificate);
   const certificateList = loadCertificates();
@@ -182,7 +183,13 @@ export const saveCertificate = (walletId: string, certificate: any) => {
 
   // reload the certificate list to ensure the index is correct
   const certList = loadCertificates(walletId);
-  return certList.findIndex((cert) => cert.hash === hash);
+  console.log(`Certificate list for wallet ${walletId} is now:`);
+  console.table(certList);
+
+  const newIndex = certList.findIndex((cert) => cert.hash === hash);
+  console.log(`New certificate with hash ${hash} found at index ${newIndex}`);
+
+  return newIndex;
 };
 
 // Returns a list of the public keys for all available certificates
