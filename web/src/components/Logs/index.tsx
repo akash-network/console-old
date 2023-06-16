@@ -12,32 +12,53 @@ import { watchLeaseLogs as watchLeaseLogsBeta3 } from '../../api/rpc/beta3/deplo
 
 import { getRpcNode } from '../../hooks/useRpcNode';
 
-export const Logs: React.FC<any> = ({ lease }) => {
+import { QueryLeaseResponse as Beta2Lease } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/query';
+import { QueryLeaseResponse as Beta3Lease } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta3/query';
+
+type LogsProps = {
+  lease: Beta2Lease | Beta3Lease;
+}
+
+export const Logs: React.FC<LogsProps> = ({ lease }) => {
   const { networkType } = getRpcNode();
   const { data: provider } = useQuery(
     ['providerInfo', lease?.lease?.leaseId?.provider],
     queryProviderInfo
   );
   const address = (lease as any).lease?.leaseId?.owner;
-  const [logs, setLogs] = useState<any[]>([]);
+  const [logs, setLogs] = useState<string[]>([]);
   const [autoScrollWithOutput, setAutoScrollWithOutput] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let socket: null | WebSocket = null;
+    let flushInterval: null | NodeJS.Timer = null;
+    const logSize = 10000;
+    const newLogs = new Array(logSize);
+    let logIndex = 0;
 
     if (!provider || !lease || !address) {
       return;
     }
 
-    const onMessage = (message: any) => {
+    const onMessage = (message: MessageEvent<any>) => {
       if (message.data) {
-        message.data
-          .text()
-          .then(JSON.parse)
-          .then((data: string) => setLogs((oldVal) => [...oldVal, data]));
+        newLogs[logIndex % logSize] = message.data;
+        logIndex += 1;
       }
     };
+
+    const flushMessages = () => {
+      Promise.all(newLogs.slice(0, logIndex).map((log) => log.text().then(JSON.parse)))
+        .then((newLogs) => {
+          setLogs((oldVal) => [...oldVal, ...newLogs]);
+          logIndex = 0;
+        });
+    };
+
+    if (flushInterval === null) {
+      flushInterval = setInterval(flushMessages, 2000);
+    }
 
     const watchFn = networkType === 'testnet'
       ? watchLeaseLogsBeta3
@@ -53,6 +74,11 @@ export const Logs: React.FC<any> = ({ lease }) => {
     return () => {
       setLogs([]);
 
+      if (flushInterval) {
+        clearInterval(flushInterval);
+        flushInterval = null;
+      }
+
       if (socket) {
         console.log('Closing log watch socket');
         socket.close();
@@ -61,8 +87,8 @@ export const Logs: React.FC<any> = ({ lease }) => {
   }, [lease, provider, setLogs]);
 
   useEffect(() => {
-    if (autoScrollWithOutput) {
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+    if (autoScrollWithOutput && bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
     }
   }, [logs, autoScrollWithOutput]);
 
