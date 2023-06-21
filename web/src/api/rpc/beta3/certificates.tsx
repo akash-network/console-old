@@ -14,7 +14,6 @@ import {
 import { getMsgClient, getRpc } from '@akashnetwork/akashjs/build/rpc';
 import { createCertificate } from '@akashnetwork/akashjs/build/certificates';
 import crypto from 'crypto-js';
-import { getTypeUrl } from '@akashnetwork/akashjs/build/stargate';
 import { toBase64 } from 'pvutils';
 
 export interface CertificateFilter {
@@ -39,6 +38,10 @@ export interface CertificateRecord {
   walletId: string;
   hash: string;
   cypher: string;
+}
+
+function getTypeUrl<T extends {$type: string}>(type: T) {
+  return `/${type.$type}`;
 }
 
 export const createAndBroadcastCertificate = async (rpcEndpoint: string, wallet: any) => {
