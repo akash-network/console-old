@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useMemo } from 'react';
+import React, { ChangeEvent, SyntheticEvent, useCallback, useMemo } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   Alert,
@@ -8,8 +8,11 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   Grid,
   Paper,
+  Radio,
+  RadioGroup,
   Stack,
   Typography,
 } from '@mui/material';
@@ -19,7 +22,6 @@ import DoDisturbOffIcon from '@mui/icons-material/DoDisturbOff';
 import { activeCertificate, keplrState, optIntoAnalytics } from '../recoil/atoms';
 import {
   TLSCertificate,
-  broadcastRevokeCertificate,
   getAvailableCertificates,
   getCertificateByIndex,
   saveActiveSerial,
@@ -30,13 +32,14 @@ import { useMutation, useQuery } from 'react-query';
 import { useWallet } from '../hooks/useWallet';
 import { queryCertificates } from '../api/queries';
 import { QueryCertificatesResponse } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/query';
-import { RpcSettings, useRpcNode } from '../hooks/useRpcNode';
+import { RpcSettings, defaultRpcSettings, testnetRpcSettings, useRpcNode } from '../hooks/useRpcNode';
 import { Input } from '../components/SdlConfiguration/styling';
 import { isRpcNodeStatus } from '../api/rpc/beta2/rpc';
 import chainInfo from '../_helpers/chain';
 import { createCertificate, revokeCertificate } from '../api/mutations';
 import { set } from 'lodash';
 import logging from '../logging';
+import { getRpc } from '@akashnetwork/akashjs/build/rpc';
 
 type SortableCertificate = {
   available: boolean;
@@ -78,6 +81,25 @@ type FieldInfo<T> = {
   options: T[];
 };
 
+const defaultRpcNodes = [
+  {
+    rpcNode: defaultRpcSettings.rpcNode,
+    name: 'Mainnet',
+  },
+  {
+    rpcNode: testnetRpcSettings.rpcNode,
+    name: 'Testnet',
+  },
+  {
+    rpcNode: '',
+    name: 'Custom',
+  },
+]
+
+const isCustomRpcNode = (rpcNode: string) => {
+  return !defaultRpcNodes.find((node) => node.rpcNode === rpcNode);
+}
+
 const AddCustomChainButton: React.FC = () => {
   const addCustomChain = () => {
     if (window && window.keplr && window.keplr.experimentalSuggestChain) {
@@ -110,7 +132,7 @@ const Settings: React.FC<Record<string, never>> = () => {
   const [optInto, setOptInto] = useRecoilState(optIntoAnalytics);
   const [getRpcNode, setRpcNode] = useRpcNode();
   const [rpcNodeStatus, setRpcNodeStatus] = React.useState('');
-  const [candidateRpcNode, setCandidateRpcNode] = React.useState('');
+  const [candidateRpcNode, setCandidateRpcNode] = React.useState(getRpcNode().rpcNode);
   const [rpcNodeValid, setRpcNodeValid] = React.useState(false);
   const [candidateRpcSettings, setCandidateRpcSettings] = React.useState<RpcSettings>();
   const wallet = useWallet();
@@ -546,7 +568,24 @@ const Settings: React.FC<Record<string, never>> = () => {
         <DialogTitle>Change RPC Endpoint</DialogTitle>
         <Stack paddingX={3}>
           <Box>New RPC endpoint URL:</Box>
+          <Stack>
+            <RadioGroup>
+              {defaultRpcNodes.map((node) => (
+                <FormControlLabel
+                  key={node.name}
+                  value={node.rpcNode}
+                  control={<Radio />}
+                  label={node.name}
+                  checked={candidateRpcNode === node.rpcNode || (node.name === 'Custom' && isCustomRpcNode(candidateRpcNode))}
+                  onChange={(event: SyntheticEvent<Element, Event>) => {
+                    setCandidateRpcNode(node.rpcNode)
+                  }}
+                />
+              ))}
+            </RadioGroup>
+          </Stack>
           <Input
+            name="candidateRpcNode"
             value={candidateRpcNode}
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
               setCandidateRpcNode(event.target.value)
