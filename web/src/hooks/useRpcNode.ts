@@ -2,11 +2,18 @@ import { proxyURL } from '../api/rest/mtls';
 
 const storageKey = 'rpc_settings';
 
-const defaultRpcSettings = {
+export const defaultRpcSettings = {
   rpcNode: 'https://rpc.akashnet.net/',
   chainId: 'akashnet-2',
   networkType: 'mainnet',
 };
+
+export const testnetRpcSettings = {
+  rpcNode: 'https://rpc.testnet-02.aksh.pw/',
+  chainId: 'testnet-2',
+  networkType: 'testnet',
+};
+
 
 export type RpcSettings = typeof defaultRpcSettings;
 
