@@ -577,9 +577,7 @@ const Settings: React.FC<Record<string, never>> = () => {
                   control={<Radio />}
                   label={node.name}
                   checked={candidateRpcNode === node.rpcNode || (node.name === 'Custom' && isCustomRpcNode(candidateRpcNode))}
-                  onChange={(event: SyntheticEvent<Element, Event>) => {
-                    setCandidateRpcNode(node.rpcNode)
-                  }}
+                  onChange={() => setCandidateRpcNode(node.rpcNode)}
                 />
               ))}
             </RadioGroup>

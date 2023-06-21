@@ -13,7 +13,6 @@ import {
   QueryClientImpl as MarketClient,
   QueryLeaseRequest,
   QueryLeasesRequest,
-  QueryLeasesResponse,
 } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/query';
 import {
   MsgCloseDeployment,
@@ -31,23 +30,24 @@ import {
 } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/lease';
 import { loadActiveCertificate, TLSCertificate } from './certificates';
 import { mtlsFetch, proxyWSS } from '../../rest/mtls';
-import { getTypeUrl } from '@akashnetwork/akashjs/build/stargate';
 import {
   DeploymentGroups,
   getCurrentHeight,
   Manifest,
   ManifestVersion,
 } from '../../../_helpers/deployments-utils';
-import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { BidID } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/bid';
 import { fetchRpcNodeStatus } from './rpc';
 import { LeaseStatus } from '../../../types';
 import logging from '../../../logging';
-import { QueryFunction } from 'react-query';
 import { getRpcNode } from '../../../hooks/useRpcNode';
 
 // 5AKT aka 5000000uakt
 export const defaultInitialDeposit = 5000000;
+
+function getTypeUrl<T extends {$type: string}>(type: T) {
+  return `/${type.$type}`;
+}
 
 export const fetchDeployment = async (owner: string, dseq: string, rpcEndpoint: string) => {
   const rpc = await getRpc(rpcEndpoint);
