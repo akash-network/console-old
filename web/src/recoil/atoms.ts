@@ -7,6 +7,7 @@ import { proxyURL } from '../api/rest/mtls';
 import fetchPriceAndMarketCap from './api/akt';
 import { SDLSpec } from '../components/SdlConfiguration/settings';
 import { getRpcNode } from '../hooks/useRpcNode';
+import { debug } from 'console';
 
 export interface KeplrWallet {
   accounts: AccountData[];
@@ -26,6 +27,20 @@ export const rpcProxyEndpoint = `${proxyURL}upstream/${rpcEndpointURL.protocol.s
 // Located in this file for backwards compatibility
 // TODO: Move to a more appropriate location
 export const rpcEndpoint = getRpcNode;
+
+export const localStorageEffect: <T>(key: string) => AtomEffect<T> =
+  (key: string) =>
+  ({ setSelf, onSet }) => {
+    const savedValue = localStorage.getItem(key);
+
+    if (savedValue !== null && savedValue !== 'undefined') {
+      setSelf(JSON.parse(savedValue));
+    }
+
+    onSet((newValue, _, isReset) => {
+      isReset ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(newValue));
+    });
+  };
 
 export const appVersion = atom({
   key: 'appVersion',
@@ -56,6 +71,7 @@ export const rpcState = atom({
 export const deploymentSdl = atom<SDLSpec | undefined>({
   key: 'DeploymentSDL',
   default: undefined,
+  effects: [localStorageEffect('deployment_sdl')],
 });
 
 export const aktMarketCap = atom({
@@ -67,19 +83,6 @@ export const activeCertificate = atom({
   key: 'activeCertificate',
   default: RecoilLoadable.of(loadActiveCertificate()),
 });
-
-export const localStorageEffect: <T>(key: string) => AtomEffect<T> =
-  (key: string) =>
-  ({ setSelf, onSet }) => {
-    const savedValue = localStorage.getItem(key);
-    if (savedValue !== null) {
-      setSelf(JSON.parse(savedValue));
-    }
-
-    onSet((newValue, _, isReset) => {
-      isReset ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(newValue));
-    });
-  };
 
 export const optIntoAnalytics = atom<boolean>({
   key: 'optIntoAnalytics',

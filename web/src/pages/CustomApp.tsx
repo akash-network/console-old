@@ -59,6 +59,7 @@ const CustomApp: React.FC = () => {
 
   const handlePreflight = (intentId: string, sdl: SDLSpec | undefined) => {
     if (sdl) {
+      setSdl(sdl);
       navigate(`/new-deployment/custom-sdl/${intentId}`, { state: { sdl } });
     }
   };
