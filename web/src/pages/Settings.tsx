@@ -94,11 +94,11 @@ const defaultRpcNodes = [
     rpcNode: '',
     name: 'Custom',
   },
-]
+];
 
 const isCustomRpcNode = (rpcNode: string) => {
   return !defaultRpcNodes.find((node) => node.rpcNode === rpcNode);
-}
+};
 
 const AddCustomChainButton: React.FC = () => {
   const addCustomChain = () => {
