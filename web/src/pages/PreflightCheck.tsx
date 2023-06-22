@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { Box, Button, Card, Stack, Tooltip, CircularProgress } from '@mui/material';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useFormikContext } from 'formik';
-import { activeCertificate, keplrState } from '../recoil/atoms';
+import { activeCertificate, deploymentSdl, keplrState } from '../recoil/atoms';
 import { getAccountBalance } from '../recoil/api/bank';
 import { Icon } from '../components/Icons';
 import Delayed from '../components/Delayed';
@@ -42,9 +42,10 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
   const [useAuthorizedDepositor, setUseAuthorizedDepositor] = React.useState(false);
   const { networkType } = getRpcNode();
   const { mutate: mxCreateCertificate, isLoading } = useMutation(['createCertificate'], createCertificate);
+  const savedSDL = useRecoilValue(deploymentSdl);
 
   const hasKeplr = window.keplr !== undefined;
-  const sdl = values.sdl;
+  const sdl = values.sdl || savedSDL;
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const checked = event.target.checked;

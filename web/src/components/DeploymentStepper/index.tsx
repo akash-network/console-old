@@ -26,7 +26,7 @@ import SelectProvider from '../../pages/SelectProvider';
 import { ConfigureApp } from '../../pages/ConfigureApp';
 import { PreflightCheck } from '../../pages/PreflightCheck';
 import { nameToURI, uriToName } from '../../_helpers/param-helpers';
-import { initialValues, InitialValuesProps } from '../SdlConfiguration/settings';
+import { initialValues, InitialValuesProps, SDLSpec } from '../SdlConfiguration/settings';
 import { myDeploymentFormat } from '../../_helpers/my-deployment-utils';
 import logging from '../../logging';
 import Loading from '../Loading';
@@ -93,8 +93,9 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
     }
   };
 
-  const handlePreflightCheck = (intentId: string) => {
-    if (folderName && templateId) {
+  const handlePreflightCheck = (intentId: string, sdl: SDLSpec | undefined) => {
+    if (folderName && templateId && sdl) {
+      setSdl(sdl);
       navigate(`/new-deployment/${nameToURI(folderName)}/${nameToURI(templateId)}/${intentId}`);
     }
   };
@@ -216,7 +217,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
           }
         }}
       >
-        {({ setFieldValue }) => {
+        {({ setFieldValue, values }) => {
           return (
             <>
               <Stepper activeStep={activeStep.currentCard} className="mb-12">
@@ -280,7 +281,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
                       <ConfigureApp
                         folderName={uriToName(folderName)}
                         templateId={uriToName(templateId)}
-                        onNextButtonClick={handlePreflightCheck}
+                        onNextButtonClick={(intent: string) => handlePreflightCheck(intent, values.sdl)}
                       />
                     )}
                     {activeStep.currentCard === 3 && <PreflightCheck />}
