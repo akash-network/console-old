@@ -291,13 +291,6 @@ export async function createDeployment(
     return Promise.reject('Unable to initialize signing client');
   }
 
-  // If the SDL does not have a GPU resource set, set it to 0
-  // to avoid a bug in the backend
-  for (const service of Object.keys(sdl.services)) {
-    const profile = sdl.profiles.compute[service];
-    profile.resources.gpu = profile.resources.gpu || 0;
-  }
-
   const client = await getMsgClient(rpcNode, signer);
   const groups = DeploymentGroups(sdl, 'beta3');
   const ver = await ManifestVersion(sdl, 'beta3');
