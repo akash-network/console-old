@@ -20,7 +20,7 @@ const MyDeploymentsPlaceholder: React.FC<MyDeploymentsPlaceholderProps> = ({ hid
   const { isConnected, connect } = useWallet();
 
   const handleCreateDeployment = () => {
-    navigate('/new-deployment');
+    navigate('/landing/node-deployment');
   };
 
   const handleConnectWallet = () => {
