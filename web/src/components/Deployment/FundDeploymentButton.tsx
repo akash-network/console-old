@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
-import { Box, Button, Input } from '@mui/material';
+import { Button, Input } from '@mui/material';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { getAccountBalance } from '../../recoil/api/bank';
 import { KeplrWallet } from '../../recoil/atoms';
