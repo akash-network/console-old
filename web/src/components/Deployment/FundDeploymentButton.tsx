@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
-import { Button, Input } from '@mui/material';
+import { Box, Button, Input } from '@mui/material';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { getAccountBalance } from '../../recoil/api/bank';
 import { KeplrWallet } from '../../recoil/atoms';
@@ -9,6 +9,7 @@ import { IconType, Icon } from '../Icons';
 import { Prompt } from '../Prompt';
 import { useMutation } from 'react-query';
 import { fundDeployment } from '../../api/mutations';
+import logging from '../../logging';
 
 const InputContainer = styled.div`
   display: flex;
@@ -54,8 +55,10 @@ export const FundDeploymentButton: React.FC<FundDeploymentButtonProps> = ({
     const dseq = deployment.deploymentId?.dseq?.toString();
 
     if (amount !== 0 && dseq !== undefined) {
-      await mxFundDeployment({ dseq, amount: aktToUakt(amount) });
-      window.location.reload();
+      mxFundDeployment({ dseq, amount: aktToUakt(amount) }, {
+        onSuccess: () => window.location.reload(),
+        onError: (err: any) => logging.error(`Unable to send funds to deployment: ${err}`),
+      });
     }
   }, [deployment, wallet, amount, cleanupState]);
 
