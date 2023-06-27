@@ -183,6 +183,10 @@ const Settings: React.FC<Record<string, never>> = () => {
       onSuccess: () => {
         refetch();
         setCreateOpen(false);
+      },
+      onError: (error: any) => {
+        logging.error('Failed to create certificate: ' + error);
+        setShowProgress(false);
       }
     });
   }, [keplr, rpcNode]);
@@ -334,13 +338,7 @@ const Settings: React.FC<Record<string, never>> = () => {
         subtitle: 'Select your preferred currency',
         value: currency,
         options: ['AKT'],
-      },
-      {
-        title: 'Certificates',
-        subtitle: 'Manage your certificates',
-        value: '',
-        options: certificatesList,
-      },
+      }
     ];
     setFields(_fields);
   }, [chainId, certificatesList]);
@@ -361,42 +359,15 @@ const Settings: React.FC<Record<string, never>> = () => {
               </Button>
             </Stack>
           </SettingsField>
+
+
           {fields.map((obj: any, i: number) => (
             <SettingsField key={i}>
               <div className="flex-none">
                 <div className="text-base font-bold text-[#111827]">{obj.title}</div>
-                {certificatesList.length > 0 && obj.title === 'Certificates' ? (
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    alignItems="center"
-                    sx={{ marginBottom: '24px' }}
-                  >
-                    <AntSwitch
-                      checked={!showAll}
-                      onChange={handleToggleAll}
-                      inputProps={{ 'aria-label': 'ant design' }}
-                    />
-                    <Typography>Valid only</Typography>
-                  </Stack>
-                ) : null}
               </div>
 
-              {obj.title === 'Certificates' ? (
-                <div className="flex-none mb-2">
-                  {wallet.isConnected ? (
-                    <Button variant="outlined" onClick={() => setCreateOpen(true)}>
-                      Generate New Certificate
-                    </Button>
-                  ) : (
-                    <Button variant="contained" onClick={handleConnectWallet}>
-                      Connect Wallet
-                    </Button>
-                  )}
-                </div>
-              ) : (
-                <div className="flex-none">{obj.value}</div>
-              )}
+              <div className="flex-none">{obj.value}</div>
             </SettingsField>
           ))}
 
@@ -411,6 +382,39 @@ const Settings: React.FC<Record<string, never>> = () => {
                 />
                 <Typography>{optInto ? 'Opted-in' : 'Opted-out'}</Typography>
               </Stack>
+            </div>
+          </SettingsField>
+
+          <SettingsField key='certificates'>
+            <div className="flex-none">
+              <div className="text-base font-bold text-[#111827]">Certificates</div>
+              {certificatesList.length > 0 ? (
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ marginBottom: '24px' }}
+                >
+                  <AntSwitch
+                    checked={!showAll}
+                    onChange={handleToggleAll}
+                    inputProps={{ 'aria-label': 'ant design' }}
+                  />
+                  <Typography>Valid only</Typography>
+                </Stack>
+              ) : null}
+            </div>
+
+            <div className="flex-none mb-2">
+              {wallet.isConnected ? (
+                <Button variant="outlined" onClick={() => setCreateOpen(true)}>
+                  Generate New Certificate
+                </Button>
+              ) : (
+                <Button variant="contained" onClick={handleConnectWallet}>
+                  Connect Wallet
+                </Button>
+              )}
             </div>
           </SettingsField>
 
@@ -432,7 +436,7 @@ const Settings: React.FC<Record<string, never>> = () => {
             ? certificatesList.sort(byCertificateStatus).map((d: any, i: number) => {
               if (!showAll) {
                 // eslint-disable-next-line array-callback-return
-                if (d.certificate.state === 'revoked') return;
+                if (d.certificate.state === 'revoked' || !d.available) return;
               }
               return (
                 <SettingsField key={i}>
