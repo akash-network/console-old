@@ -33,9 +33,6 @@ import Loading from '../Loading';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { useMutation } from 'react-query';
 import { createDeployment, createLease, sendManifest } from '../../api/mutations';
-
-import { sendManifest as sendManifestBeta2 } from '../../api/rpc/beta2/deployments';
-import { sendManifest as sendManifestBeta3 } from '../../api/rpc/beta3/deployments';
 import { getRpcNode } from '../../hooks/useRpcNode';
 
 const steps = ['Featured Apps', 'Select', 'Configure', 'Review', 'Deploy'];
@@ -60,10 +57,9 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   const [, setDeploymentRefresh] = useRecoilState(deploymentDataStale);
   const { mutate: mxCreateDeployment, isLoading: deploymentProgressVisible } = useMutation(createDeployment);
   const { mutate: mxCreateLease, isLoading: leaseProgressVisible } = useMutation(createLease);
-  const { networkType } = getRpcNode();
-  const { mutate: mxSendManifest } = useMutation(sendManifest);
+  const { mutate: mxSendManifest, isLoading: manifestSending } = useMutation(sendManifest);
 
-  const progressVisible = deploymentProgressVisible || leaseProgressVisible;
+  const progressVisible = deploymentProgressVisible || leaseProgressVisible || manifestSending;
 
   React.useEffect(() => {
     const params = [folderName, templateId && uriToName(templateId), intentId];
@@ -196,18 +192,15 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
                     setDeploymentId(result.deploymentId);
                     setSdl(value.sdl);
 
-                    // wait a second to give the blockchain a chance to setup
-                    // the bids for the deployment
-                    setTimeout(() => {
-                      navigate(`/configure-deployment/${result.deploymentId.dseq}`);
-                    }, 2000);
-
                     // set deployment to localStorage object using Atom
                     const _deployment = await myDeploymentFormat(result, value);
                     handleDeployment(_deployment.key, JSON.stringify(_deployment.data));
 
                     // set deployment to localStorage item by dseq (deprecate ?)
                     localStorage.setItem(_deployment.key, JSON.stringify(_deployment.data));
+
+                    // head to the bid selection page
+                    navigate(`/configure-deployment/${result.deploymentId.dseq}`);
                   }
                 }
               }

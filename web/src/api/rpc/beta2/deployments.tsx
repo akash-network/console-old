@@ -420,10 +420,10 @@ export async function sendManifest(address: string, lease: Lease, sdl: any) {
         }
 
         if (retry > 0) {
-          logging.warn('Sending manifest failed. Retrying...');
+          // logging.warn('Sending manifest failed. Retrying...');
           setTimeout(() => attemptSend(retry - 1), 1000);
         } else {
-          logging.warn('Sending manifest failed.');
+          // logging.warn('Sending manifest failed.');
           result.text().then(reject);
         }
       });
