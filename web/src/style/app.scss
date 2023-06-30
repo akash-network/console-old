@@ -252,20 +252,13 @@ a {
     margin-top: 4px;
     border-radius: 8px;
     border: 1px solid transparent;
+    background-color: #ffffff;
 }
 
-#link_new_deployment:hover,
 #link_my_deployments:hover,
 #link_settings:hover,
 #link_help:hover {
     border: 1px solid #f0f1f4;
-}
-.block_default_hover:hover {
-    border: none !important;
-}
-
-#link_help {
-    margin-bottom: 24px;
 }
 
 #button_close_side_nav:hover * {

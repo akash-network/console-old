@@ -399,6 +399,8 @@ export async function sendManifest(address: string, lease: Lease, sdl: any) {
   const providerFetch = mtlsFetch(cert, provider.provider.hostUri);
   const manifest = Manifest(sdl, 'beta2', true);
 
+  console.log(manifest);
+
   let jsonStr = JSON.stringify(manifest);
 
   jsonStr = jsonStr.replaceAll('"quantity":{"val', '"size":{"val');

@@ -4,11 +4,13 @@ import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-route
 import SideNav from './components/SideNav';
 import Keplr from './components/KeplrLogin';
 import Logging from './components/Logging';
+import Stack from '@mui/material/Stack';
 import { useRecoilState } from 'recoil';
 import { activeCertificate, keplrState } from './recoil/atoms';
 import { getKeplr } from './_helpers/keplr-utils';
 import { loadActiveCertificate } from './recoil/api';
 import { useWallet } from './hooks/useWallet';
+import Loading from './components/Loading';
 
 // Lazy loading all pages in appropriate time
 const DeploymentStepper = lazy(() => import('./components/DeploymentStepper'));
@@ -115,7 +117,11 @@ export default function App() {
 
   return (
     <Logging>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={
+        <Stack direction="column">
+          <Loading title="Loading" />
+        </Stack>
+      }>
         <Keplr>
           <AppRouter />
         </Keplr>
