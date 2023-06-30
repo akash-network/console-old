@@ -21,6 +21,7 @@ import { useWallet } from '../../hooks/useWallet';
 import { HelpCenterSideHelp } from '../../components/HelpCenter/HelpCenterSideHelp';
 import { showKeplrWindow } from '../../recoil/atoms';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Loading from '../Loading';
 
 export default function SideNav(props: any) {
   const { children } = props;
@@ -71,7 +72,7 @@ export default function SideNav(props: any) {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Stack>
       <AppBar position="fixed" open={open} color="default">
         <Toolbar>
           <IconButton
@@ -142,7 +143,7 @@ export default function SideNav(props: any) {
             paddingX="10px"
             paddingY="10px"
           >
-            <Link to="landing/node-deployment" id="link_new_deployment" className="block_default_hover">
+            <Link to="landing/node-deployment" id="link_new_deployment">
               <SideNavMenuItemRed>
                 <AddIcon style={{ color: '#F43F5E' }} />
                 <SideNavMenuItemLabel style={{ color: '#F43F5E' }}>
@@ -178,7 +179,7 @@ export default function SideNav(props: any) {
               </SideNavMenuItem>
             </NavLink>
 
-            <SideNavMenuItem>
+            <SideNavMenuItem id='link_help'>
               <IconWrapper onClick={toggleHelpCenter}>
                 <Icon type="help" />
               </IconWrapper>
@@ -186,11 +187,10 @@ export default function SideNav(props: any) {
             </SideNavMenuItem>
 
             <Typography
-              style={{ marginLeft: 'auto' }}
               variant="caption"
               component="p"
               color="red"
-              mt={'auto'}
+              marginTop="0.5rem"
             >
               {`v${version}`}
             </Typography>
@@ -198,10 +198,12 @@ export default function SideNav(props: any) {
         </Suspense>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        {children}
+        <Suspense fallback={<Loading />}>
+          {children}
+        </Suspense>
       </Box>
       <HelpCenterSideHelp isOpen={isHelpCenterOpen} onClose={toggleHelpCenter} />
-    </Box>
+    </Stack>
   );
 }
 
@@ -302,6 +304,7 @@ const SideNavMenuItemRed = styled(SideNavMenuItem)`
   padding-left: 8px;
   border-radius: 8px;
   border: 1px solid #ffffff;
+
   &:hover {
     border: 1px solid #fa5757;
     background: #fff1f2;
