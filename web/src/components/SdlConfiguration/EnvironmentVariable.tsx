@@ -33,7 +33,7 @@ export const EnvironmentVariable: React.FC<EnvironmentVariableProps> = ({
   return (
     <FieldArray
       name={`sdl.services.${serviceName}.env`}
-      render={(arrayHelpers) => (
+      render={(arrayHelpers: any) => (
         <SdlSectionWrapper>
           {services[serviceName]?.env?.map((env, index) => (
             <VariableWrapper key={index}>

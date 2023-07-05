@@ -61,6 +61,8 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus 
             }
           }
 
+          console.table(application);
+
           setProviderDetails([
             { label: 'Name', value: _attributes?.organization },
             { label: 'Region', value: _attributes?.region },

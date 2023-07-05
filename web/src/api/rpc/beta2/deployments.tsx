@@ -426,6 +426,9 @@ export async function sendManifest(address: string, lease: Lease, sdl: any) {
           // logging.warn('Sending manifest failed.');
           result.text().then(reject);
         }
+      }, (error) => {
+        logging.error('Error sending manifest to provider. This is likey an issue with the provider.');
+        console.error(error);
       });
     };
 
