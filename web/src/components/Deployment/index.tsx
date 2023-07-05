@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { Alert, Button, Grid, Stack, Tooltip } from '@mui/material';
+import { Alert, Button, Grid, Stack, Tooltip, Typography } from '@mui/material';
 import { DeploymentEvents } from '../DeploymentEvents';
 import { activeCertificate, keplrState, rpcEndpoint } from '../../recoil/atoms';
 import { formatCurrency } from '../../_helpers/formatter-currency';
@@ -24,6 +24,7 @@ import { getRpcNode } from '../../hooks/useRpcNode';
 
 import { QueryDeploymentResponse as Beta3Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta3/query';
 import { QueryDeploymentResponse as Beta2Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/query';
+import DeploymentActionButton from './DeploymentActionButton';
 
 const Deployment: React.FC<any> = () => {
   const { dseq } = useParams<any>();
@@ -45,9 +46,7 @@ const Deployment: React.FC<any> = () => {
       title="This will create a whole new replica of this deployment. The existing deployment will not be touched."
       placement="top"
     >
-      <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-        <InfoIcon style={{ fontSize: '15px', color: 'lightgrey', marginLeft: '8px' }} />
-      </div>
+      <InfoIcon style={{ fontSize: '15px', color: 'lightgrey' }} />
     </Tooltip>
   );
 
@@ -56,9 +55,7 @@ const Deployment: React.FC<any> = () => {
       title="This will update a limited set of fields in an existing/ active deployment. Compute resources and placement criteria are not updatable."
       placement="top"
     >
-      <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-        <InfoIcon style={{ fontSize: '15px', color: 'lightgrey', marginLeft: '8px' }} />
-      </div>
+      <InfoIcon style={{ fontSize: '15px', color: 'lightgrey' }} />
     </Tooltip>
   );
 
@@ -274,69 +271,55 @@ const Deployment: React.FC<any> = () => {
               )}
               {deployment?.deployment && !deploymentIncomplete && (
                 <React.Fragment>
-                  {/* deployment?.state is 1 if it is in active state. It should be that state === 2 is in-active but i am not 100% sure */}
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <ConditionalLinkUpdate
-                      title={
-                        deployment?.deployment?.state !== 1
-                          ? 'It is not allowed to update closed deployment'
-                          : 'This SDL is deployed with another tool and can\'t be updated from here'
-                      }
-                      placement="top"
-                      to={'update-deployment'}
-                    >
-                      <Button
-                        fullWidth
-                        variant="outlined"
-                        color="secondary"
-                        aria-label="update deployment"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        startIcon={<Icon type="update" />}
-                        sx={{
-                          justifyContent: 'left',
-                          gap: '10px',
-                          backgroundColor: '#FFFFFF',
-                          color: '#374151',
-                          border: '1px solid #D1D5DB',
-                          marginBottom: '12px',
-                          minWidth: '150px',
-                          width: '380px',
-                        }}
-                      >
-                        Update Deployment
-                      </Button>
-                    </ConditionalLinkUpdate>
-                    <div style={{ marginLeft: '5px' }}>{UpdateDeploymentTooltip}</div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <DeploymentActionButton
+                    tooltipTitle={deployment?.deployment?.state !== 1
+                        ? 'It is not allowed to update closed deployment'
+                        : 'This SDL is deployed with another tool and can\'t be updated from here'
+                    }
+                    tooltip={UpdateDeploymentTooltip}
+                    linkTo={'update-deployment'}
+                    aria-label="update deployment"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    startIcon={<Icon type="update" />}
+                  >
+                    Update Deployment
+                  </DeploymentActionButton>
+
+                  <DeploymentActionButton
+                    tooltipTitle="This SDL is deployed with another tool and can't be re-deployed from here"
+                    tooltip={ReDeployTooltip}
+                    linkTo={'re-deploy'}
+                    aria-label="update deployment"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    startIcon={<Icon type="update" />}
+                  >
+                    Update Deployment
+                  </DeploymentActionButton>
+
+                  <Stack direction="row" spacing={1} marginBottom="0.75rem" alignItems="center">
                     <ConditionalLinkReDeploy
                       title="This SDL is deployed with another tool and can't be re-deployed from here"
                       placement="top"
                       to={'re-deploy'}
+                      className="grow"
                     >
                       <Button
                         fullWidth
                         variant="outlined"
                         color="secondary"
                         aria-label="re-deploy"
-                        startIcon={<Icon type="redeploy" />}
                         sx={{
-                          justifyContent: 'left',
-                          gap: '10px',
-                          backgroundColor: '#FFFFFF',
-                          color: '#374151',
-                          border: '1px solid #D1D5DB',
-                          marginBottom: '12px',
-                          minWidth: '150px',
-                          width: '380px',
+                          justifyContent: 'left'
                         }}
+                        startIcon={<Icon type="redeploy" />}
                       >
                         Re-Deploy
                       </Button>
                     </ConditionalLinkReDeploy>
-                    <div style={{ marginLeft: '5px' }}>{ReDeployTooltip}</div>
-                  </div>
+                    {ReDeployTooltip}
+                  </Stack>
                   <CloneDeploymentButton
                     icon="clone"
                     wallet={keplr}
