@@ -1254,6 +1254,7 @@ a {
 
 #link_new_deployment,
 #link_my_deployments,
+#link_providers,
 #link_settings,
 #link_help {
   width: 100%;
@@ -1264,6 +1265,7 @@ a {
 }
 
 #link_my_deployments:hover,
+#link_providers:hover,
 #link_settings:hover,
 #link_help:hover {
   border: 1px solid #f0f1f4;
@@ -1272,6 +1274,12 @@ a {
 #button_close_side_nav:hover * {
   fill: #6b7280;
 }
+
+#link_providers:hover * {
+  color: #111827;
+  stroke: #6b7280;
+}
+
 
 #link_my_deployments:hover * {
   color: #111827;

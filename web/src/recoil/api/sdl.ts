@@ -42,6 +42,23 @@ export const fetchTemplateList: QueryFunction<any, string> = async ({queryKey}) 
   return JSON.parse(data);
 };
 
+export const fetchLandingPageMetadata: QueryFunction<any, string> = async ({queryKey}) => {
+  const octokit = new Octokit({});
+
+  const repository = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}/metadata.json', {
+    owner: 'akash-network',
+    repo: 'deploy-templates',
+    path: 'landing',
+  });
+
+  const data = Buffer.from(
+    repository.data.content,
+    repository.data.encoding
+  ).toString('utf-8');
+
+  return JSON.parse(data);
+};
+
 
 // export const templateList = [
 //   {
