@@ -12,7 +12,11 @@
         "web"
     ],
     "dependencies": {
-        "concurrently": "^7.2.1"
+        "concurrently": "^7.2.1",
+        "path": "^0.12.7"
     },
-    "version": "0.1.292"
+    "version": "0.1.292",
+    "devDependencies": {
+        "url-loader": "^4.1.1"
+    }
 }

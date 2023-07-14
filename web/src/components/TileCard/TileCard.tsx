@@ -1,5 +1,6 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { SdlEditor } from '../../components/SdlConfiguration/SdllEditor';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
@@ -19,6 +20,16 @@ import {
   keplrState,
   myDeployments as myDeploymentsAtom,
 } from '../../recoil/atoms';
+import './TileCard.css';
+interface Props {
+  item: {
+    title: string;
+    image: string;
+    description: string;
+    buttonText: string;
+  };
+}
+
 import { Dialog } from '../Dialog';
 import FeaturedApps from '../../pages/FeaturedApps';
 import SelectApp from '../../pages/SelectApp';
@@ -42,7 +53,8 @@ export interface DeploymentStepperProps {
   leaseId?: string;
 }
 
-const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
+function TileCard(props: Props) {
+  const { title, image, description, buttonText } = props.item;
   const keplr = useRecoilValue(keplrState);
   const navigate = useNavigate();
   const [deploymentId, setDeploymentId] = React.useState<{ owner: string; dseq: string }>();
@@ -50,6 +62,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   const [sdl, setSdl] = useRecoilState(deploymentSdl);
   const [cardMessage, setCardMessage] = useState('');
   const [activeStep, setActiveStep] = useState({ currentCard: 0 });
+
   const [open, setOpen] = React.useState(false);
   const [errorTitle, setErrorTitle] = React.useState<string>();
   const [errorMessage, setErrorMessage] = React.useState<string>();
@@ -97,10 +110,21 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
     }
   };
 
+  const handleSdlEditorSave = (sdl: any) => {
+    navigate('/new-deployment/custom-sdl', { state: { sdl: sdl } });
+  };
+
   const handleDeployment = (key: string, deployment: any) => {
     const newDeployments: { [key: string]: Deployment } = { ...myDeployments };
     newDeployments[key] = deployment;
     setMyDeployments(newDeployments);
+  };
+
+  const [reviewSdl, setReviewSdl] = useState(false);
+  const closeReviewModal = useCallback(() => setReviewSdl(false), []);
+
+  const handleImportSDL = () => {
+    setReviewSdl(true);
   };
 
   const acceptBid = async (bidId: any) => {
@@ -143,11 +167,6 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   };
 
   // Error handling dialog
-  const handleClose = (reason: string) => {
-    if (reason === 'closeButtonClick') {
-      setOpen(false);
-    }
-  };
 
   // TODO: this should be changed to use the logging system, and not throw
   // additional exceptions.
@@ -215,101 +234,74 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
           }
         }}
       >
-        {({ setFieldValue, values }) => {
-          return (
-            <>
-              <Stepper activeStep={activeStep.currentCard} className="mb-12">
-                {steps.map((label) => {
-                  const stepProps: { completed?: boolean } = {};
-                  const labelProps: {
-                    optional?: React.ReactNode;
-                  } = {};
-                  return (
-                    <Step key={label} {...stepProps}>
-                      <StepLabel {...labelProps}>{label}</StepLabel>
-                    </Step>
-                  );
-                })}
-              </Stepper>
+        {({ setFieldValue, values }) => (
+          <>
+            <div key={title}>
+              <div className="tile_card">
+                <div style={{ margin: '20px' }}>
+                  <div className="flex tile_wrapper">
+                    <img src={image} alt={title} />
+                    <p className="tile-card_title">{title}</p>
+                  </div>
+                  <p className="tile-card_desc">{description}</p>
+                  <button className="tile_btn">{buttonText}</button>
+                </div>
+              </div>
+            </div>
 
-              {progressVisible && (
-                <Box sx={{ minWidth: 600 }}>
-                  <Card>
-                    <CardContent
-                      style={{
-                        textAlign: 'center',
-                        marginTop: '100px',
-                        marginBottom: '100px',
-                      }}
-                    >
-                      <Slide direction="up" in={progressVisible} unmountOnExit>
-                        <Stack sx={{ width: '100%', color: 'grey.700' }} spacing={2}>
-                          <Loading />
-                          <Typography variant="h3">{cardMessage}</Typography>
-                        </Stack>
-                      </Slide>
-                    </CardContent>
-                  </Card>
-                </Box>
-              )}
+            {activeStep.currentCard === steps.length
+              ? null
+              : !progressVisible && (
+                  <React.Fragment>
+                    {activeStep.currentCard === 0 && (
+                      <button
+                        onClick={() => {
+                          setFieldValue('sdl', {});
+                          handleImportSDL();
+                          setReviewSdl(true);
+                        }}
+                      >
+                        Import SDL
+                      </button>
+                    )}
 
-              {activeStep.currentCard === steps.length
-                ? null
-                : !progressVisible && (
-                    <React.Fragment>
-                      {activeStep.currentCard === 0 && (
-                        <FeaturedApps
-                          onDeployNowClick={(folderName) => {
-                            selectFolder(folderName);
-                          }}
-                          callback={(sdl) =>
-                            navigate('/new-deployment/custom-sdl', { state: { sdl: sdl } })
-                          }
-                          setFieldValue={setFieldValue}
-                          onSave={function (sdl: any): void {
-                            throw new Error('Function not implemented.');
-                          }}
+                    <SdlEditor
+                      reviewSdl={reviewSdl}
+                      closeReviewModal={closeReviewModal}
+                      onSave={handleSdlEditorSave} // Pass the callback prop
+                    />
+                    {activeStep.currentCard === 1 && folderName && (
+                      <SelectApp
+                        folderName={uriToName(folderName)}
+                        setFieldValue={setFieldValue}
+                        onNextButtonClick={selectTemplate}
+                      />
+                    )}
+                    {activeStep.currentCard === 2 && folderName && templateId && (
+                      <ConfigureApp
+                        folderName={uriToName(folderName)}
+                        templateId={uriToName(templateId)}
+                        onNextButtonClick={(intent: string) =>
+                          handlePreflightCheck(intent, values.sdl)
+                        }
+                      />
+                    )}
+                    {activeStep.currentCard === 3 && <PreflightCheck />}
+                    {activeStep.currentCard === 4 && deploymentId && (
+                      <Suspense fallback={<Loading />}>
+                        <SelectProvider
+                          deploymentId={deploymentId}
+                          onNextButtonClick={(bidId: any) => acceptBid(bidId)}
                         />
-                      )}
-                      {activeStep.currentCard === 1 && folderName && (
-                        <SelectApp
-                          folderName={uriToName(folderName)}
-                          setFieldValue={setFieldValue}
-                          onNextButtonClick={selectTemplate}
-                        />
-                      )}
-                      {activeStep.currentCard === 2 && folderName && templateId && (
-                        <ConfigureApp
-                          folderName={uriToName(folderName)}
-                          templateId={uriToName(templateId)}
-                          onNextButtonClick={(intent: string) =>
-                            handlePreflightCheck(intent, values.sdl)
-                          }
-                        />
-                      )}
-                      {activeStep.currentCard === 3 && <PreflightCheck />}
-                      {activeStep.currentCard === 4 && deploymentId && (
-                        <Suspense fallback={<Loading />}>
-                          <SelectProvider
-                            deploymentId={deploymentId}
-                            onNextButtonClick={(bidId: any) => acceptBid(bidId)}
-                          />
-                        </Suspense>
-                      )}
-                    </React.Fragment>
-                  )}
-            </>
-          );
-        }}
+                      </Suspense>
+                    )}
+                  </React.Fragment>
+                )}
+          </>
+        )}
       </Formik>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        title={errorTitle || ''}
-        message={errorMessage || ''}
-      />
     </Box>
   );
-};
+}
 
-export default DeploymentStepper;
+export default TileCard;

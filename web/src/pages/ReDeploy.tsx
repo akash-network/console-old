@@ -29,7 +29,11 @@ const ReDeploy: React.FC<any> = () => {
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
   const [cardMessage, setCardMessage] = useState('');
   const [appData, setAppData] = useState<{ name: string; sdl?: SDLSpec } | null>(null);
-  const { mutate: mxCreateDeployment, isLoading: progressVisible, data: result } = useMutation(createDeployment);
+  const {
+    mutate: mxCreateDeployment,
+    isLoading: progressVisible,
+    data: result,
+  } = useMutation(createDeployment);
 
   const appCache = dseq ? localStorage.getItem(dseq) : null;
 
@@ -41,13 +45,14 @@ const ReDeploy: React.FC<any> = () => {
     mxCreateDeployment({ sdl: values.sdl });
   };
 
+  const handleSave = (sdl: SDLSpec) => {
+    mxCreateDeployment({ sdl }); // Trigger the deployment mutation
+  };
+
   React.useEffect(() => {
     if (progressVisible == false && result && result.deploymentId) {
       navigate(`/configure-deployment/${result.deploymentId.dseq}`);
-      localStorage.setItem(
-        `${result.deploymentId.dseq}`,
-        JSON.stringify(appData)
-      );
+      localStorage.setItem(`${result.deploymentId.dseq}`, JSON.stringify(appData));
     }
   }, [progressVisible, result, appData]);
 
@@ -70,6 +75,7 @@ const ReDeploy: React.FC<any> = () => {
             configurationType={SdlConfigurationType.ReDeploy}
             progressVisible={progressVisible}
             cardMessage={cardMessage}
+            onSave={handleSave}
             actionItems={() => (
               <UpdateDeploymentAction>
                 <ReviewSdlButton onClick={() => showSdlReview(true)}>Review SDL</ReviewSdlButton>

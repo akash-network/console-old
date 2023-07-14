@@ -37,6 +37,7 @@ interface SdlConfigurationProps {
   configurationType: SdlConfigurationType;
   progressVisible?: boolean;
   cardMessage?: string | undefined;
+  onSave: (sdl: any) => void;
 }
 
 export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
@@ -47,6 +48,7 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
   configurationType,
   progressVisible,
   cardMessage,
+  onSave,
 }) => {
   const forbidEditing = configurationType === SdlConfigurationType.Update;
 
@@ -200,6 +202,7 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                           reviewSdl={reviewSdl}
                           closeReviewModal={closeReviewModal}
                           disabled={forbidEditing}
+                          onSave={onSave} // Pass the onSave prop
                         />
                       </AccordionDetails>
                     </AppAccordion>

@@ -39,11 +39,9 @@ const UpdateDeployment: React.FC<any> = () => {
 
   const deploymentId = {
     owner: keplr.accounts[0].address,
-    dseq: dseq || '0'
+    dseq: dseq || '0',
   };
-  const { data: deploymentResponse } = useQuery(
-    ['deployment', deploymentId], deploymentInfo
-  );
+  const { data: deploymentResponse } = useQuery(['deployment', deploymentId], deploymentInfo);
 
   const leaseId = {
     owner: keplr.accounts[0].address,
@@ -53,18 +51,15 @@ const UpdateDeployment: React.FC<any> = () => {
 
   // mutations
   const { mutate: mxSendManifest, isLoading: isSendingManifest } = useMutation(sendManifest);
-  const { mutate: mxUpdateDeployment, isLoading: isUpdatingDeployment } = useMutation(updateDeployment);
+  const { mutate: mxUpdateDeployment, isLoading: isUpdatingDeployment } =
+    useMutation(updateDeployment);
 
   const deployment = deploymentResponse?.deployment?.deployment;
-  const lease = leaseResponse?.leases.length
-    ? leaseResponse.leases[0].lease
-    : undefined;
+  const lease = leaseResponse?.leases.length ? leaseResponse.leases[0].lease : undefined;
 
   const progressVisible = isSendingManifest || isUpdatingDeployment;
 
-  const rpcVersion = networkType === 'testnet'
-    ? 'beta3'
-    : 'beta2';
+  const rpcVersion = networkType === 'testnet' ? 'beta3' : 'beta2';
 
   if (application === null) {
     return <>Invalid DSEQ</>;
@@ -100,74 +95,83 @@ const UpdateDeployment: React.FC<any> = () => {
         }
 
         if (oldVersion === newVersion) {
-          mxSendManifest({ address: keplr.accounts[0].address, lease, sdl: value.sdl }, {
-            onSuccess: () => {
-              logging.success('Manifest successfully updated');
-              navigate(-1);
-            },
-            onError: (error: any) => {
-              logging.log(`Failed to send manifest: ${error}`);
-            },
-          });
+          mxSendManifest(
+            { address: keplr.accounts[0].address, lease, sdl: value.sdl },
+            {
+              onSuccess: () => {
+                logging.success('Manifest successfully updated');
+                navigate(-1);
+              },
+              onError: (error: any) => {
+                logging.log(`Failed to send manifest: ${error}`);
+              },
+            }
+          );
 
           return;
         }
 
         try {
-          mxUpdateDeployment({
-            deploymentId: {
-              owner: keplr.accounts[0].address,
-              dseq,
+          mxUpdateDeployment(
+            {
+              deploymentId: {
+                owner: keplr.accounts[0].address,
+                dseq,
+              },
+              sdl: value.sdl,
             },
-            sdl: value.sdl
-          }, {
-            onSuccess: (result: any) => {
-              if (result.deploymentId && value.sdl) {
-                setCardMessage('Sending manifest');
+            {
+              onSuccess: (result: any) => {
+                if (result.deploymentId && value.sdl) {
+                  setCardMessage('Sending manifest');
 
-                mxSendManifest({ address: keplr.accounts[0].address, lease, sdl: value.sdl }, {
-                  onSuccess: () => {
-                    const sdl = value.sdl as SDLSpec;
+                  mxSendManifest(
+                    { address: keplr.accounts[0].address, lease, sdl: value.sdl },
+                    {
+                      onSuccess: () => {
+                        const sdl = value.sdl as SDLSpec;
 
-                    for (const [key] of Object.entries(sdl.services)) {
-                      if (count === 0) {
-                        if (sdl.services[key] && sdl.services[key].image) {
-                          image = sdl.services[key].image;
+                        for (const [key] of Object.entries(sdl.services)) {
+                          if (count === 0) {
+                            if (sdl.services[key] && sdl.services[key].image) {
+                              image = sdl.services[key].image;
+                            }
+                            if (sdl.profiles.compute[key] && sdl.profiles.compute[key].resources) {
+                              const resources = sdl.profiles.compute[key].resources;
+                              cpu = resources.cpu.units;
+                              memory = resources.memory.size;
+                              storage = Array.isArray(resources.storage)
+                                ? resources.storage[0].size
+                                : resources.storage.size;
+                            }
+                          }
+                          count++;
                         }
-                        if (sdl.profiles.compute[key] && sdl.profiles.compute[key].resources) {
-                          const resources = sdl.profiles.compute[key].resources;
-                          cpu = resources.cpu.units;
-                          memory = resources.memory.size;
-                          storage = Array.isArray(resources.storage)
-                            ? resources.storage[0].size
-                            : resources.storage.size;
-                        }
-                      }
-                      count++;
+                        localStorage.setItem(
+                          `${result.deploymentId.dseq}`,
+                          JSON.stringify({
+                            name: value.appName,
+                            image,
+                            cpu,
+                            memory,
+                            storage,
+                            sdl,
+                          })
+                        );
+                        navigate(-1);
+                      },
+                      onError: (error: any) => {
+                        logging.error('UpdateDeployment.tsx' + error.message);
+                      },
                     }
-                    localStorage.setItem(
-                      `${result.deploymentId.dseq}`,
-                      JSON.stringify({
-                        name: value.appName,
-                        image,
-                        cpu,
-                        memory,
-                        storage,
-                        sdl,
-                      })
-                    );
-                    navigate(-1);
-                  },
-                  onError: (error: any) => {
-                    logging.error('UpdateDeployment.tsx' + error.message);
-                  },
-                });
-              }
-            },
-            onError: (error: any) => {
-              logging.error('UpdateDeployment.tsx' + error.message);
-            },
-          });
+                  );
+                }
+              },
+              onError: (error: any) => {
+                logging.error('UpdateDeployment.tsx' + error.message);
+              },
+            }
+          );
         } catch (error) {
           // TODO: Implement appropriate error handling
           // Here we need to check it error.message is "Request rejected" which mean user clicked reject button
@@ -177,8 +181,7 @@ const UpdateDeployment: React.FC<any> = () => {
           }
           setCardMessage('');
         }
-      }
-      }
+      }}
     >
       {({ values, submitForm }) => {
         return (
@@ -189,6 +192,7 @@ const UpdateDeployment: React.FC<any> = () => {
             configurationType={SdlConfigurationType.Update}
             progressVisible={progressVisible}
             cardMessage={cardMessage}
+            onSave={submitForm} // Add the onSave prop
             actionItems={() => (
               <UpdateDeploymentAction>
                 <ReviewSdlButton onClick={() => showSdlReview(true)}>
@@ -201,7 +205,7 @@ const UpdateDeployment: React.FC<any> = () => {
           />
         );
       }}
-    </Formik >
+    </Formik>
   );
 };
 

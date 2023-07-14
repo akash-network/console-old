@@ -12,6 +12,7 @@ import { loadActiveCertificate } from './recoil/api';
 import { useWallet } from './hooks/useWallet';
 import Loading from './components/Loading';
 
+
 // Lazy loading all pages in appropriate time
 const DeploymentStepper = lazy(() => import('./components/DeploymentStepper'));
 const Deployment = lazy(() => import('./components/Deployment'));
@@ -21,12 +22,14 @@ const MyDeployments = lazy(() => import('./pages/MyDeployments'));
 const UpdateDeployment = lazy(() => import('./pages/UpdateDeployment'));
 const CustomApp = lazy(() => import('./pages/CustomApp'));
 const Provider = lazy(() => import('./pages/Provider'));
+import Landing from './pages/Landing';
+
 
 const Welcome = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate('/landing/node-deployment');
+    navigate('/landing');
   }, []);
 
   return <></>;
@@ -44,6 +47,7 @@ const AppRouter = () => {
       <div className="console-container">
         <SideNav>
           <Routes>
+            <Route path="/landing" element={<Landing />} />
             <Route path="/" element={<Welcome />} />
             <Route path="landing/node-deployment" element={<DeploymentStepper />}/>
             <Route path="new-deployment">

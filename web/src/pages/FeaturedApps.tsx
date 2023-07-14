@@ -17,14 +17,15 @@ export interface FeaturedAppsProps {
   onDeployNowClick: (dir: string) => void;
   callback: (sdl: any) => void;
   setFieldValue: (name: string, value: any) => void;
+  onSave: (sdl: any) => void;
 }
 
-export default function FeaturedApps(
-  {
-    onDeployNowClick,
-    callback,
-    setFieldValue
-  }: FeaturedAppsProps): JSX.Element {
+export default function FeaturedApps({
+  onDeployNowClick,
+  callback,
+  setFieldValue,
+  onSave,
+}: FeaturedAppsProps): JSX.Element {
   // initially showing 12 templates on the main page
   const initialTemplatesToShowPerPage = 12;
   const [numberOfTemplates, setNumberOfTemplates] = useState(initialTemplatesToShowPerPage);
@@ -62,15 +63,17 @@ export default function FeaturedApps(
       <Divider />
       <FeaturedAppsPageWrapper>
         {templateListConfig?.tiles?.slice(0, numberOfTemplates).map((template: any) => {
-          return <Template
-            key={template.name}
-            id={template.name}
-            title={template.title}
-            description={template.description}
-            // logo={'https://raw.githubusercontent.com/akash-network/deploy-templates/main' + template.logo}
-            logo={templateIcons[template.logoFileNameWithoutExt]}
-            onNextButtonClick={() => onDeployNowClick(template.name)}
-          />;
+          return (
+            <Template
+              key={template.name}
+              id={template.name}
+              title={template.title}
+              description={template.description}
+              // logo={'https://raw.githubusercontent.com/akash-network/deploy-templates/main' + template.logo}
+              logo={templateIcons[template.logoFileNameWithoutExt]}
+              onNextButtonClick={() => onDeployNowClick(template.name)}
+            />
+          );
         })}
       </FeaturedAppsPageWrapper>
 
@@ -86,7 +89,12 @@ export default function FeaturedApps(
           </ViewAllButton>
         )}
       </ViewAllButtonContainer>
-      <SdlEditor reviewSdl={reviewSdl} closeReviewModal={closeReviewModal} callback={callback} />
+      <SdlEditor
+        reviewSdl={reviewSdl}
+        onSave={onSave}
+        closeReviewModal={closeReviewModal}
+        callback={callback}
+      />
       <HelpCenterSDL isOpen={isHelpCenterOpen} onClose={toggleHelpCenter} />
     </div>
   );

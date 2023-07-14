@@ -9,6 +9,7 @@ interface SdlEditorProps {
   closeReviewModal: () => void;
   disabled?: boolean;
   callback?: (sdl: any) => void;
+  onSave: (sdl: any) => void;
 }
 
 export const SdlEditor: React.FC<SdlEditorProps> = ({
@@ -16,6 +17,7 @@ export const SdlEditor: React.FC<SdlEditorProps> = ({
   closeReviewModal,
   disabled,
   callback,
+  onSave, // Add the onSave prop
 }) => {
   return (
     <FieldWrapper>
@@ -35,8 +37,13 @@ export const SdlEditor: React.FC<SdlEditorProps> = ({
                 if (callback) {
                   return callback(value);
                 }
+
+                if (onSave) {
+                  return onSave(value);
+                }
                 form.setFieldValue(field.name, value);
               }}
+              onSave={onSave}
             />
           );
         }}
