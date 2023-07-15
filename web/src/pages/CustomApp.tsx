@@ -92,28 +92,30 @@ const CustomApp: React.FC = () => {
       <Formik
         enableReinitialize
         initialValues={{ ...initialValues, sdl: transformSdl(state.sdl) }}
-        onSubmit={async (value: InitialValuesProps) => {
+        onSubmit={async (values, { setSubmitting, setFieldValue }) => {
+          setCardMessage('Creating deployment');
+
           setCardMessage('Creating deployment');
           try {
-            if (!value.sdl) {
+            if (!values.sdl) {
               logging.error('No SDL found');
               return;
             }
 
             mxCreateDeployment(
-              { sdl: value.sdl },
+              { sdl: values.sdl },
               {
                 onSuccess: (result) => {
                   if (result && result.deploymentId) {
                     setDeploymentId(result.deploymentId);
-                    setSdl(value.sdl);
+                    setSdl(values.sdl);
                     navigate(`/configure-deployment/${result.deploymentId.dseq}`);
 
                     localStorage.setItem(
                       `${result.deploymentId.dseq}`,
                       JSON.stringify({
-                        name: value.appName,
-                        sdl: value.sdl,
+                        name: values.appName,
+                        sdl: values.sdl,
                       })
                     );
                   }
@@ -128,7 +130,7 @@ const CustomApp: React.FC = () => {
           }
         }}
       >
-        {({ values, submitForm }) => {
+        {({ values, submitForm, setFieldValue }) => {
           return (
             <>
               {!progressVisible && activeStep.currentCard === 1 && (
@@ -139,7 +141,7 @@ const CustomApp: React.FC = () => {
                   configurationType={SdlConfigurationType.Create}
                   progressVisible={progressVisible}
                   cardMessage={cardMessage}
-                  onSave={() => submitForm()} // Add onSave prop
+                  onSave={(updatedSdl) => setFieldValue('sdl', updatedSdl)}
                   actionItems={() => (
                     <DeploymentAction>
                       <Button variant="outlined" onClick={() => showSdlReview(true)}>
