@@ -35,8 +35,8 @@
 }
 
 .sdlguide_card-wrapper {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    gap: 10px;
 }
 
 .sdl-guide-text {
@@ -115,20 +115,7 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
     }
-
-    .sdlguide_flex-wrapper {
-        display: block;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-
-    .sdlguide_card-wrapper{
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
- }
-
+}
 
 @media (max-width: 999.9px) {
     .tile-card_wrapper {
@@ -136,28 +123,6 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
     }
-
-    .sdlguide_flex-wrapper {
-        display: block;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-
-    .sdlguide_card-wrapper{
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-
-    .intro_desc {
-        margin: 16px auto !important;
-        text-align: center;
-    }
-    .intro_text {
-        margin-bottom: 16px;
-        text-align: center;
-    }
-
 }
 
 @media (max-width: 480px) {
@@ -184,7 +149,7 @@
 
     .intro_desc {
         margin-bottom: 16px;
-        width: 100%;
+        width: 230px;
     }
     .intro_text {
         margin-bottom: 16px;
@@ -202,10 +167,6 @@
 }
 .sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(3) > div{
     margin-bottom: 50px;
-}
-
-.sdlguide_card-wrapper > div:nth-child(3) > div > p.sdl-guide-text {
-    width: 100%;
 }
 }
 
@@ -256,11 +217,39 @@
     .guide-img {
         width: 100% !important;
     }
-
-    .sdlguide_card-wrapper > div:nth-child(3) > div > p.sdl-guide-text {
-        width: 100%;
-    }
 }
+
+
+@media (max-width: 999.9px) {
+    .tile-card_wrapper {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .sdlguide_flex-wrapper {
+        display: block;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .sdlguide_card-wrapper{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .intro_desc {
+        margin: 16px auto !important;
+        text-align: center;
+    }
+    .intro_text {
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+}
+
 
 @media screen and (min-width: 1440px) {
     .tile-card_wrapper {
@@ -270,3 +259,16 @@
         gap: -50px;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
