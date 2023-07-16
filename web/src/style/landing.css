@@ -291,13 +291,23 @@
 @media screen and (min-width: 1440px) {
     .tile-card_wrapper {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
         justify-content: center;
+        grid-template-columns: repeat(4, 1fr);
         align-items: center;
         margin: auto auto !important;
-        gap: -50px;
+        gap: 16px;
     }
 
   
-    
+    .tile_card_top-wrapper{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: auto auto !important;
+        gap: -10px;
+    }
+
+    .guide-img {
+        width: 100% !important;
+    }
 }
