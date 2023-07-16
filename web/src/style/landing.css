@@ -1,10 +1,9 @@
-.landing-head{
+.landing-head {
     color: var(--gray-900, #111827);
     font-size: 24px;
     font-style: normal;
     font-weight: 700;
     line-height: 32px; /* 133.333% */
-    margin-bottom: 56px;
     margin-top: 53px;
     justify-content: flex-start;
     display: flex;
@@ -14,71 +13,260 @@
     align-items: center;
 }
 
+.landing_hr {
+    color: var(--gray-200, #e5e7eb);
+    margin-top: 20px;
+    margin-bottom: 32px;
+}
+
+.sdlguide_wrapper {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: #fff;
+    margin-top: 72px;
+    padding: 24px;
+}
+
+.sdlguide_flex-wrapper {
+    display: flex;
+    gap: 16px;
+}
+
+.sdlguide_card-wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.sdl-guide-text {
+    color: #111827;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px; /* 133.333% */
+    width: 318.75px;
+    height: 48px;
+    margin-top: 16px;
+}
+
 .tile_card_top-wrapper {
     align-items: center;
     display: block;
 }
-.tile_card_container{
+.tile_card_container {
     gap: 16px;
     align-items: center;
 }
 
+.intro_desc {
+    width: 300px;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+}
 
-.tile-card_wrapper{
+.intro_text {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+.sdl_step {
+    color: #111827;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+    margin-top: 16px;
+    width: 200.75px;
+}
+
+.sdlguide_card-wrapper > div:nth-child(3) > div > p.sdl-guide-text {
+    width: 218.75px;
+    font-size: 16px;
+}
+
+.sdlguide_card-wrapper > div:nth-child(2) > div > p.sdl-guide-text {
+    width: 250.75px;
+    font-size: 16px;
+}
+.sdlguide_card-wrapper > div:nth-child(1) > div > p.sdl-guide-text {
+    width: 250.75px;
+    font-size: 16px;
+}
+
+.guide-img {
+    width: 300px !important;
+}
+
+.tile-card_wrapper {
     display: grid;
-          grid-template-columns: repeat(4, 1fr);
-        }
+    grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 32px;
+}
 
-
-  @media (max-width: 768px) {
+@media (max-width: 768px) {
     .tile-card_wrapper {
         display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 20px;
-        }
-    
-  }
-
-  @media (max-width: 999.9px) {
-    .tile-card_wrapper {
-        display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 20px;
-        }
-    
-  }
-  
-  @media (max-width: 480px) {
-    .tile-card_wrapper {
-        display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
 
+    .sdlguide_flex-wrapper {
+        display: block;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
 
-    .landing-head{
+    .sdlguide_card-wrapper{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+ }
+
+
+@media (max-width: 999.9px) {
+    .tile-card_wrapper {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .sdlguide_flex-wrapper {
+        display: block;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .sdlguide_card-wrapper{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .intro_desc {
+        margin: 16px auto !important;
+        text-align: center;
+    }
+    .intro_text {
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .tile-card_wrapper {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .landing-head {
         margin-bottom: 10px;
-        margin-top: 20px;
+        margin-top: 40px;
     }
 
-  }
-  
-  @media (min-width: 478px) and (max-width: 701px) {
+    .sdlguide_flex-wrapper {
+        display: block;
+    }
+
+    .sdlguide_card-wrapper {
+        display: block;
+        gap: 10px;
+        gap: 500px !important;
+    }
+
+    .intro_desc {
+        margin-bottom: 16px;
+        width: 100%;
+    }
+    .intro_text {
+        margin-bottom: 16px;
+    }
+
+    .guide-img {
+        width: 100% !important;
+    }
+
+.sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(1) > div{
+    margin-bottom: 50px;
+}
+.sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(2) > div{
+    margin-bottom: 50px;
+}
+.sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(3) > div{
+    margin-bottom: 50px;
+}
+
+.sdlguide_card-wrapper > div:nth-child(3) > div > p.sdl-guide-text {
+    width: 100%;
+}
+}
+
+@media (min-width: 478px) and (max-width: 701px) {
     .tile-card_wrapper {
         display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
 
-  }
-  
+    .sdlguide_flex-wrapper {
+        display: block;
+        gap: 500px !important;
+    }
 
+    .sdlguide_card-wrapper {
+        display: block !important;
+        gap: 500px !important;
+    }
 
-  @media screen and (min-width: 1440px) {
-    .tile-card_wrapper{
+    .sdlguide_flex-wrapper {
+        display: block;
+    }
+
+    .sdlguide_card-wrapper {
+        display: block;
+        gap: 10px;
+        gap: 500px !important;
+    }
+    .sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(1) > div{
+        margin-bottom: 50px;
+    }
+    .sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(2) > div{
+        margin-bottom: 50px;
+    }
+    .sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(3) > div{
+        margin-bottom: 50px;
+    }
+
+    .intro_desc {
+        margin-bottom: 16px;
+        width: 330px;
+    }
+    .intro_text {
+        margin-bottom: 16px;
+    }
+
+    .guide-img {
+        width: 100% !important;
+    }
+
+    .sdlguide_card-wrapper > div:nth-child(3) > div > p.sdl-guide-text {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .tile-card_wrapper {
         display: grid;
-              grid-template-columns: repeat(5, 1fr);
-              justify-content: center;
-              gap: -50px;
-            }
-  }
+        grid-template-columns: repeat(5, 1fr);
+        justify-content: center;
+        gap: -50px;
+    }
+}

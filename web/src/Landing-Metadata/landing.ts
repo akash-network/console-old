@@ -1,6 +1,9 @@
 import img1 from './landingIcons/first_img.png';
 import img2 from './landingIcons/www.png';
 import img3 from './landingIcons/chip.png';
+import img4 from './landingIcons/last_guide.png';
+import img5 from './landingIcons/sdl_2.png';
+import img6 from './landingIcons/sdl_22.png';
 
 interface Tile {
   title: string;
@@ -10,10 +13,7 @@ interface Tile {
   route: string;
   icon: string;
   buttonEnabled: boolean;
-  onClick?: (setFieldValue: (name: string, value: any) => void, showSdlReview: (value: boolean) => void) => void;
-  
-  }
-
+}
 
 interface CategoryTiles {
   introText: string;
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
         route: '',
         icon: 'www',
         image: img2,
-        buttonEnabled: false,
+        buttonEnabled: true,
       },
       {
         title: 'Deploy an AI/ ML Model',
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
         route: '',
         icon: 'electronicsChip',
         image: img3,
-        buttonEnabled: false,
+        buttonEnabled: true,
       },
       {
         title: 'Custom Application',
@@ -78,11 +78,7 @@ export const metadata: Metadata = {
         icon: 'electronicsChip',
         image: img3,
         buttonEnabled: true,
-        onClick: (setFieldValue: (name: string, value: any) => void, showSdlReview: (value: boolean) => void) => {
-          setFieldValue('sdl', {});
-          showSdlReview(true);
-        },
-        },
+      },
     ],
   },
   sdlGuideTiles: {
@@ -93,17 +89,17 @@ export const metadata: Metadata = {
       {
         step: '01',
         text: 'Start with a template or your own custom application (SDL)',
-        image: './landingIcons/code.png',
+        image: img6,
       },
       {
         step: '02',
         text: 'Choose a provider based on your preferences and desired price',
-        image: './landingIcons/code.png',
+        image: img5,
       },
       {
         step: '03',
         text: 'View & manage your deployed application',
-        image: '/template-icons/landing/illustrations/deploy-app.png',
+        image: img4,
       },
     ],
   },

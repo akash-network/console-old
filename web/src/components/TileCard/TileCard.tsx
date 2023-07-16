@@ -1,18 +1,9 @@
+/* eslint-disable quotes */
 import React, { Suspense, useState, useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { SdlEditor } from '../../components/SdlConfiguration/SdllEditor';
-import { useNavigate, useParams } from 'react-router-dom';
-import {
-  Box,
-  Card,
-  CardContent,
-  Slide,
-  Stack,
-  Step,
-  StepLabel,
-  Stepper,
-  Typography,
-} from '@mui/material';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Box } from '@mui/material';
 import { Formik } from 'formik';
 import {
   deploymentDataStale,
@@ -23,6 +14,7 @@ import {
 import './TileCard.css';
 interface Props {
   item: {
+    route: string;
     title: string;
     image: string;
     description: string;
@@ -93,23 +85,6 @@ function TileCard(props: Props) {
     }
   }, [dseq, keplr]);
 
-  const selectFolder = (folderName: string) => {
-    navigate(`/new-deployment/${nameToURI(folderName)}`);
-  };
-
-  const selectTemplate = (templateId: string) => {
-    if (folderName) {
-      navigate(`/new-deployment/${nameToURI(folderName)}/${nameToURI(templateId)}`);
-    }
-  };
-
-  const handlePreflightCheck = (intentId: string, sdl: SDLSpec | undefined) => {
-    if (folderName && templateId && sdl) {
-      setSdl(sdl);
-      navigate(`/new-deployment/${nameToURI(folderName)}/${nameToURI(templateId)}/${intentId}`);
-    }
-  };
-
   const handleSdlEditorSave = (sdl: any) => {
     navigate('/new-deployment/custom-sdl', { state: { sdl: sdl } });
   };
@@ -127,46 +102,9 @@ function TileCard(props: Props) {
     setReviewSdl(true);
   };
 
-  const acceptBid = async (bidId: any) => {
-    setCardMessage('Deploying');
-
-    mxCreateLease(bidId, {
-      onSuccess: (lease) => {
-        logging.success('Create lease: successful');
-
-        // if the user refreshed the page, the atom could be empty
-        // if that's the case, used the stored version
-        const cachedDetails = JSON.parse(localStorage.getItem(`${lease?.leaseId?.dseq}`) || '');
-        const _sdl = sdl ? sdl : cachedDetails.sdl;
-
-        if (lease) {
-          mxSendManifest(
-            { address: keplr.accounts[0].address, lease, sdl: _sdl },
-            {
-              onSuccess: (result) => {
-                if (result) {
-                  logging.success('Manifest sending: successful');
-                  setDeploymentRefresh(true);
-                  navigate(`/my-deployments/${dseq}`);
-                }
-              },
-              onError: (error) => {
-                logging.log(`Failed to send manifest: ${error}`);
-              },
-              onSettled: () => {
-                navigate(`/my-deployments/${dseq}`);
-              },
-            }
-          );
-        }
-      },
-      onError: (error) => {
-        logging.log(`Failed to create lease: ${error}`);
-      },
-    });
+  const handleOtherButtonClick = () => {
+    console.log('Other button clicked');
   };
-
-  // Error handling dialog
 
   // TODO: this should be changed to use the logging system, and not throw
   // additional exceptions.
@@ -197,110 +135,93 @@ function TileCard(props: Props) {
   };
 
   return (
-    <Box sx={{ width: '100%', minHeight: '450px', marginBottom: '25px' }}>
-      <Formik
-        enableReinitialize
-        initialValues={initialValues}
-        onSubmit={async (value: InitialValuesProps) => {
-          // the onSubmit method is called from the component PreflightCheck.
-          // it uses the useFormikContext hook.
-          // const { submitForm } = useFormikContext();
-          setCardMessage('Creating deployment');
+    <Formik
+      enableReinitialize
+      initialValues={initialValues}
+      onSubmit={async (value: InitialValuesProps) => {
+        // the onSubmit method is called from the component PreflightCheck.
+        // it uses the useFormikContext hook.
+        // const { submitForm } = useFormikContext();
+        setCardMessage('Creating deployment');
 
-          try {
-            const result = mxCreateDeployment(
-              { sdl: value.sdl, depositor: value.depositor },
-              {
-                onSuccess: async (result) => {
-                  if (result && result.deploymentId) {
-                    setDeploymentId(result.deploymentId);
-                    setSdl(value.sdl);
+        try {
+          const result = mxCreateDeployment(
+            { sdl: value.sdl, depositor: value.depositor },
+            {
+              onSuccess: async (result) => {
+                if (result && result.deploymentId) {
+                  setDeploymentId(result.deploymentId);
+                  setSdl(value.sdl);
 
-                    // set deployment to localStorage object using Atom
-                    const _deployment = await myDeploymentFormat(result, value);
-                    handleDeployment(_deployment.key, JSON.stringify(_deployment.data));
+                  // set deployment to localStorage object using Atom
+                  const _deployment = await myDeploymentFormat(result, value);
+                  handleDeployment(_deployment.key, JSON.stringify(_deployment.data));
 
-                    // set deployment to localStorage item by dseq (deprecate ?)
-                    localStorage.setItem(_deployment.key, JSON.stringify(_deployment.data));
+                  // set deployment to localStorage item by dseq (deprecate ?)
+                  localStorage.setItem(_deployment.key, JSON.stringify(_deployment.data));
 
-                    // head to the bid selection page
-                    navigate(`/configure-deployment/${result.deploymentId.dseq}`);
-                  }
-                },
-              }
-            );
-          } catch (error) {
-            await handleError(error, 'createDeployment');
-          }
-        }}
-      >
-        {({ setFieldValue, values }) => (
-          <>
-            <div key={title}>
-              <div className="tile_card">
-                <div style={{ margin: '20px' }}>
-                  <div className="flex tile_wrapper">
-                    <img src={image} alt={title} />
-                    <p className="tile-card_title">{title}</p>
-                  </div>
-                  <p className="tile-card_desc">{description}</p>
-                  <button className="tile_btn">{buttonText}</button>
+                  // head to the bid selection page
+                  navigate(`/configure-deployment/${result.deploymentId.dseq}`);
+                }
+              },
+            }
+          );
+        } catch (error) {
+          await handleError(error, 'createDeployment');
+        }
+      }}
+    >
+      {({ setFieldValue, values }) => (
+        <>
+          <div key={title}>
+            <div className="tile_card">
+              <div style={{ margin: '20px' }}>
+                <div className="flex tile_wrapper">
+                  <img src={image} alt={title} />
+                  <p className="tile-card_title">{title}</p>
                 </div>
+                <p className="tile-card_desc">{description}</p>
+                {activeStep.currentCard === steps.length
+                  ? null
+                  : !progressVisible && (
+                      <React.Fragment>
+                        {activeStep.currentCard === 0 && buttonText === 'Import SDL' && (
+                          <button
+                            className="tile_btn"
+                            onClick={() => {
+                              setFieldValue('sdl', {});
+                              handleImportSDL();
+                              setReviewSdl(true);
+                            }}
+                          >
+                            {buttonText}
+                          </button>
+                        )}
+
+                        {activeStep.currentCard === 0 && buttonText === 'Choose a Template' && (
+                          <button className="tile_btn">
+                            <Link to={props.item.route}>{buttonText}</Link>
+                          </button>
+                        )}
+
+                        {activeStep.currentCard === 0 && buttonText === 'Coming Soon' && (
+                          <button style={{ cursor: 'default' }} className="tile_btn">
+                            {buttonText}
+                          </button>
+                        )}
+                        <SdlEditor
+                          reviewSdl={reviewSdl}
+                          closeReviewModal={closeReviewModal}
+                          onSave={handleSdlEditorSave}
+                        />
+                      </React.Fragment>
+                    )}
               </div>
             </div>
-
-            {activeStep.currentCard === steps.length
-              ? null
-              : !progressVisible && (
-                  <React.Fragment>
-                    {activeStep.currentCard === 0 && (
-                      <button
-                        onClick={() => {
-                          setFieldValue('sdl', {});
-                          handleImportSDL();
-                          setReviewSdl(true);
-                        }}
-                      >
-                        Import SDL
-                      </button>
-                    )}
-
-                    <SdlEditor
-                      reviewSdl={reviewSdl}
-                      closeReviewModal={closeReviewModal}
-                      onSave={handleSdlEditorSave} // Pass the callback prop
-                    />
-                    {activeStep.currentCard === 1 && folderName && (
-                      <SelectApp
-                        folderName={uriToName(folderName)}
-                        setFieldValue={setFieldValue}
-                        onNextButtonClick={selectTemplate}
-                      />
-                    )}
-                    {activeStep.currentCard === 2 && folderName && templateId && (
-                      <ConfigureApp
-                        folderName={uriToName(folderName)}
-                        templateId={uriToName(templateId)}
-                        onNextButtonClick={(intent: string) =>
-                          handlePreflightCheck(intent, values.sdl)
-                        }
-                      />
-                    )}
-                    {activeStep.currentCard === 3 && <PreflightCheck />}
-                    {activeStep.currentCard === 4 && deploymentId && (
-                      <Suspense fallback={<Loading />}>
-                        <SelectProvider
-                          deploymentId={deploymentId}
-                          onNextButtonClick={(bidId: any) => acceptBid(bidId)}
-                        />
-                      </Suspense>
-                    )}
-                  </React.Fragment>
-                )}
-          </>
-        )}
-      </Formik>
-    </Box>
+          </div>
+        </>
+      )}
+    </Formik>
   );
 }
 
