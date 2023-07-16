@@ -1,6 +1,7 @@
 import img1 from './landingIcons/first_img.png';
 import img2 from './landingIcons/www.png';
 import img3 from './landingIcons/chip.png';
+import img33 from './landingIcons/code.png';
 import img4 from './landingIcons/last_guide.png';
 import img5 from './landingIcons/sdl_2.png';
 import img6 from './landingIcons/sdl_22.png';
@@ -76,7 +77,7 @@ export const metadata: Metadata = {
         buttonText: 'Import SDL',
         route: '',
         icon: 'electronicsChip',
-        image: img3,
+        image: img33,
         buttonEnabled: true,
       },
     ],

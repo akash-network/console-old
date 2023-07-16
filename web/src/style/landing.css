@@ -35,8 +35,9 @@
 }
 
 .sdlguide_card-wrapper {
-    display: flex;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
 }
 
 .sdl-guide-text {
@@ -85,6 +86,8 @@
     width: 200.75px;
 }
 
+
+
 .sdlguide_card-wrapper > div:nth-child(3) > div > p.sdl-guide-text {
     width: 218.75px;
     font-size: 16px;
@@ -115,6 +118,11 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
     }
+
+    .sdlguide_card-wrapper {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 999.9px) {
@@ -123,12 +131,18 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
     }
+
+    .sdlguide_card-wrapper {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
 }
 
 @media (max-width: 480px) {
     .tile-card_wrapper {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
         gap: 20px;
     }
 
@@ -142,9 +156,8 @@
     }
 
     .sdlguide_card-wrapper {
-        display: block;
-        gap: 10px;
-        gap: 500px !important;
+        display: grid;
+        grid-template-columns: 1fr !important;
     }
 
     .intro_desc {
@@ -156,54 +169,89 @@
     }
 
     .guide-img {
-        width: 100% !important;
+        width: 300px !important;
     }
 
-.sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(1) > div{
-    margin-bottom: 50px;
-}
-.sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(2) > div{
-    margin-bottom: 50px;
-}
-.sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(3) > div{
-    margin-bottom: 50px;
-}
+    .sdlguide_wrapper {
+        width: 100%;
+    }
+
+    .sdlguide_wrapper
+        > div
+        > div.sdlguide_card-wrapper
+        > div:nth-child(1)
+        > div {
+            margin-top: 20px;
+    }
+    .sdlguide_wrapper
+        > div
+        > div.sdlguide_card-wrapper
+        > div:nth-child(2)
+        > div {
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+    .sdlguide_wrapper
+        > div
+        > div.sdlguide_card-wrapper
+        > div:nth-child(3)
+        > div {
+        margin-top: 30px;
+    }
+
+    .sdlguide_card-wrapper > div:nth-child(2) > div > p.sdl-guide-text {
+        width: 230px;
+    }
+    .sdlguide_card-wrapper > div:nth-child(1) > div > p.sdl-guide-text {
+        width: 230px;
+    }
+
+    .sdlguide_card-wrapper > div:nth-child(3) > div > p.sdl-guide-text {
+        width: 200px;
+    }
 }
 
 @media (min-width: 478px) and (max-width: 701px) {
     .tile-card_wrapper {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
         gap: 20px;
     }
 
     .sdlguide_flex-wrapper {
         display: block;
-        gap: 500px !important;
     }
 
     .sdlguide_card-wrapper {
-        display: block !important;
-        gap: 500px !important;
+        display: grid;
+        grid-template-columns: 1fr;
     }
 
     .sdlguide_flex-wrapper {
         display: block;
     }
 
-    .sdlguide_card-wrapper {
-        display: block;
-        gap: 10px;
-        gap: 500px !important;
+    .sdlguide_wrapper
+        > div
+        > div.sdlguide_card-wrapper
+        > div:nth-child(1)
+        > div {
+        margin-top: 30px;
     }
-    .sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(1) > div{
-        margin-bottom: 50px;
+    .sdlguide_wrapper
+        > div
+        > div.sdlguide_card-wrapper
+        > div:nth-child(2)
+        > div {
+        margin-bottom: 30px;
+        margin-top: 30px;
     }
-    .sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(2) > div{
-        margin-bottom: 50px;
-    }
-    .sdlguide_wrapper > div > div.sdlguide_card-wrapper > div:nth-child(3) > div{
-        margin-bottom: 50px;
+    .sdlguide_wrapper
+        > div
+        > div.sdlguide_card-wrapper
+        > div:nth-child(3)
+        > div {
+        margin-bottom: 30px;
     }
 
     .intro_desc {
@@ -219,7 +267,6 @@
     }
 }
 
-
 @media (max-width: 999.9px) {
     .tile-card_wrapper {
         display: grid;
@@ -229,14 +276,6 @@
 
     .sdlguide_flex-wrapper {
         display: block;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-
-    .sdlguide_card-wrapper{
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
     }
 
     .intro_desc {
@@ -247,28 +286,18 @@
         margin-bottom: 16px;
         text-align: center;
     }
-
 }
-
 
 @media screen and (min-width: 1440px) {
     .tile-card_wrapper {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         justify-content: center;
+        align-items: center;
+        margin: auto auto !important;
         gap: -50px;
     }
+
+  
+    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
