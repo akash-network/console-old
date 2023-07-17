@@ -145,10 +145,7 @@ const CustomApp: React.FC = () => {
                   actionItems={() => (
                     <DeploymentAction>
                       <Button variant="outlined" onClick={() => showSdlReview(true)}>
-                        <span className="mr-2" style={{ marginRight: '30px' }}>
-                          Review SDL
-                        </span>{' '}
-                        <Icon type="edit" />
+                        <span className="mr-2">Review SDL</span> <Icon type="edit" />
                       </Button>
                       <Button
                         variant="contained"
@@ -186,4 +183,8 @@ export default CustomApp;
 const DeploymentAction = styled.div`
   display: flex;
   justify-content: flex-end;
+
+  Button {
+    margin-right: 10px;
+  }
 `;
