@@ -27,7 +27,7 @@ function Landing() {
           <div className="sdlguide_flex-wrapper">
             <div className="top_sdlText-wrapper">
               <p className="intro_text">{sdlGuideIntroText}</p>
-              <p className="intro_desc">{introDescription}</p>
+              <p className="intro_desc" dangerouslySetInnerHTML={{ __html: introDescription }}></p>
             </div>
             <div className="sdlguide_card-wrapper">
               {sdlGuideTiles &&

@@ -11,7 +11,7 @@ import {
   keplrState,
   myDeployments as myDeploymentsAtom,
 } from '../../recoil/atoms';
-import './TileCard.css';
+import '../../style/TileCard.css';
 interface Props {
   item: {
     route: string;
@@ -22,21 +22,12 @@ interface Props {
   };
 }
 
-import { Dialog } from '../Dialog';
-import FeaturedApps from '../../pages/FeaturedApps';
-import SelectApp from '../../pages/SelectApp';
-import SelectProvider from '../../pages/SelectProvider';
-import { ConfigureApp } from '../../pages/ConfigureApp';
-import { PreflightCheck } from '../../pages/PreflightCheck';
 import { nameToURI, uriToName } from '../../_helpers/param-helpers';
 import { initialValues, InitialValuesProps, SDLSpec } from '../SdlConfiguration/settings';
 import { myDeploymentFormat } from '../../_helpers/my-deployment-utils';
-import logging from '../../logging';
-import Loading from '../Loading';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { useMutation } from 'react-query';
 import { createDeployment, createLease, sendManifest } from '../../api/mutations';
-import { getRpcNode } from '../../hooks/useRpcNode';
 
 const steps = ['Featured Apps', 'Select', 'Configure', 'Review', 'Deploy'];
 
@@ -50,7 +41,7 @@ function TileCard(props: Props) {
   const keplr = useRecoilValue(keplrState);
   const navigate = useNavigate();
   const [deploymentId, setDeploymentId] = React.useState<{ owner: string; dseq: string }>();
-  const { folderName, templateId, intentId, dseq } = useParams();
+  const { dseq } = useParams();
   const [sdl, setSdl] = useRecoilState(deploymentSdl);
   const [cardMessage, setCardMessage] = useState('');
   const [activeStep, setActiveStep] = useState({ currentCard: 0 });
@@ -59,20 +50,13 @@ function TileCard(props: Props) {
   const [errorTitle, setErrorTitle] = React.useState<string>();
   const [errorMessage, setErrorMessage] = React.useState<string>();
   const [myDeployments, setMyDeployments] = useRecoilState(myDeploymentsAtom);
-  const [, setDeploymentRefresh] = useRecoilState(deploymentDataStale);
+  const [setDeploymentRefresh] = useRecoilState(deploymentDataStale);
   const { mutate: mxCreateDeployment, isLoading: deploymentProgressVisible } =
     useMutation(createDeployment);
   const { mutate: mxCreateLease, isLoading: leaseProgressVisible } = useMutation(createLease);
   const { mutate: mxSendManifest, isLoading: manifestSending } = useMutation(sendManifest);
 
   const progressVisible = deploymentProgressVisible || leaseProgressVisible || manifestSending;
-
-  React.useEffect(() => {
-    const params = [folderName, templateId && uriToName(templateId), intentId];
-    const numParams = params.filter((x) => x !== undefined).length;
-
-    setActiveStep({ currentCard: numParams });
-  }, [folderName, templateId, intentId]);
 
   React.useEffect(() => {
     if (dseq) {
@@ -100,10 +84,6 @@ function TileCard(props: Props) {
 
   const handleImportSDL = () => {
     setReviewSdl(true);
-  };
-
-  const handleOtherButtonClick = () => {
-    console.log('Other button clicked');
   };
 
   // TODO: this should be changed to use the logging system, and not throw

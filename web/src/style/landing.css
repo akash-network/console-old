@@ -86,8 +86,6 @@
     width: 200.75px;
 }
 
-
-
 .sdlguide_card-wrapper > div:nth-child(3) > div > p.sdl-guide-text {
     width: 218.75px;
     font-size: 16px;
@@ -181,7 +179,7 @@
         > div.sdlguide_card-wrapper
         > div:nth-child(1)
         > div {
-            margin-top: 20px;
+        margin-top: 20px;
     }
     .sdlguide_wrapper
         > div
@@ -225,10 +223,6 @@
     .sdlguide_card-wrapper {
         display: grid;
         grid-template-columns: 1fr;
-    }
-
-    .sdlguide_flex-wrapper {
-        display: block;
     }
 
     .sdlguide_wrapper
@@ -298,8 +292,7 @@
         gap: 16px;
     }
 
-  
-    .tile_card_top-wrapper{
+    .tile_card_top-wrapper {
         display: flex;
         justify-content: center;
         align-items: center;

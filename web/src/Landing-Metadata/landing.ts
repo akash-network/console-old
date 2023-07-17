@@ -85,7 +85,7 @@ export const metadata: Metadata = {
   sdlGuideTiles: {
     introText: 'How it works?',
     introDescription:
-      'There are 3 main steps to deploying on Akash. Check out our detailed help for more.',
+      'There are 3 main steps to deploying on Akash. Check out our detailed <a target="_blank" href="https://docs.akash.network/guides/deploy">help</a> for more.',
     tiles: [
       {
         step: '01',

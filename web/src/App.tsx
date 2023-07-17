@@ -12,7 +12,6 @@ import { loadActiveCertificate } from './recoil/api';
 import { useWallet } from './hooks/useWallet';
 import Loading from './components/Loading';
 
-
 // Lazy loading all pages in appropriate time
 const DeploymentStepper = lazy(() => import('./components/DeploymentStepper'));
 const Deployment = lazy(() => import('./components/Deployment'));
@@ -22,8 +21,7 @@ const MyDeployments = lazy(() => import('./pages/MyDeployments'));
 const UpdateDeployment = lazy(() => import('./pages/UpdateDeployment'));
 const CustomApp = lazy(() => import('./pages/CustomApp'));
 const Provider = lazy(() => import('./pages/Provider'));
-import Landing from './pages/Landing';
-
+const Landing = lazy(() => import('./pages/Landing'));
 
 const Welcome = () => {
   const navigate = useNavigate();
@@ -49,9 +47,9 @@ const AppRouter = () => {
           <Routes>
             <Route path="/landing" element={<Landing />} />
             <Route path="/" element={<Welcome />} />
-            <Route path="landing/node-deployment" element={<DeploymentStepper />}/>
+            <Route path="node-deployment" element={<DeploymentStepper />} />
             <Route path="new-deployment">
-              <Route path=":folderName/" element={<DeploymentStepper />} />
+              <Route path=":landing/folderName/" element={<DeploymentStepper />} />
               <Route path=":folderName/:templateId" element={<DeploymentStepper />} />
               <Route path=":folderName/:templateId/:intentId" element={<DeploymentStepper />} />
               <Route path="custom-sdl" element={<CustomApp />} />
@@ -121,11 +119,13 @@ export default function App() {
 
   return (
     <Logging>
-      <Suspense fallback={
-        <Stack direction="column">
-          <Loading title="Loading" />
-        </Stack>
-      }>
+      <Suspense
+        fallback={
+          <Stack direction="column">
+            <Loading title="Loading" />
+          </Stack>
+        }
+      >
         <Keplr>
           <AppRouter />
         </Keplr>
