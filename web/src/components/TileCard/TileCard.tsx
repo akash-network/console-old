@@ -213,55 +213,6 @@ function TileCard(props: Props) {
                 </div>
               </div>
             </div>
-
-            {/* <div className="tile_card">
-              <div style={{ margin: '20px' }}>
-                <div className="flex tile_wrapper">
-                  <img src={image} alt={title} />
-                  <p className="tile-card_title">{title}</p>
-                </div>
-                <p className="tile-card_desc">{description}</p>
-                {activeStep.currentCard === steps.length
-                  ? null
-                  : !progressVisible && (
-                      <React.Fragment>
-                        {activeStep.currentCard === 0 && buttonText === 'Import SDL' && (
-                          <button
-                            className="tile_btn"
-                            onClick={() => {
-                              setFieldValue('sdl', {});
-                              handleImportSDL();
-                              setReviewSdl(true);
-                            }}
-                          >
-                            {buttonText}
-                          </button>
-                        )}
-
-                        {activeStep.currentCard === 0 && buttonText === 'Choose a Template' && (
-                          <Button
-                            variant="outlined"
-                            size="large"
-                            sx={{ width: 260, padding: 1, marginRight: 20, mx: 2 }}
-                          >
-                            Sized Button
-                          </Button>
-                        )}
-
-                        {activeStep.currentCard === 0 && buttonText === 'Coming Soon' && (
-                          <button style={{ cursor: 'default' }} className="tile_btn">
-                            {buttonText}
-                          </button>
-                        )}
-                        <SdlEditor
-                          reviewSdl={reviewSdl}
-                          closeReviewModal={closeReviewModal}
-                          onSave={handleSdlEditorSave}
-                        />
-                      </React.Fragment>
-                    )}
-              </div>
-            </div> */}
           </div>
         </>
       )}
