@@ -2,8 +2,6 @@ import React from 'react';
 import { metadata } from '../Landing-Metadata/landing';
 import TileCard from '../components/TileCard/TileCard';
 
-import '../style/landing.css';
-
 function Landing() {
   const { introText, tiles } = metadata.categoriesTiles;
   const {
@@ -13,30 +11,35 @@ function Landing() {
   } = metadata.sdlGuideTiles;
 
   return (
-    <div className="tile_card_top-wrapper" style={{ marginTop: '-50px' }}>
-      <div className="tile_card_container">
+    <div className="flex justify-center items-center mx-auto">
+      <div>
         <div>
-          <p className="landing-head">{introText}</p>
-          <hr className="landing_hr" />
+          <p className="flex justify-start text-2xl font-bold mt-8 ">{introText}</p>
+          <hr className="text-[#e5e7eb] mb-5 mt-8" />
         </div>
-        <div className="tile-card_wrapper">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-between items-center gap-4">
           {tiles && tiles.map((tile) => <TileCard item={tile} />)}
         </div>
-        <hr className="landing_hr" />
-        <div className="sdlguide_wrapper">
-          <div className="sdlguide_flex-wrapper">
-            <div className="top_sdlText-wrapper">
-              <p className="intro_text">{sdlGuideIntroText}</p>
-              <p className="intro_desc" dangerouslySetInnerHTML={{ __html: introDescription }}></p>
+        <hr className="text-[#e5e7eb] mb-5 mt-8" />
+        <div className="w-full h-full p-6 bg-white border border-[#0000001A] rounded-lg mt-[72px]">
+          <div className="block lg:flex gap-5">
+            <div>
+              <p className="text-2xl font-bold text-center md:text-left">{sdlGuideIntroText}</p>
+              <p
+                className="text-center w-[250px] md:w-72 md:text-left text-base my-4 mb-5 md:mb-5"
+                dangerouslySetInnerHTML={{ __html: introDescription }}
+              ></p>
             </div>
-            <div className="sdlguide_card-wrapper">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-between items-center gap-4">
               {sdlGuideTiles &&
                 sdlGuideTiles.map((tile) => (
-                  <div className="sdlguide-content-wrapper">
+                  <div className="">
                     <div>
                       <img className="guide-img" src={tile.image} alt={tile.step} />
-                      <p className="sdl_step">{tile.step}</p>
-                      <p className="sdl-guide-text">{tile.text}</p>
+                      <p className=" text-base font-bold mt-4">{tile.step}</p>
+                      <p className="text-base md:text-lg mt-4 font-bold w-60 md:w-80 mb-8">
+                        {tile.text}
+                      </p>
                     </div>
                   </div>
                 ))}

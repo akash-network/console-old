@@ -47,9 +47,9 @@ const AppRouter = () => {
           <Routes>
             <Route path="/landing" element={<Landing />} />
             <Route path="/" element={<Welcome />} />
-            <Route path="node-deployment" element={<DeploymentStepper />} />
+            <Route path="landing/node-deployment" element={<DeploymentStepper />} />
             <Route path="new-deployment">
-              <Route path=":landing/folderName/" element={<DeploymentStepper />} />
+              <Route path=":folderName/" element={<DeploymentStepper />} />
               <Route path=":folderName/:templateId" element={<DeploymentStepper />} />
               <Route path=":folderName/:templateId/:intentId" element={<DeploymentStepper />} />
               <Route path="custom-sdl" element={<CustomApp />} />

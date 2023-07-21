@@ -3,7 +3,8 @@ import React, { Suspense, useState, useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { SdlEditor } from '../../components/SdlConfiguration/SdllEditor';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
+import styled from '@emotion/styled';
 import { Formik } from 'formik';
 import {
   deploymentDataStale,
@@ -11,7 +12,6 @@ import {
   keplrState,
   myDeployments as myDeploymentsAtom,
 } from '../../recoil/atoms';
-import '../../style/TileCard.css';
 interface Props {
   item: {
     route: string;
@@ -19,10 +19,10 @@ interface Props {
     image: string;
     description: string;
     buttonText: string;
+    buttonClass?: string;
   };
 }
 
-import { nameToURI, uriToName } from '../../_helpers/param-helpers';
 import { initialValues, InitialValuesProps, SDLSpec } from '../SdlConfiguration/settings';
 import { myDeploymentFormat } from '../../_helpers/my-deployment-utils';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
@@ -37,7 +37,7 @@ export interface DeploymentStepperProps {
 }
 
 function TileCard(props: Props) {
-  const { title, image, description, buttonText } = props.item;
+  const { title, image, description, buttonText, buttonClass } = props.item;
   const keplr = useRecoilValue(keplrState);
   const navigate = useNavigate();
   const [deploymentId, setDeploymentId] = React.useState<{ owner: string; dseq: string }>();
@@ -53,10 +53,12 @@ function TileCard(props: Props) {
   const [setDeploymentRefresh] = useRecoilState(deploymentDataStale);
   const { mutate: mxCreateDeployment, isLoading: deploymentProgressVisible } =
     useMutation(createDeployment);
-  const { mutate: mxCreateLease, isLoading: leaseProgressVisible } = useMutation(createLease);
-  const { mutate: mxSendManifest, isLoading: manifestSending } = useMutation(sendManifest);
 
-  const progressVisible = deploymentProgressVisible || leaseProgressVisible || manifestSending;
+  const bull = (
+    <Box component="span" sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}>
+      •
+    </Box>
+  );
 
   React.useEffect(() => {
     if (dseq) {
@@ -120,8 +122,6 @@ function TileCard(props: Props) {
       initialValues={initialValues}
       onSubmit={async (value: InitialValuesProps) => {
         // the onSubmit method is called from the component PreflightCheck.
-        // it uses the useFormikContext hook.
-        // const { submitForm } = useFormikContext();
         setCardMessage('Creating deployment');
 
         try {
@@ -153,8 +153,68 @@ function TileCard(props: Props) {
     >
       {({ setFieldValue, values }) => (
         <>
-          <div key={title}>
-            <div className="tile_card">
+          <div key={title} className="">
+            <div className="max-w-sm w-full h-full xl:h-[295px] lg:h-[310px] md:w-[330px] lg:w-[300px] xl:w-[330px]  bg-white border border-[#0000001A] rounded-lg">
+              <div className="p-5">
+                <div className="flex gap-4">
+                  <img className="" src={image} alt="" />
+                  <p className="font-bold text-[18px] mt-3 leading-6">{title}</p>
+                </div>
+                <div className="">
+                  <p className=" mt-[30px] text-[16px] leading-6  ">{description}</p>
+                  {buttonText === 'Import SDL' && (
+                    <div className="mt-5 lg:mt-[55px] xl:-mt-[9px]">
+                      <TemplateBtn>
+                        <Button
+                          variant="outlined"
+                          onClick={() => {
+                            setFieldValue('sdl', {});
+                            handleImportSDL();
+                            setReviewSdl(true);
+                          }}
+                        >
+                          {buttonText}
+                        </Button>
+                      </TemplateBtn>
+                    </div>
+                  )}
+
+                  {buttonText === 'Choose a Template' && (
+                    <div className="mt-5 lg:mt-[70px] xl:mt-12">
+                      <TemplateBtn>
+                        <Button variant="outlined">
+                          <Link className="text-black" to={props.item.route}>
+                            {buttonText}
+                          </Link>
+                        </Button>
+                      </TemplateBtn>
+                    </div>
+                  )}
+
+                  {buttonText === 'Coming Soon' && (
+                    <div
+                      className={
+                        buttonClass ? `-mt-4 ${buttonClass}` : 'mt-auto xl:mt-[52px] lg:mt-12'
+                      }
+                    >
+                      <TemplateBtn>
+                        <Button disabled variant="outlined">
+                          {buttonText}
+                        </Button>
+                      </TemplateBtn>
+                    </div>
+                  )}
+
+                  <SdlEditor
+                    reviewSdl={reviewSdl}
+                    closeReviewModal={closeReviewModal}
+                    onSave={handleSdlEditorSave}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* <div className="tile_card">
               <div style={{ margin: '20px' }}>
                 <div className="flex tile_wrapper">
                   <img src={image} alt={title} />
@@ -179,9 +239,13 @@ function TileCard(props: Props) {
                         )}
 
                         {activeStep.currentCard === 0 && buttonText === 'Choose a Template' && (
-                          <button className="tile_btn">
-                            <Link to={props.item.route}>{buttonText}</Link>
-                          </button>
+                          <Button
+                            variant="outlined"
+                            size="large"
+                            sx={{ width: 260, padding: 1, marginRight: 20, mx: 2 }}
+                          >
+                            Sized Button
+                          </Button>
                         )}
 
                         {activeStep.currentCard === 0 && buttonText === 'Coming Soon' && (
@@ -197,7 +261,7 @@ function TileCard(props: Props) {
                       </React.Fragment>
                     )}
               </div>
-            </div>
+            </div> */}
           </div>
         </>
       )}
@@ -206,3 +270,13 @@ function TileCard(props: Props) {
 }
 
 export default TileCard;
+
+const TemplateBtn = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  Button {
+    width: 100%;
+    padding: 8px, 16px, 8px, 16px;
+  }
+`;

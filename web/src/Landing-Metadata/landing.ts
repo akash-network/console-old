@@ -14,6 +14,7 @@ interface Tile {
   route: string;
   icon: string;
   buttonEnabled: boolean;
+  buttonClass?: string;
 }
 
 interface CategoryTiles {
@@ -59,6 +60,7 @@ export const metadata: Metadata = {
         icon: 'www',
         image: img2,
         buttonEnabled: true,
+        buttonClass: 'coming-soon-btn-2',
       },
       {
         title: 'Deploy an AI/ ML Model',
