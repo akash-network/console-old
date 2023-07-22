@@ -14,7 +14,7 @@ export default function DeployPage() {
       <Box>
         <Stack justifyContent="space-between" spacing={4}>
           <div className="flex mt-8">
-            <Link to="/">
+            <Link to="/landing">
               <img className="flex-1" src={Logo} width={240} />
             </Link>
             <div className="grow">{/* flex grow spacer */}</div>

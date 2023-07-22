@@ -21,12 +21,13 @@ const MyDeployments = lazy(() => import('./pages/MyDeployments'));
 const UpdateDeployment = lazy(() => import('./pages/UpdateDeployment'));
 const CustomApp = lazy(() => import('./pages/CustomApp'));
 const Provider = lazy(() => import('./pages/Provider'));
+const Landing = lazy(() => import('./pages/Landing'));
 
 const Welcome = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate('/landing/node-deployment');
+    navigate('/landing');
   }, []);
 
   return <></>;
@@ -44,8 +45,9 @@ const AppRouter = () => {
       <div className="console-container">
         <SideNav>
           <Routes>
+            <Route path="/landing" element={<Landing />} />
             <Route path="/" element={<Welcome />} />
-            <Route path="landing/node-deployment" element={<DeploymentStepper />}/>
+            <Route path="landing/node-deployment" element={<DeploymentStepper />} />
             <Route path="new-deployment">
               <Route path=":folderName/" element={<DeploymentStepper />} />
               <Route path=":folderName/:templateId" element={<DeploymentStepper />} />
@@ -117,11 +119,13 @@ export default function App() {
 
   return (
     <Logging>
-      <Suspense fallback={
-        <Stack direction="column">
-          <Loading title="Loading" />
-        </Stack>
-      }>
+      <Suspense
+        fallback={
+          <Stack direction="column">
+            <Loading title="Loading" />
+          </Stack>
+        }
+      >
         <Keplr>
           <AppRouter />
         </Keplr>

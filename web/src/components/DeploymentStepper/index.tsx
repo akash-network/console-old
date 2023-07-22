@@ -55,7 +55,8 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   const [errorMessage, setErrorMessage] = React.useState<string>();
   const [myDeployments, setMyDeployments] = useRecoilState(myDeploymentsAtom);
   const [, setDeploymentRefresh] = useRecoilState(deploymentDataStale);
-  const { mutate: mxCreateDeployment, isLoading: deploymentProgressVisible } = useMutation(createDeployment);
+  const { mutate: mxCreateDeployment, isLoading: deploymentProgressVisible } =
+    useMutation(createDeployment);
   const { mutate: mxCreateLease, isLoading: leaseProgressVisible } = useMutation(createLease);
   const { mutate: mxSendManifest, isLoading: manifestSending } = useMutation(sendManifest);
 
@@ -115,26 +116,29 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
         const _sdl = sdl ? sdl : cachedDetails.sdl;
 
         if (lease) {
-          mxSendManifest({ address: keplr.accounts[0].address, lease, sdl: _sdl}, {
-            onSuccess: (result) => {
+          mxSendManifest(
+            { address: keplr.accounts[0].address, lease, sdl: _sdl },
+            {
+              onSuccess: (result) => {
                 if (result) {
                   logging.success('Manifest sending: successful');
                   setDeploymentRefresh(true);
                   navigate(`/my-deployments/${dseq}`);
                 }
               },
-            onError: (error) => {
-              logging.log(`Failed to send manifest: ${error}`);
-            },
-            onSettled: () => {
-              navigate(`/my-deployments/${dseq}`);
+              onError: (error) => {
+                logging.log(`Failed to send manifest: ${error}`);
+              },
+              onSettled: () => {
+                navigate(`/my-deployments/${dseq}`);
+              },
             }
-          });
+          );
         }
       },
       onError: (error) => {
         logging.log(`Failed to create lease: ${error}`);
-      }
+      },
     });
   };
 
@@ -185,7 +189,8 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
           setCardMessage('Creating deployment');
 
           try {
-            const result = mxCreateDeployment({ sdl: value.sdl, depositor: value.depositor },
+            const result = mxCreateDeployment(
+              { sdl: value.sdl, depositor: value.depositor },
               {
                 onSuccess: async (result) => {
                   if (result && result.deploymentId) {
@@ -202,7 +207,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
                     // head to the bid selection page
                     navigate(`/configure-deployment/${result.deploymentId.dseq}`);
                   }
-                }
+                },
               }
             );
           } catch (error) {
@@ -251,43 +256,48 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
               {activeStep.currentCard === steps.length
                 ? null
                 : !progressVisible && (
-                  <React.Fragment>
-                    {activeStep.currentCard === 0 && (
-                      <FeaturedApps
-                        onDeployNowClick={(folderName) => {
-                          selectFolder(folderName);
-                        }}
-                        callback={(sdl) =>
-                          navigate('/new-deployment/custom-sdl', { state: { sdl: sdl } })
-                        }
-                        setFieldValue={setFieldValue}
-                      />
-                    )}
-                    {activeStep.currentCard === 1 && folderName && (
-                      <SelectApp
-                        folderName={uriToName(folderName)}
-                        setFieldValue={setFieldValue}
-                        onNextButtonClick={selectTemplate}
-                      />
-                    )}
-                    {activeStep.currentCard === 2 && folderName && templateId && (
-                      <ConfigureApp
-                        folderName={uriToName(folderName)}
-                        templateId={uriToName(templateId)}
-                        onNextButtonClick={(intent: string) => handlePreflightCheck(intent, values.sdl)}
-                      />
-                    )}
-                    {activeStep.currentCard === 3 && <PreflightCheck />}
-                    {activeStep.currentCard === 4 && deploymentId && (
-                      <Suspense fallback={<Loading />}>
-                        <SelectProvider
-                          deploymentId={deploymentId}
-                          onNextButtonClick={(bidId: any) => acceptBid(bidId)}
+                    <React.Fragment>
+                      {activeStep.currentCard === 0 && (
+                        <FeaturedApps
+                          onDeployNowClick={(folderName) => {
+                            selectFolder(folderName);
+                          }}
+                          callback={(sdl) =>
+                            navigate('/new-deployment/custom-sdl', { state: { sdl: sdl } })
+                          }
+                          setFieldValue={setFieldValue}
+                          onSave={function (sdl: any): void {
+                            throw new Error('Function not implemented.');
+                          }}
                         />
-                      </Suspense>
-                    )}
-                  </React.Fragment>
-                )}
+                      )}
+                      {activeStep.currentCard === 1 && folderName && (
+                        <SelectApp
+                          folderName={uriToName(folderName)}
+                          setFieldValue={setFieldValue}
+                          onNextButtonClick={selectTemplate}
+                        />
+                      )}
+                      {activeStep.currentCard === 2 && folderName && templateId && (
+                        <ConfigureApp
+                          folderName={uriToName(folderName)}
+                          templateId={uriToName(templateId)}
+                          onNextButtonClick={(intent: string) =>
+                            handlePreflightCheck(intent, values.sdl)
+                          }
+                        />
+                      )}
+                      {activeStep.currentCard === 3 && <PreflightCheck />}
+                      {activeStep.currentCard === 4 && deploymentId && (
+                        <Suspense fallback={<Loading />}>
+                          <SelectProvider
+                            deploymentId={deploymentId}
+                            onNextButtonClick={(bidId: any) => acceptBid(bidId)}
+                          />
+                        </Suspense>
+                      )}
+                    </React.Fragment>
+                  )}
             </>
           );
         }}

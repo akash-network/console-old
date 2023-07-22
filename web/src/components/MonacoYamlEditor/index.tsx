@@ -18,6 +18,7 @@ interface MonacoYamlEditorProps {
   closeReviewModal: () => void;
   onSaveButtonClick: (value: SDLSpec) => void;
   disabled: boolean;
+  onSave: (sdl: any) => void; // Add onSave prop
 }
 
 export const MonacoYamlEditor: React.FC<MonacoYamlEditorProps> = ({

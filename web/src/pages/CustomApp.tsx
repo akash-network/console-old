@@ -27,18 +27,18 @@ const CustomApp: React.FC = () => {
   const { networkType } = getRpcNode();
   const navigate = useNavigate();
   const keplr = useRecoilValue(keplrState);
-  const [deploymentId, setDeploymentId] = React.useState<{ owner: string; dseq: string }>();
+  const [deploymentId, setDeploymentId] = useState<{ owner: string; dseq: string }>();
   const { intentId, dseq } = useParams();
   const [sdl, setSdl] = useRecoilState(deploymentSdl);
   const [cardMessage, setCardMessage] = useState('');
   const [activeStep, setActiveStep] = useState({ currentCard: 1 });
 
   const [reviewSdl, showSdlReview] = useState(false);
-  // prevent function being recreated on state change
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
   const { state } = useLocation();
 
-  const { mutate: mxCreateDeployment, isLoading: isCreatingDeployment } = useMutation(createDeployment);
+  const { mutate: mxCreateDeployment, isLoading: isCreatingDeployment } =
+    useMutation(createDeployment);
   const { mutate: mxCreateLease, isLoading: isCreatingLease } = useMutation(createLease);
   const { mutate: mxSendManifest, isLoading: isSendingManifest } = useMutation(sendManifest);
 
@@ -76,12 +76,9 @@ const CustomApp: React.FC = () => {
           } else {
             setCardMessage('Could not create lease.');
           }
-        }
+        },
       });
     } catch (error: unknown) {
-      // TODO: Implement appropriate error handling
-      // Here we need to check it error.message is "Request rejected" which mean user clicked reject button
-      // or it could also happen that user didn't change anything and error is "Query failed with (6): rpc error: code..."
       if (isError(error)) {
         console.log('CustomApp.tsx' + error.message);
       }
@@ -95,33 +92,37 @@ const CustomApp: React.FC = () => {
       <Formik
         enableReinitialize
         initialValues={{ ...initialValues, sdl: transformSdl(state.sdl) }}
-        onSubmit={async (value: InitialValuesProps) => {
+        onSubmit={async (values, { setSubmitting, setFieldValue }) => {
+          setCardMessage('Creating deployment');
+
           setCardMessage('Creating deployment');
           try {
-            if (!value.sdl) {
+            if (!values.sdl) {
               logging.error('No SDL found');
               return;
             }
 
-            mxCreateDeployment({ sdl: value.sdl }, {
-              onSuccess: (result) => {
-                if (result && result.deploymentId) {
-                  setDeploymentId(result.deploymentId);
-                  setSdl(value.sdl);
-                  navigate(`/configure-deployment/${result.deploymentId.dseq}`);
+            mxCreateDeployment(
+              { sdl: values.sdl },
+              {
+                onSuccess: (result) => {
+                  if (result && result.deploymentId) {
+                    setDeploymentId(result.deploymentId);
+                    setSdl(values.sdl);
+                    navigate(`/configure-deployment/${result.deploymentId.dseq}`);
 
-                  localStorage.setItem(
-                    `${result.deploymentId.dseq}`,
-                    JSON.stringify({
-                      name: value.appName,
-                      sdl: value.sdl,
-                    })
-                  );
-                }
+                    localStorage.setItem(
+                      `${result.deploymentId.dseq}`,
+                      JSON.stringify({
+                        name: values.appName,
+                        sdl: values.sdl,
+                      })
+                    );
+                  }
+                },
               }
-            });
+            );
           } catch (error) {
-            // TODO: Implement appropriate error handling
             if (isError(error)) {
               console.log('CustomApp.tsx' + error.message);
             }
@@ -129,7 +130,7 @@ const CustomApp: React.FC = () => {
           }
         }}
       >
-        {({ values, submitForm }) => {
+        {({ values, submitForm, setFieldValue }) => {
           return (
             <>
               {!progressVisible && activeStep.currentCard === 1 && (
@@ -140,6 +141,7 @@ const CustomApp: React.FC = () => {
                   configurationType={SdlConfigurationType.Create}
                   progressVisible={progressVisible}
                   cardMessage={cardMessage}
+                  onSave={(updatedSdl) => setFieldValue('sdl', updatedSdl)}
                   actionItems={() => (
                     <DeploymentAction>
                       <Button variant="outlined" onClick={() => showSdlReview(true)}>
@@ -181,4 +183,8 @@ export default CustomApp;
 const DeploymentAction = styled.div`
   display: flex;
   justify-content: flex-end;
+
+  Button {
+    margin-right: 10px;
+  }
 `;

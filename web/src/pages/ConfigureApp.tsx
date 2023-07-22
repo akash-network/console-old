@@ -37,6 +37,11 @@ export const ConfigureApp: React.FC<ConfigureAppProps> = ({
     keepPreviousData: true,
   });
 
+  const handleSave = (sdl: any) => {
+    // Update the form values with the saved SDL
+    form.setFieldValue('sdl', sdl);
+  };
+
   useEffect(() => {
     // don't override the value if it's already set
     if (form.values?.sdl?.version) return;
@@ -70,6 +75,7 @@ export const ConfigureApp: React.FC<ConfigureAppProps> = ({
       configurationType={SdlConfigurationType.Create}
       progressVisible={progressVisible}
       cardMessage={cardMessage}
+      onSave={handleSave} // Add the onSave prop
       actionItems={() => (
         <DeploymentAction>
           <Button variant="outlined" onClick={() => showSdlReview(true)}>

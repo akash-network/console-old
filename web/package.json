@@ -14,7 +14,7 @@
         "@akashnetwork/akashjs": "^0.4.5",
         "@cosmjs/launchpad": "^0.27.1",
         "@cosmjs/proto-signing": "0.25.4",
-        "@craco/craco": "^6.4.5",
+        "@craco/craco": "^6.4.4",
         "@emeraldpay/hashicon-react": "^0.5.2",
         "@emotion/react": "^11.10.5",
         "@emotion/styled": "^11.10.5",
