@@ -28,6 +28,9 @@ import { SdlConfigurationType } from './settings';
 import { FieldWrapper, Input, Label, LabelTitle } from './styling';
 import InfoIcon from '@mui/icons-material/Info';
 import Tooltip from '@mui/material/Tooltip';
+import { HttpOptions } from './HttpOptions';
+import { useRpcNode } from '../../hooks/useRpcNode';
+import { Gpu } from './Gpu';
 
 interface SdlConfigurationProps {
   actionItems?: () => React.ReactNode;
@@ -50,7 +53,9 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
   cardMessage,
   onSave,
 }) => {
+  const [getRpcNode] = useRpcNode();
   const forbidEditing = configurationType === SdlConfigurationType.Update;
+  const hasGPU = getRpcNode().networkType === 'testnet';
 
   return (
     <React.Fragment>
@@ -126,6 +131,13 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                   const profile = sdl.deployment[serviceName][placement].profile;
                   const { profiles, services } = sdl;
 
+                  // Initialize the GPU resource if it doesn't exist
+                  if (hasGPU && profiles.compute[profile]?.resources.gpu === undefined) {
+                    profiles.compute[profile].resources.gpu = {
+                      units: 0,
+                    };
+                  }
+
                   return (
                     <AppAccordion key={serviceName} className="p-2">
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -188,6 +200,8 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                             disabled={forbidEditing}
                           />
 
+                          {hasGPU && <Gpu currentProfile={profile} disabled={forbidEditing} />}
+
                           <h1 className="font-medium">Ports</h1>
                           <Ports serviceName={serviceName} services={services} />
 
@@ -197,6 +211,14 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                             services={services}
                             disabled={forbidEditing}
                           />
+
+                          <h1 className='font-medium'>HTTP Options</h1>
+                          <HttpOptions
+                            serviceName={serviceName}
+                            services={services}
+                            disabled={forbidEditing}
+                          />
+
                         </div>
                         <SdlEditor
                           reviewSdl={reviewSdl}

@@ -43,7 +43,7 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
   return (
     <FieldArray
       name={`sdl.services.${serviceName}.expose`}
-      render={(arrayHelpers) => (
+      render={(arrayHelpers: any) => (
         <SdlSectionWrapper>
           <Stack direction="row" columnGap="10px">
             <PortTitle>Port</PortTitle>

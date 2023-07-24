@@ -86,7 +86,7 @@ export const Storage: React.FC<StorageProps> = ({
       <TabPanel value={value} index={0}>
         <FieldArray
           name={`sdl.profiles.compute.${currentProfile}.resources.storage`}
-          render={(arrayHelpers) => {
+          render={(arrayHelpers: any) => {
             const storages = profiles.compute[currentProfile]?.resources.storage;
             return (
               <>
@@ -178,7 +178,7 @@ export const Storage: React.FC<StorageProps> = ({
       <TabPanel value={value} index={1}>
         <FieldArray
           name={`sdl.profiles.compute.${currentProfile}.resources.storage`}
-          render={(arrayHelpers) => (
+          render={(arrayHelpers: any) => (
             <React.Fragment>
               {profiles.compute[currentProfile]?.resources.storage?.map((storage, index) => {
                 return (
