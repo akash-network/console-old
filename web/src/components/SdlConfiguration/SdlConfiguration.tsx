@@ -293,6 +293,7 @@ const ConfigurationTitle = styled.h1`
   font-weight: bold;
   border-radius: 8px 8px 0 0;
 `;
+
 const ToolTipTitleWrapper = styled.div`
   display: flex;
   align-items: center;

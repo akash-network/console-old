@@ -3,8 +3,6 @@ import { Field, FieldArray } from 'formik';
 import { MeasurementControl } from '../MeasurementControl';
 import React from 'react';
 import styled from '@emotion/styled';
-import PlusIcon from '../../assets/images/plus-icon.svg';
-import Trash from '../../assets/images/icon-trash.svg';
 import { SDLSpec } from './settings';
 import {
   AddNewButton,
@@ -13,6 +11,8 @@ import {
   Input,
   SdlSectionWrapper,
   VariableWrapper,
+  TrashIcon,
+  PlusSign,
 } from './styling';
 
 interface TabPanelProps {
@@ -20,9 +20,6 @@ interface TabPanelProps {
   index: number;
   value: number;
 }
-
-const PlusSign = () => <img src={PlusIcon} alt="Plus Icon" />;
-const TrashIcon = () => <img src={Trash} alt="Trash Icon" />;
 
 const validateStorage = (value: any) => {
   let error;
@@ -344,7 +341,7 @@ function a11yProps(index: number) {
   };
 }
 
-const InputField = styled(Input)<{ error?: boolean }>`
+const InputField = styled(Input) <{ error?: boolean }>`
   width: 100%;
 
   &:disabled {
