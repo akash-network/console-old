@@ -2,6 +2,18 @@ import { createTheme } from '@mui/material/styles';
 
 export const muiTheme = createTheme({
   components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            padding: 0,
+          },
+          '& .MuiOutlinedInput-root input': {
+            padding: '10px 16px',
+          },
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         contained: {
@@ -59,6 +71,16 @@ export const muiTheme = createTheme({
       fontSize: '14px',
       lineHeight: '20px',
       margin: '0.25rem 0',
+    },
+
+    h4: {
+      fontFamily: 'Satoshi-Regular, sans-serif',
+      fontStyle: 'normal',
+      fontWeight: 400,
+      fontSize: '14px',
+      lineHeight: '20px',
+      margin: '0 0 1rem',
+      color: '#6b7280',
     },
 
     body1: {

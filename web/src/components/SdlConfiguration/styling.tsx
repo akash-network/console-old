@@ -2,6 +2,13 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { Button } from '@mui/material';
 
+import PlusIcon from '../../assets/images/plus-icon.svg';
+import Trash from '../../assets/images/icon-trash.svg';
+
+// TODO: This should be integrated with the general icons
+export const PlusSign = () => <img src={PlusIcon} alt="Plus Icon" />;
+export const TrashIcon = () => <img src={Trash} alt="Trash Icon" />;
+
 export const FieldWrapper = styled.div`
   position: relative;
   width: 100%;

@@ -7,6 +7,7 @@ interface MeasurementControlProps {
   subTitle?: string;
   setFieldValue: (name: string, value: string | number) => void;
   disabled: boolean;
+  children: Array<React.ReactNode>;
 
   [key: string]: any;
 }
@@ -16,6 +17,7 @@ export const MeasurementControl: React.FC<MeasurementControlProps> = ({
   subTitle,
   setFieldValue,
   disabled,
+  children,
   ...field
 }) => {
   return (
@@ -25,6 +27,7 @@ export const MeasurementControl: React.FC<MeasurementControlProps> = ({
         <MeasurementSubTitle>{subTitle}</MeasurementSubTitle>
       </div>
       <InputNumber setFieldValue={setFieldValue} disabled={disabled} {...field} />
+      {children}
     </MeasurementWrapper>
   );
 };

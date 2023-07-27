@@ -62,7 +62,6 @@ export const queryProviders = createQueryFunction(() => {
 
 export const queryProviderInfo = createQueryFunction((owner: string | undefined) => {
   const { networkType, rpcNode } = getRpcNode();
-  let ret = null;
 
   const fetchMethod =
     networkType === 'testnet'
@@ -70,12 +69,11 @@ export const queryProviderInfo = createQueryFunction((owner: string | undefined)
       : beta2.providers.fetchProviderInfo;
 
   if (owner === undefined) {
-    ret = Promise.resolve(undefined);
-  } else {
-    ret = fetchMethod({ owner }, rpcNode);
+    return Promise.reject(new Error('No owner provided'));
   }
 
-  return Promise.any([ret]);
+  return fetchMethod({ owner }, rpcNode)
+    .then(result => result);
 });
 
 export const queryProviderAttributes = createQueryFunction((owner: string) => {

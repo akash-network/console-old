@@ -61,6 +61,8 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus 
             }
           }
 
+          console.table(application);
+
           setProviderDetails([
             { label: 'Name', value: _attributes?.organization },
             { label: 'Region', value: _attributes?.region },
@@ -86,7 +88,7 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus 
           setDetails([
             { label: 'GSEQ', value: lease?.lease?.leaseId?.gseq },
             { label: 'OSEQ', value: lease?.lease?.leaseId?.oseq },
-            { label: 'OSEQ', value: dseq },
+            { label: 'DSEQ', value: dseq },
           ]);
           setCapacity([
             { label: 'Virtual CPUs', value: application?.cpu },
