@@ -246,101 +246,100 @@ const Deployment: React.FC<any> = () => {
               ) : null}
             </DeploymentSectionWrapper>
             <DeploymentSectionWrapper style={{ borderBottom: 'none' }}>
-              <div className="p-3 text-lg font-bold">Actions</div>
-              {deployment?.deployment && deploymentIncomplete && (
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="secondary"
-                  aria-label="update deployment"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  startIcon={<Icon type="redeploy" />}
-                  onClick={onCompleteDeployment}
-                  sx={{
-                    justifyContent: 'left',
-                    gap: '10px',
-                    backgroundColor: '#FFFFFF',
-                    color: '#374151',
-                    border: '1px solid #D1D5DB',
-                    marginBottom: '12px',
-                  }}
-                >
-                  Complete Deployment
-                </Button>
-              )}
-              {deployment?.deployment && !deploymentIncomplete && (
-                <React.Fragment>
-                  <DeploymentActionButton
-                    tooltipTitle={deployment?.deployment?.state !== 1
+              <Stack gap={1}>
+                <div className="p-3 text-lg font-bold">Actions</div>
+                {deployment?.deployment && deploymentIncomplete && (
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    color="secondary"
+                    aria-label="update deployment"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    startIcon={<Icon type="redeploy" />}
+                    onClick={onCompleteDeployment}
+                    sx={{
+                      justifyContent: 'left',
+                      gap: '10px',
+                      backgroundColor: '#FFFFFF',
+                      color: '#374151',
+                      border: '1px solid #D1D5DB',
+                    }}
+                  >
+                    Complete Deployment
+                  </Button>
+                )}
+                {deployment?.deployment && !deploymentIncomplete && (
+                  <React.Fragment>
+                    <DeploymentActionButton
+                      tooltipTitle={deployment?.deployment?.state !== 1
                         ? 'It is not allowed to update closed deployment'
                         : 'This SDL is deployed with another tool and can\'t be updated from here'
-                    }
-                    tooltip={UpdateDeploymentTooltip}
-                    linkTo={'update-deployment'}
-                    aria-label="update deployment"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    startIcon={<Icon type="update" />}
-                  >
-                    Update Deployment
-                  </DeploymentActionButton>
-
-                  <DeploymentActionButton
-                    tooltipTitle="This SDL is deployed with another tool and can't be re-deployed from here"
-                    tooltip={ReDeployTooltip}
-                    linkTo={'re-deploy'}
-                    aria-label="update deployment"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    startIcon={<Icon type="update" />}
-                  >
-                    Update Deployment
-                  </DeploymentActionButton>
-
-                  <Stack direction="row" spacing={1} marginBottom="0.75rem" alignItems="center">
-                    <ConditionalLinkReDeploy
-                      title="This SDL is deployed with another tool and can't be re-deployed from here"
-                      placement="top"
-                      to={'re-deploy'}
-                      className="grow"
+                      }
+                      tooltip={UpdateDeploymentTooltip}
+                      linkTo={'update-deployment'}
+                      aria-label="update deployment"
+                      aria-controls="menu-appbar"
+                      aria-haspopup="true"
+                      startIcon={<Icon type="update" />}
                     >
-                      <Button
-                        fullWidth
-                        variant="outlined"
-                        color="secondary"
-                        aria-label="re-deploy"
-                        sx={{
-                          justifyContent: 'left'
-                        }}
-                        startIcon={<Icon type="redeploy" />}
+                      Update Deployment
+                    </DeploymentActionButton>
+
+                    <DeploymentActionButton
+                      tooltipTitle="This SDL is deployed with another tool and can't be re-deployed from here"
+                      tooltip={ReDeployTooltip}
+                      linkTo={'re-deploy'}
+                      aria-label="update deployment"
+                      aria-controls="menu-appbar"
+                      aria-haspopup="true"
+                      startIcon={<Icon type="update" />}
+                    >
+                      Update Deployment
+                    </DeploymentActionButton>
+
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <ConditionalLinkReDeploy
+                        title="This SDL is deployed with another tool and can't be re-deployed from here"
+                        placement="top"
+                        to={'re-deploy'}
+                        className="grow"
                       >
-                        Re-Deploy
-                      </Button>
-                    </ConditionalLinkReDeploy>
-                    {ReDeployTooltip}
-                  </Stack>
-                  <CloneDeploymentButton
-                    icon="clone"
+                        <Button
+                          fullWidth
+                          variant="outlined"
+                          color="secondary"
+                          aria-label="re-deploy"
+                          sx={{
+                            justifyContent: 'left'
+                          }}
+                          startIcon={<Icon type="redeploy" />}
+                        >
+                          Re-Deploy
+                        </Button>
+                      </ConditionalLinkReDeploy>
+                      {ReDeployTooltip}
+                    </Stack>
+                    <CloneDeploymentButton
+                      icon="clone"
+                      wallet={keplr}
+                      deployment={deployment.deployment}
+                    >
+                      Clone Deployment
+                    </CloneDeploymentButton>
+                  </React.Fragment>
+                )}
+                {deployment?.deployment && deployment?.deployment?.state === 1 && (
+                  <CloseDeploymentButton
+                    icon="trash"
                     wallet={keplr}
                     deployment={deployment.deployment}
-                    style={{ width: '380px', marginBottom: 12 }}
+                    onDelete={() => setRefresh(true)}
                   >
-                    Clone Deployment
-                  </CloneDeploymentButton>
-                </React.Fragment>
-              )}
-              {deployment?.deployment && deployment?.deployment?.state === 1 && (
-                <CloseDeploymentButton
-                  icon="trash"
-                  wallet={keplr}
-                  deployment={deployment.deployment}
-                  style={{ width: '380px', marginBottom: 12 }}
-                  onDelete={() => setRefresh(true)}
-                >
-                  Delete Deployment
-                </CloseDeploymentButton>
-              )}
+                    Delete Deployment
+                  </CloseDeploymentButton>
+                )}
+              </Stack>
             </DeploymentSectionWrapper>
             <DeploymentSectionWrapper>
               <div className="p-3 text-lg font-bold">Info</div>

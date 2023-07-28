@@ -2,29 +2,29 @@ import React from 'react';
 import { Button, Stack, Link, Tooltip, ButtonProps } from '@mui/material';
 
 type DeploymentActionButtonProps = {
-    tooltipTitle: string;
-    tooltip: React.ReactNode;
-    linkTo: string;
-    children: React.ReactNode;
+  tooltipTitle: string;
+  tooltip: React.ReactNode;
+  linkTo: string;
+  children: React.ReactNode;
 } & ButtonProps;
 
-const ConditionalTooltip = ({ children, condition, ...rest}: any) => {
-    return condition 
-        ? <Link {...rest}>{children}</Link>
-        : <Tooltip {...rest} placement="top">{children}</Tooltip>;
+const ConditionalTooltip = ({ children, condition, ...rest }: any) => {
+  return condition
+    ? <Link {...rest}>{children}</Link>
+    : <Tooltip {...rest} placement="top">{children}</Tooltip>;
 };
 
 
 const DeploymentActionButton: React.FC<DeploymentActionButtonProps> = (props) => {
-    const { 
-        tooltipTitle,
-        tooltip,
-        linkTo,
-        children,
-        ...rest
-     } = props;
+  const {
+    tooltipTitle,
+    tooltip,
+    linkTo,
+    children,
+    ...rest
+  } = props;
 
-    return <Stack direction="row" spacing={1} marginBottom="0.75rem" alignItems="center">
+  return <Stack direction="row" spacing={1} alignItems="center">
     <ConditionalTooltip
       title={tooltipTitle}
       to={linkTo}
