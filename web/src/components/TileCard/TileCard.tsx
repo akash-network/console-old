@@ -50,15 +50,11 @@ function TileCard(props: Props) {
   const [errorTitle, setErrorTitle] = React.useState<string>();
   const [errorMessage, setErrorMessage] = React.useState<string>();
   const [myDeployments, setMyDeployments] = useRecoilState(myDeploymentsAtom);
-  const [setDeploymentRefresh] = useRecoilState(deploymentDataStale);
-  const { mutate: mxCreateDeployment, isLoading: deploymentProgressVisible } =
-    useMutation(createDeployment);
+  const { mutate: mxCreateDeployment } = useMutation(createDeployment);
 
-  const bull = (
-    <Box component="span" sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}>
-      •
-    </Box>
-  );
+  const handleTileActionClick = useCallback((route: string) => {
+    return () => navigate(route);
+  }, [navigate]);
 
   React.useEffect(() => {
     if (dseq) {
@@ -182,10 +178,8 @@ function TileCard(props: Props) {
                   {buttonText === 'Choose a Template' && (
                     <div className="mt-5 lg:mt-[70px] xl:mt-12">
                       <TemplateBtn>
-                        <Button variant="outlined">
-                          <Link className="text-black" to={props.item.route}>
-                            {buttonText}
-                          </Link>
+                        <Button variant="outlined" onClick={handleTileActionClick(props.item.route)}>
+                          {buttonText}
                         </Button>
                       </TemplateBtn>
                     </div>

@@ -27,7 +27,7 @@ const GpuUnits: React.FC<GpuUnitProps> = ({ currentProfile, disabled }) => {
     <FieldWrapper>
       <Field
         name={`sdl.profiles.compute.${currentProfile}.resources.gpu.units`}
-        defaultValue={formValues.sdl.profiles.compute[currentProfile].resources.gpu.units || 0}
+        defaultValue={values.sdl.profiles.compute[currentProfile].resources.gpu.units || 0}
         id="gpu"
       >
         {({ field, form, meta }: any) => (
@@ -52,11 +52,10 @@ const GpuUnits: React.FC<GpuUnitProps> = ({ currentProfile, disabled }) => {
 
 // tag based component for selecting which gpus to allow.
 const GpuAttributes: React.FC<GpuUnitProps> = ({ currentProfile, disabled }) => {
-  const { setFieldValue, values } = useFormikContext();
-  const formValues = (values as any);
+  const { setFieldValue, values } = useFormikContext<any>();
 
   const [attributes, setAttributes] = useState<string[]>(() => {
-    const attributes = formValues.sdl.profiles.compute[currentProfile].resources.gpu.attributes;
+    const attributes = values.sdl.profiles.compute[currentProfile].resources.gpu.attributes;
     if (attributes) {
       return attributes.map((attr: any) => attr.key);
     }
