@@ -24,7 +24,7 @@ import { getRpcNode } from '../../hooks/useRpcNode';
 
 import { QueryDeploymentResponse as Beta3Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta3/query';
 import { QueryDeploymentResponse as Beta2Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/query';
-// import DeploymentActionButton from './DeploymentActionButton';
+import DeploymentActionButton from './DeploymentActionButton';
 
 const Deployment: React.FC<any> = () => {
   const { dseq } = useParams<any>();
@@ -271,8 +271,8 @@ const Deployment: React.FC<any> = () => {
               )}
               {deployment?.deployment && !deploymentIncomplete && (
                 <React.Fragment>
-                    tooltipTitle={
-                      deployment?.deployment?.state !== 1
+                  <DeploymentActionButton
+                    tooltipTitle={deployment?.deployment?.state !== 1
                         ? 'It is not allowed to update closed deployment'
                         : 'This SDL is deployed with another tool and can\'t be updated from here'
                     }
@@ -282,10 +282,11 @@ const Deployment: React.FC<any> = () => {
                     aria-controls="menu-appbar"
                     aria-haspopup="true"
                     startIcon={<Icon type="update" />}
-                
+                  >
                     Update Deployment
-           
+                  </DeploymentActionButton>
 
+                  <DeploymentActionButton
                     tooltipTitle="This SDL is deployed with another tool and can't be re-deployed from here"
                     tooltip={ReDeployTooltip}
                     linkTo={'re-deploy'}
@@ -293,8 +294,9 @@ const Deployment: React.FC<any> = () => {
                     aria-controls="menu-appbar"
                     aria-haspopup="true"
                     startIcon={<Icon type="update" />}
+                  >
                     Update Deployment
-           
+                  </DeploymentActionButton>
 
                   <Stack direction="row" spacing={1} marginBottom="0.75rem" alignItems="center">
                     <ConditionalLinkReDeploy
@@ -309,7 +311,7 @@ const Deployment: React.FC<any> = () => {
                         color="secondary"
                         aria-label="re-deploy"
                         sx={{
-                          justifyContent: 'left',
+                          justifyContent: 'left'
                         }}
                         startIcon={<Icon type="redeploy" />}
                       >
