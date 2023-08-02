@@ -41,11 +41,12 @@ import { fetchRpcNodeStatus } from './rpc';
 import { LeaseStatus } from '../../../types';
 import logging from '../../../logging';
 import { getRpcNode } from '../../../hooks/useRpcNode';
+import { retry } from '../../../_helpers/async-utils';
 
 // 5AKT aka 5000000uakt
 export const defaultInitialDeposit = 5000000;
 
-function getTypeUrl<T extends {$type: string}>(type: T) {
+function getTypeUrl<T extends { $type: string }>(type: T) {
   return `/${type.$type}`;
 }
 
@@ -399,8 +400,6 @@ export async function sendManifest(address: string, lease: Lease, sdl: any) {
   const providerFetch = mtlsFetch(cert, provider.provider.hostUri);
   const manifest = Manifest(sdl, 'beta2', true);
 
-  console.log(manifest);
-
   let jsonStr = JSON.stringify(manifest);
 
   jsonStr = jsonStr.replaceAll('"quantity":{"val', '"size":{"val');
@@ -408,32 +407,24 @@ export async function sendManifest(address: string, lease: Lease, sdl: any) {
   jsonStr = jsonStr.replaceAll('"readOnly":', '"mount":');
   jsonStr = jsonStr.replaceAll('"readOnlyTmp":', '"readOnly":');
 
-  return new Promise((resolve, reject) => {
-    const attemptSend = (retry: number) => {
-      return providerFetch(url, {
-        method: 'PUT',
-        body: jsonStr,
-      }).then((result) => {
-        if (result.ok) {
-          resolve(result);
-          return;
-        }
+  const attemptSend = () => {
+    return providerFetch(url, {
+      method: 'PUT',
+      body: jsonStr,
+    }).then((result) => {
+      if (result.ok) {
+        return result;
+      }
 
-        if (retry > 0) {
-          // logging.warn('Sending manifest failed. Retrying...');
-          setTimeout(() => attemptSend(retry - 1), 1000);
-        } else {
-          // logging.warn('Sending manifest failed.');
-          result.text().then(reject);
-        }
-      }, (error) => {
-        logging.error('Error sending manifest to provider. This is likey an issue with the provider.');
-        console.error(error);
-      });
-    };
+      return Promise.reject(result);
+    });
+  };
 
-    attemptSend(3);
-  });
+  return retry(attemptSend, [1000, 3000, 5000])
+    .catch((error) => {
+      logging.error('Error sending manifest to provider. This is likely an issue with the provider.');
+      console.error(error);
+    });
 }
 
 export async function newDeploymentData(

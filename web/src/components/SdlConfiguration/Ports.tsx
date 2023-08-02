@@ -11,6 +11,7 @@ import {
   FieldWrapper,
   Input,
   SdlSectionWrapper,
+  TableTitle,
   VariableWrapper,
 } from './styling';
 
@@ -46,10 +47,10 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
       render={(arrayHelpers: any) => (
         <SdlSectionWrapper>
           <Stack direction="row" columnGap="10px">
-            <PortTitle>Port</PortTitle>
-            <PortTitle>As</PortTitle>
-            <PortTitle>Host</PortTitle>
-            <PortTitle>Accept</PortTitle>
+            <TableTitle width={178}>Port</TableTitle>
+            <TableTitle width={178}>As</TableTitle>
+            <TableTitle width={178}>Host</TableTitle>
+            <TableTitle width={'auto'}>Accept</TableTitle>
           </Stack>
           {services[serviceName]?.expose?.map((port, index) => (
             <VariableWrapper updatePage={updatePage} key={index}>
@@ -173,17 +174,4 @@ export const Ports: React.FC<PortsProps> = ({ serviceName, services, updatePage 
 const HostFiledWithButton = styled.div`
   display: flex;
   column-gap: 10px;
-`;
-
-const PortTitle = styled.div`
-  font-weight: 500;
-  font-size: 14px;
-  color: #3d4148;
-  padding-right: 10px;
-  width: 176.5px;
-  box-sizing: border-box;
-
-  &:last-child {
-    width: auto;
-  }
 `;

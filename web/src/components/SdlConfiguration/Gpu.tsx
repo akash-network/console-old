@@ -5,6 +5,28 @@ import { AddNewButton, AddNewButtonWrapper, FieldWrapper, PlusSign, SdlSectionWr
 import { Button, Box, Stack, Typography, List, ListItem, OutlinedInput } from '@mui/material';
 import { IconTrash } from '../Icons';
 
+const GPU_VENDORS = [
+  'nvidia',
+  'amd',
+];
+
+const GPU_MODELS = {
+  nvidia: [
+    'a100',
+    'a30',
+    'a40',
+    'a6000',
+    'a40',
+  ],
+  amd: [
+    'mi100',
+    'mi50',
+    'mi60',
+    'mi25',
+    'mi8',
+  ]
+};
+
 type GpuUnitProps = {
   currentProfile: string;
   disabled: boolean;
@@ -81,11 +103,7 @@ const GpuAttributes: React.FC<GpuUnitProps> = ({ currentProfile, disabled }) => 
   return (
     <FieldWrapper>
       <Typography variant="body2" color="text.secondary" marginTop={2}>
-        Example filters:
-        <List>
-          <ListItem>/vendor/nvidia/model/a6000 (nVidia A6000 only)</ListItem>
-          <ListItem>/vendor/amd/model/* (any AMD GPU)</ListItem>
-        </List>
+        Select the GPU vendors/models that you'd like to use for your deployment.
       </Typography>
       <Stack gap={1}>
         {attributes.map((attribute, index) => (

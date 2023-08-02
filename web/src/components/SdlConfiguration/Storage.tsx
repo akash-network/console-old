@@ -1,4 +1,4 @@
-import { FormControl, IconButton, MenuItem, Select, Tab, Tabs, Tooltip } from '@mui/material';
+import { Box, FormControl, IconButton, MenuItem, Select, Stack, Tab, Tabs, Tooltip } from '@mui/material';
 import { Field, FieldArray } from 'formik';
 import { MeasurementControl } from '../MeasurementControl';
 import React from 'react';
@@ -13,6 +13,7 @@ import {
   VariableWrapper,
   TrashIcon,
   PlusSign,
+  TableTitle,
 } from './styling';
 
 interface TabPanelProps {
@@ -21,21 +22,19 @@ interface TabPanelProps {
   value: number;
 }
 
-const validateStorage = (value: any) => {
-  let error;
-  const strippedValue = value?.slice(0, -2);
-  if (strippedValue && strippedValue <= 0) {
-    error = 'Storage must be a positive value greater than zero';
+const validateStorage = (value: string) => {
+  const size = value.slice(0, -2);
+  const intValue = parseInt(size, 10);
+
+  if (isNaN(intValue) || intValue <= 0) {
+    return 'Storage must be a positive value greater than zero';
   }
-  return error;
 };
 
-const validateStorageData = (value: any) => {
-  let error;
-  if (!value) {
-    error = 'This value can\'t be blank';
+const validateStorageData = (value: string) => {
+  if (value === '') {
+    return 'This value can\'t be blank';
   }
-  return error;
 };
 
 type StorageProfile = {
@@ -78,7 +77,7 @@ export const Storage: React.FC<StorageProps> = ({
         sx={{ marginBottom: '16px', borderBottom: '1px solid #D1D5DB' }}
       >
         <Tab sx={{ textTransform: 'none' }} label={'Ephemeral'} {...a11yProps(0)} />
-        <Tab sx={{ textTransform: 'none' }} label="Persistent" {...a11yProps(1)} />
+        <Tab sx={{ textTransform: 'none' }} label={'Persistent'} {...a11yProps(1)} />
       </Tabs>
       <TabPanel value={value} index={0}>
         <FieldArray
@@ -172,7 +171,14 @@ export const Storage: React.FC<StorageProps> = ({
         />
       </TabPanel>
 
+      {/* Persistent storage */}
       <TabPanel value={value} index={1}>
+        <Stack spacing={2} direction="row" marginBottom={1}>
+          <TableTitle width={163}>Name</TableTitle>
+          <TableTitle width={163}>Mount</TableTitle>
+          <TableTitle width={163}>Size</TableTitle>
+          <TableTitle width={'auto'}>Type</TableTitle>
+        </Stack>
         <FieldArray
           name={`sdl.profiles.compute.${currentProfile}.resources.storage`}
           render={(arrayHelpers: any) => (
@@ -180,7 +186,14 @@ export const Storage: React.FC<StorageProps> = ({
               {profiles.compute[currentProfile]?.resources.storage?.map((storage, index) => {
                 return (
                   storage?.attributes && (
-                    <VariableWrapper key={`${currentProfile}-persistent-${index}`}>
+                    <FieldWrapper
+                      key={`${currentProfile}-persistent-${index}`}
+                      style={{
+                        display: 'flex',
+                        columnGap: '10px',
+                        paddingBottom: '10px',
+                      }}
+                    >
                       <Field
                         name={`sdl.profiles.compute.${currentProfile}.resources.storage.${index}.name`}
                         validate={validateStorageData}
@@ -282,7 +295,7 @@ export const Storage: React.FC<StorageProps> = ({
                           <TrashIcon />
                         </IconButton>
                       )}
-                    </VariableWrapper>
+                    </FieldWrapper>
                   )
                 );
               })}

@@ -33,7 +33,7 @@ export const InputNumber: React.FC<InputNumberProps> = ({ setFieldValue, disable
         <NumberInput
           min="0"
           step="0.1"
-          disabled
+          // disabled
           type="number"
           value={size.value}
           onChange={({ currentTarget }) => {
