@@ -306,6 +306,14 @@ export const Storage: React.FC<StorageProps> = ({
                     variant="outlined"
                     size="small"
                     onClick={() => {
+                      const sdl = arrayHelpers.form.values.sdl as SDLSpec;
+
+                      if (sdl.services[serviceName]?.params?.storage === undefined) {
+                        sdl.services[serviceName].params = {
+                          storage: {},
+                        };
+                      }
+
                       arrayHelpers.insert(
                         profiles.compute[currentProfile]?.resources.storage?.length + 1 ?? 0,
                         {
