@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 import PlusIcon from '../../assets/images/plus-icon.svg';
 import Trash from '../../assets/images/icon-trash.svg';
@@ -101,4 +101,11 @@ export const SdlSectionWrapper = styled.div`
   box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
   border-radius: 6px;
   padding: 20px;
+`;
+
+export const TableTitle = styled(Box)`
+  font-weight: 500;
+  font-size: 14px;
+  color: #3d4148;
+  box-sizing: border-box;
 `;

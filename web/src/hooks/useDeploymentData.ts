@@ -63,7 +63,6 @@ export default function useDeploymentData(owner: string) {
   const getLeaseStatus = useCallback(
     (lease: any) => {
       if (certificate.$type === 'TLS Certificate') {
-        // console.log('fetching status for lease', lease);
         return lease && fetchLeaseStatus(lease, rpcEndpoint);
       }
     },
@@ -86,57 +85,58 @@ export default function useDeploymentData(owner: string) {
 
     // Map it all together, and your mother's brother is named Robert
     Promise.all(
-      deploymentsQuery.deployments.map(async (query) => {
-        let name = '';
-        let url = '';
-        const lease = getDeploymentLease(query.deployment);
-        const status = await getLeaseStatus(lease);
-        const leaseInfo = leaseCalculator(
-          query?.deployment as any,
-          query?.escrowAccount as any,
-          lease as any,
-          akt?.current_price || 0
-        );
-        let updatable = 0;
-        // Doing this cause dseq sometimes comes as plain object and not Long type,
-        // and if that happen can't crate dseq string
-        const dseq = new Long(
-          query.deployment?.deploymentId?.dseq?.low || 0,
-          query.deployment?.deploymentId?.dseq?.high,
-          query.deployment?.deploymentId?.dseq?.unsigned
-        )?.toString();
+      deploymentsQuery.deployments
+        .map(async (query) => {
+          let name = '';
+          let url = '';
+          const lease = getDeploymentLease(query.deployment);
+          const status = await getLeaseStatus(lease);
+          const leaseInfo = leaseCalculator(
+            query?.deployment as any,
+            query?.escrowAccount as any,
+            lease as any,
+            akt?.current_price || 0
+          );
+          let updatable = 0;
+          // Doing this cause dseq sometimes comes as plain object and not Long type,
+          // and if that happen can't crate dseq string
+          const dseq = new Long(
+            query.deployment?.deploymentId?.dseq?.low || 0,
+            query.deployment?.deploymentId?.dseq?.high,
+            query.deployment?.deploymentId?.dseq?.unsigned
+          )?.toString();
 
-        const appCache = dseq ? localStorage.getItem(dseq) : null;
+          const appCache = dseq ? localStorage.getItem(dseq) : null;
 
-        const application = appCache ? JSON.parse(appCache) : null;
+          const application = appCache ? JSON.parse(appCache) : null;
 
-        if (application !== null && application.name !== '') {
-          name = application.name;
-        } else {
-          name = uniqueName(keplr?.accounts[0]?.address, dseq);
-        }
-        if (status && status.services) {
-          url = Object.values(status.services)
-            .map((service) => (service as any).uris[0])
-            .join(', ');
-        }
-        if (application !== null && query.deployment?.state === 1 && application.sdl !== undefined) {
-          updatable = 1;
-        } else {
-          updatable = 0;
-        }
-        // Table row object
-        return {
-          name,
-          dseq,
-          url,
-          lease: leaseInfo
-            ? `Time Left: ${leaseInfo ? leaseInfo.timeLeft : 'N/A'}`
-            : 'Time Left: 0 days',
-          status: query.deployment?.state || 0,
-          updatable: updatable,
-        };
-      })
+          if (application !== null && application.name !== '') {
+            name = application.name;
+          } else {
+            name = uniqueName(keplr?.accounts[0]?.address, dseq);
+          }
+          if (status && status.services) {
+            url = Object.values(status.services)
+              .map((service) => (service as any).uris[0])
+              .join(', ');
+          }
+          if (application !== null && query.deployment?.state === 1 && application.sdl !== undefined) {
+            updatable = 1;
+          } else {
+            updatable = 0;
+          }
+          // Table row object
+          return {
+            name,
+            dseq,
+            url,
+            lease: leaseInfo
+              ? `Time Left: ${leaseInfo ? leaseInfo.timeLeft : 'N/A'}`
+              : 'Time Left: 0 days',
+            status: query.deployment?.state || 0,
+            updatable: updatable,
+          };
+        })
     ).then(setDeploymentsData);
   }, [status, deploymentsQuery, getDeploymentLease, getLeaseStatus]);
 
