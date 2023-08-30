@@ -14,6 +14,11 @@ export const testnetRpcSettings = {
   networkType: 'testnet',
 };
 
+export const sandboxRpcSettings = {
+  rpcNode: 'https://rpc.sandbox-01.aksh.pw/',
+  chainId: 'akashnet-2',
+  networkType: 'testnet',
+};
 
 export type RpcSettings = typeof defaultRpcSettings;
 

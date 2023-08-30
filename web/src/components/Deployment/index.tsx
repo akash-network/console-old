@@ -214,9 +214,11 @@ const Deployment: React.FC<any> = () => {
 
   // In case that current SDL is deployed from another machine, only show Tooltip and not show re-deploy page
   const ConditionalLinkReDeploy = application !== null ? Link : Tooltip;
+
   // In case that current SDL is deployed from another machine or status closed, only show Tooltip and not show update page
-  const ConditionalLinkUpdate =
-    application !== null && deployment?.deployment?.state === 1 ? Link : Tooltip;
+  const canUpdate = application !== null && deployment?.deployment?.state === 1;
+
+  console.log('Can Update', canUpdate);
 
   return (
     <Stack>
@@ -281,18 +283,7 @@ const Deployment: React.FC<any> = () => {
                       aria-label="update deployment"
                       aria-controls="menu-appbar"
                       aria-haspopup="true"
-                      startIcon={<Icon type="update" />}
-                    >
-                      Update Deployment
-                    </DeploymentActionButton>
-
-                    <DeploymentActionButton
-                      tooltipTitle="This SDL is deployed with another tool and can't be re-deployed from here"
-                      tooltip={ReDeployTooltip}
-                      linkTo={'re-deploy'}
-                      aria-label="update deployment"
-                      aria-controls="menu-appbar"
-                      aria-haspopup="true"
+                      condition={canUpdate}
                       startIcon={<Icon type="update" />}
                     >
                       Update Deployment
