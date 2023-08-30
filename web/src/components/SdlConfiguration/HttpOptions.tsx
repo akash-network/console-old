@@ -88,7 +88,7 @@ export const HttpOptions: React.FC<EnvironmentVariableProps> = ({
         <SdlSectionWrapper>
           <Stack gap="10px" direction={'column'}>
             {httpOptions.map(([key, label, description, defaultValue]) => (
-              <Grid container key={key} xs={12}>
+              <Grid container key={key}>
                 {/* label */}
                 <Grid item xs={6}>
                   <label htmlFor={key}>{label}</label>

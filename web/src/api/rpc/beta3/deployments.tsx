@@ -315,6 +315,8 @@ export async function createDeployment(
     }),
   };
 
+  console.log(msg);
+
   const tx = await client.signAndBroadcast(account.address, [msg], 'auto', 'Creating the deployment');
 
   return {

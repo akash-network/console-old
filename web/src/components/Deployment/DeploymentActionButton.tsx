@@ -5,6 +5,7 @@ type DeploymentActionButtonProps = {
   tooltipTitle: string;
   tooltip: React.ReactNode;
   linkTo: string;
+  condition: boolean;
   children: React.ReactNode;
 } & ButtonProps;
 
@@ -21,6 +22,7 @@ const DeploymentActionButton: React.FC<DeploymentActionButtonProps> = (props) =>
     tooltip,
     linkTo,
     children,
+    condition,
     ...rest
   } = props;
 
@@ -29,6 +31,7 @@ const DeploymentActionButton: React.FC<DeploymentActionButtonProps> = (props) =>
       title={tooltipTitle}
       to={linkTo}
       className="grow"
+      condition={condition}
     >
       <Button
         fullWidth

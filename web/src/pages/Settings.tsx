@@ -1,4 +1,4 @@
-import React, { ChangeEvent, SyntheticEvent, useCallback, useMemo } from 'react';
+import React, { ChangeEvent, useCallback, useMemo } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   Alert,
@@ -32,14 +32,13 @@ import { useMutation, useQuery } from 'react-query';
 import { useWallet } from '../hooks/useWallet';
 import { queryCertificates } from '../api/queries';
 import { QueryCertificatesResponse } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/query';
-import { RpcSettings, defaultRpcSettings, testnetRpcSettings, useRpcNode } from '../hooks/useRpcNode';
+import { RpcSettings, defaultRpcSettings, sandboxRpcSettings, testnetRpcSettings, useRpcNode } from '../hooks/useRpcNode';
 import { Input } from '../components/SdlConfiguration/styling';
 import { isRpcNodeStatus } from '../api/rpc/beta2/rpc';
-import chainInfo from '../_helpers/chain';
+import testnetChainInfo from '../_helpers/testnet-chain';
+import sandboxChainInfo from '../_helpers/sandbox-chain';
 import { createCertificate, revokeCertificate } from '../api/mutations';
-import { set } from 'lodash';
 import logging from '../logging';
-import { getRpc } from '@akashnetwork/akashjs/build/rpc';
 
 type SortableCertificate = {
   available: boolean;
@@ -91,6 +90,10 @@ const defaultRpcNodes = [
     name: 'Testnet',
   },
   {
+    rpcNode: sandboxRpcSettings.rpcNode,
+    name: 'Sandbox'
+  },
+  {
     rpcNode: '',
     name: 'Custom',
   },
@@ -100,9 +103,16 @@ const isCustomRpcNode = (rpcNode: string) => {
   return !defaultRpcNodes.find((node) => node.rpcNode === rpcNode);
 };
 
-const AddCustomChainButton: React.FC = () => {
+const AddCustomChainButton: React.FC<{ chainId: string }> = ({ chainId }) => {
+  const chainConfigs = new Map([
+    ['testnet-02', testnetChainInfo],
+    ['sandbox-01', sandboxChainInfo],
+  ]);
+
   const addCustomChain = () => {
-    if (window && window.keplr && window.keplr.experimentalSuggestChain) {
+    const chainInfo = chainConfigs.get(chainId);
+
+    if (window && window.keplr && window.keplr.experimentalSuggestChain && chainInfo) {
       window.keplr.experimentalSuggestChain(chainInfo);
     }
   };
@@ -602,9 +612,9 @@ const Settings: React.FC<Record<string, never>> = () => {
             </div>
           ) : (
             <>
-                {candidateRpcSettings?.networkType == 'testnet' && <div className="flex justify-center p-3">
-                  <AddCustomChainButton />
-                </div>}
+              {candidateRpcSettings && candidateRpcSettings.networkType !== 'mainnet' && <div className="flex justify-center p-3">
+                <AddCustomChainButton chainId={candidateRpcSettings.chainId} />
+              </div>}
               <div className="flex justify-center">
                 <Button
                   className="w-[180px]"
