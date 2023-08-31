@@ -5,7 +5,7 @@ const storageKey = 'rpc_settings';
 export const defaultRpcSettings = {
   rpcNode: 'https://rpc.akashnet.net/',
   chainId: 'akashnet-2',
-  networkType: 'mainnet',
+  networkType: 'testnet',
 };
 
 export const testnetRpcSettings = {
@@ -36,6 +36,13 @@ function isRpcSettings(value: unknown): value is RpcSettings {
   );
 }
 
+function hasNetworkUpgraded(settings: RpcSettings) {
+  const config = [defaultRpcSettings, testnetRpcSettings, sandboxRpcSettings]
+    .find((config) => config.chainId === settings.chainId);
+
+  return config ? config.networkType !== settings.networkType : false;
+}
+
 function getRpcFromStorageOrDefault(defaultValue: RpcSettings) {
   const raw = localStorage.getItem(storageKey);
 
@@ -44,6 +51,12 @@ function getRpcFromStorageOrDefault(defaultValue: RpcSettings) {
       const parsed = raw ? JSON.parse(raw) : null;
 
       if (parsed) {
+        if (hasNetworkUpgraded(parsed)) {
+          console.warn('Network has been upgraded. Resetting RPC settings.');
+          deleteRpcFromStorage();
+          return defaultValue;
+        }
+
         return parsed;
       }
     }
