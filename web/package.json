@@ -1,6 +1,6 @@
 {
     "name": "web",
-    "version": "0.1.297",
+    "version": "0.1.298",
     "private": true,
     "scripts": {
         "start": "craco start --config ./craco.config.js",
