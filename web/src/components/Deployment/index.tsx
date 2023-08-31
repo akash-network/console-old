@@ -77,13 +77,8 @@ const Deployment: React.FC<any> = () => {
 
         // TOOD: this should use the query to avoid having to do a version
         // check here
-        if (chainId === 'akashnet-2') {
-          getDeployment = await beta2FetchDeployment(owner, dseq, rpcNode);
-          console.log('deploy', JSON.stringify(Beta2Deployment.toJSON(getDeployment.deployment), null, 2));
-        } else {
-          getDeployment = await beta3FetchDeployment(owner, dseq, rpcNode);
-          console.log('deploy', JSON.stringify(Beta3Deployment.toJSON(getDeployment.deployment), null, 2));
-        }
+        getDeployment = await beta3FetchDeployment(owner, dseq, rpcNode);
+        console.log('deploy', JSON.stringify(Beta3Deployment.toJSON(getDeployment.deployment), null, 2));
 
         const deployment = flattenObject(getDeployment.deployment) as any;
         const leases = flattenObject(getDeployment.leases) as any;
