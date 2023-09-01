@@ -12,10 +12,10 @@
   resolved "https://registry.yarnpkg.com/@adobe/css-tools/-/css-tools-4.2.0.tgz#e1a84fca468f4b337816fcb7f0964beb620ba855"
   integrity sha512-E09FiIft46CmH5Qnjb0wsW54/YQd69LsxeKUOWawmws1XWvyFGURnAChH0mlr7YPFR1ofwvUQfcL0J3lMxXqPA==
 
-"@akashnetwork/akashjs@^0.4.13":
-  version "0.4.13"
-  resolved "https://registry.yarnpkg.com/@akashnetwork/akashjs/-/akashjs-0.4.13.tgz#a1e3e4ac6e49487a365e1a2e6143907d580d1375"
-  integrity sha512-QLYFJwWAwYzMxRsTa/eXt7rOh9To4smQkfSJvbi+4kxSbbxMT+5BaUEh6dKJEd/Du3tXjhAjv9vbbt9gW72s9w==
+"@akashnetwork/akashjs@^0.4.15":
+  version "0.4.15"
+  resolved "https://registry.yarnpkg.com/@akashnetwork/akashjs/-/akashjs-0.4.15.tgz#7b1772b16f231b1b862b0c8e4498230294b85748"
+  integrity sha512-eczksGKrYeNn6oOSYI0Gt8G5Z+22c1vMgZKA7F0fi4KAGzyYoUrUR/s4vyx9zQk6fvgfK5j34SHodWcX1z6OsA==
   dependencies:
     "@cosmjs/launchpad" "^0.27.0"
     "@cosmjs/proto-signing" "^0.28.11"
