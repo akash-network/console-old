@@ -25,13 +25,14 @@ export const fetchSdlList: QueryFunction<any, [string, { folderName: string }]> 
   return JSON.parse(data);
 };
 
-export const fetchTemplateList: QueryFunction<any, string> = async ({queryKey}) => {
+export const fetchTemplateList: QueryFunction<any, [string, string]> = async ({ queryKey }) => {
   const octokit = new Octokit({});
+  const type = queryKey[1] || 'nodes';
 
   const repository = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}/metadata.json', {
     owner: 'akash-network',
     repo: 'deploy-templates',
-    path: 'nodes-master',
+    path: `${type}-master`,
   });
 
   const data = Buffer.from(

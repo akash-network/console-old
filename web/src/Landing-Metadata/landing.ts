@@ -55,8 +55,8 @@ export const metadata: Metadata = {
         title: 'Host a Website or Web Service',
         description:
           'Low cost, decentralized equivalents of the services provided by mainstream cloud providers. Host websites, blogsites, databases and more.',
-        buttonText: 'Coming Soon',
-        route: '',
+        buttonText: 'Choose a Template',
+        route: '/landing/web-deployment',
         icon: 'www',
         image: img2,
         buttonEnabled: true,
@@ -66,8 +66,8 @@ export const metadata: Metadata = {
         title: 'Deploy an AI/ ML Model',
         description:
           'Popular AI & ML models, deployed in just a few clicks. Includes Stable Diffusion, GPT4All, Alpaca and more.',
-        buttonText: 'Coming Soon',
-        route: '',
+        buttonText: 'Choose a Template',
+        route: '/landing/ml-deployment',
         icon: 'electronicsChip',
         image: img3,
         buttonEnabled: true,

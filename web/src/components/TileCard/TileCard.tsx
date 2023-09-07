@@ -149,17 +149,18 @@ function TileCard(props: Props) {
     >
       {({ setFieldValue, values }) => (
         <>
-          <div key={title} className="">
-            <div className="max-w-sm w-full h-full xl:h-[295px] lg:h-[310px] md:w-[330px] lg:w-[300px] xl:w-[330px]  bg-white border border-[#0000001A] rounded-lg">
-              <div className="p-5">
-                <div className="flex gap-4">
-                  <img className="" src={image} alt="" />
-                  <p className="font-bold text-[18px] mt-3 leading-6">{title}</p>
-                </div>
-                <div className="">
+          <div key={title} className="h-full">
+            <div className="max-w-sm w-full h-full xl:h-[310px] lg:h-[300px] md:w-[310px] lg:w-[300px] xl:w-[330px]  bg-white border border-[#0000001A] rounded-lg">
+              <div className="h-full p-5">
+                <div className="flex flex-col h-full gap-4">
+                  <div className="flex gap-4">
+                    <img className="" src={image} alt="" />
+                    <p className="font-bold text-[18px] mt-3 leading-6">{title}</p>
+                  </div>
                   <p className=" mt-[30px] text-[16px] leading-6  ">{description}</p>
-                  {buttonText === 'Import SDL' && (
-                    <div className="mt-5 lg:mt-[55px] xl:-mt-[9px]">
+                  <div className="flex-grow"></div>
+                  <div className="">
+                    {buttonText === 'Import SDL' && (
                       <TemplateBtn>
                         <Button
                           variant="outlined"
@@ -172,32 +173,24 @@ function TileCard(props: Props) {
                           {buttonText}
                         </Button>
                       </TemplateBtn>
-                    </div>
-                  )}
+                    )}
 
-                  {buttonText === 'Choose a Template' && (
-                    <div className="mt-5 lg:mt-[70px] xl:mt-12">
+                    {buttonText === 'Choose a Template' && (
                       <TemplateBtn>
                         <Button variant="outlined" onClick={handleTileActionClick(props.item.route)}>
                           {buttonText}
                         </Button>
                       </TemplateBtn>
-                    </div>
-                  )}
+                    )}
 
-                  {buttonText === 'Coming Soon' && (
-                    <div
-                      className={
-                        buttonClass ? `-mt-4 ${buttonClass}` : 'mt-auto xl:mt-[52px] lg:mt-12'
-                      }
-                    >
+                    {buttonText === 'Coming Soon' && (
                       <TemplateBtn>
                         <Button disabled variant="outlined">
                           {buttonText}
                         </Button>
                       </TemplateBtn>
-                    </div>
-                  )}
+                    )}
+                  </div>
 
                   <SdlEditor
                     reviewSdl={reviewSdl}
@@ -217,11 +210,11 @@ function TileCard(props: Props) {
 export default TileCard;
 
 const TemplateBtn = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 40px;
-  Button {
-    width: 100%;
-    padding: 8px, 16px, 8px, 16px;
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+      Button {
+        width: 100%;
+      padding: 8px, 16px, 8px, 16px;
   }
-`;
+      `;

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from '@emotion/styled';
 import { Template } from '../components/Template';
 import { Button } from '@mui/material';
@@ -10,6 +10,24 @@ import { HelpCenterSDL } from '../components/HelpCenter/HelpCenterSDL';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { useQuery } from 'react-query';
 import { templateIcons } from '../assets/templates';
+import { useLocation, Location } from 'react-router-dom';
+
+function getTemplateTypeFromLocation(location: Location) {
+  const templateMap = new Map([
+    ['node-deployment', 'nodes'],
+    ['ml-deployment', 'ai-ml'],
+    ['web-deployment', 'web-services'],
+  ]);
+  const path = location.pathname;
+  const pathParts = path.split('/').filter((part) => part !== '');
+  const templateType = pathParts[1];
+
+  if (!templateMap.has(templateType)) {
+    throw new Error(`Unknown template type: ${templateType}`);
+  }
+
+  return templateMap.get(templateType) || 'nodes';
+}
 
 const DocumentIcon = () => <img src={Document} alt="Document Icon" />;
 
@@ -32,7 +50,9 @@ export default function FeaturedApps({
   const [reviewSdl, showSdlReview] = useState(false);
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
   const [isHelpCenterOpen, setIsHelpCenterOpen] = useState(false);
-  const { data: templateListConfig } = useQuery('templateList', fetchTemplateList, {
+  const location = useLocation();
+  const templateType = getTemplateTypeFromLocation(location);
+  const { data: templateListConfig } = useQuery(['templateList', templateType], fetchTemplateList, {
     refetchOnWindowFocus: false,
     keepPreviousData: true,
   });
