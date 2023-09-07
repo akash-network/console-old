@@ -37,7 +37,7 @@ export default function SelectApp(props: SelectAppProps): JSX.Element {
     )
   );
 
-  const { data: templateListConfig } = useQuery('templateList', fetchTemplateList, {
+  const { data: templateListConfig } = useQuery(['templateList', 'nodes'], fetchTemplateList, {
     refetchOnWindowFocus: false,
     keepPreviousData: true,
   });
