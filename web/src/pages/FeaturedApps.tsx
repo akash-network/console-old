@@ -22,10 +22,6 @@ function getTemplateTypeFromLocation(location: Location) {
   const pathParts = path.split('/').filter((part) => part !== '');
   const templateType = pathParts[1];
 
-  if (!templateMap.has(templateType)) {
-    throw new Error(`Unknown template type: ${templateType}`);
-  }
-
   return templateMap.get(templateType) || 'nodes';
 }
 
