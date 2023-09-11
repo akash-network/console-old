@@ -63,9 +63,9 @@ export const metadata: Metadata = {
         buttonClass: 'coming-soon-btn-2',
       },
       {
-        title: 'Deploy an AI/ ML Model',
+        title: 'Deploy an AI/ML Model',
         description:
-          'Popular AI & ML models, deployed in just a few clicks. Includes Stable Diffusion, GPT4All, Alpaca and more.',
+          'Popular AI & ML models, deployed in just a few clicks. Includes Stable Diffusion, Falcon, Alpaca, and more.',
         buttonText: 'Choose a Template',
         route: '/landing/ml-deployment',
         icon: 'electronicsChip',
@@ -85,9 +85,9 @@ export const metadata: Metadata = {
     ],
   },
   sdlGuideTiles: {
-    introText: 'How it works?',
+    introText: 'How does it work?',
     introDescription:
-      'There are 3 main steps to deploying on Akash. Check out our detailed <a target="_blank" href="https://docs.akash.network/guides/deploy">help</a> for more.',
+      'Deploy on Akash in 3 easy steps. For more information, check out this <a target="_blank" href="https://docs.akash.network/guides/deploy">help page</a>.',
     tiles: [
       {
         step: '01',
