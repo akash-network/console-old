@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import Long from 'long';
-import { queryDeploymentList, queryLeaseList } from '../api/queries';
+import { queryDeploymentList, queryLeaseList, queryProviderInfo } from '../api/queries';
 import { queryLeaseStatus } from '../api/rest/lease';
 import { activeCertificate, aktMarketCap, deploymentDataStale, keplrState, rpcEndpoint } from '../recoil/atoms';
 import { useQuery } from 'react-query';
 import { leaseCalculator } from '../_helpers/lease-calculations';
 import { uniqueName } from '../_helpers/unique-name';
-import { fetchLeaseStatus } from '../api/rpc/beta2/deployments';
 import { getRpcNode } from './useRpcNode';
+import { fetchProviderInfo } from '../api/rpc/beta3/providers';
+import { LeaseID } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta3/lease';
 
 interface DeploymentData {
   name: string;
@@ -61,9 +62,19 @@ export default function useDeploymentData(owner: string) {
 
   // Would be good to cache the provider info an pass in here to reduce RPC calls
   const getLeaseStatus = useCallback(
-    (lease: any) => {
-      if (certificate.$type === 'TLS Certificate') {
-        return lease && fetchLeaseStatus(lease, rpcEndpoint);
+    async (lease: any) => {
+      if (certificate.$type === 'TLS Certificate' && lease !== undefined) {
+        // TODO - this is using the beta3 fetch directly. This should be passing through
+        // some type of abstraction layer to handle future changes to the API
+        const providerInfo = await fetchProviderInfo({ owner: lease.leaseId?.provider }, rpcEndpoint);
+        const providerUrl = providerInfo?.provider?.hostUri;
+
+        const long = new Long(lease.leaseId.dseq);
+
+        console.log(lease.leaseId);
+        console.log(LeaseID.toJSON(lease.leaseId) as any);
+
+        return providerUrl && queryLeaseStatus(LeaseID.toJSON(lease.leaseId) as any, providerUrl);
       }
     },
     [certificate]
@@ -90,6 +101,9 @@ export default function useDeploymentData(owner: string) {
           let name = '';
           let url = '';
           const lease = getDeploymentLease(query.deployment);
+
+          if (!lease) return;
+
           const status = await getLeaseStatus(lease);
           const leaseInfo = leaseCalculator(
             query?.deployment as any,
@@ -115,8 +129,16 @@ export default function useDeploymentData(owner: string) {
           } else {
             name = uniqueName(keplr?.accounts[0]?.address, dseq);
           }
-          if (status && status.services) {
-            url = Object.values(status.services)
+
+          if (status === undefined || status === '') {
+            console.warn('Unable to resolve lease status for deployment:', dseq);
+            return;
+          }
+
+          const leaseStatus = await status.json() as any;
+
+          if (leaseStatus && leaseStatus.services) {
+            url = Object.values(leaseStatus.services)
               .map((service) => (service as any).uris[0])
               .join(', ');
           }
@@ -137,7 +159,9 @@ export default function useDeploymentData(owner: string) {
             updatable: updatable,
           };
         })
-    ).then(setDeploymentsData);
+    )
+      .then(data => data.filter((item) => item !== undefined))
+      .then(data => setDeploymentsData(data as DeploymentData[]));
   }, [status, deploymentsQuery, getDeploymentLease, getLeaseStatus]);
 
   return deploymentsData;

@@ -13,6 +13,7 @@ import {
   revokeCertificate,
 } from '@akashnetwork/akashjs/build/certificates';
 import crypto from 'crypto-js';
+import { getRpcNode } from '../../../hooks/useRpcNode';
 
 export interface CertificateFilter {
   owner: string;
@@ -117,7 +118,20 @@ export const getCertificateByIndex = (
     : { $type: 'Invalid Certificate' };
 };
 
-export const loadActiveCertificate = async (walletId?: string) => {
+export const loadActiveCertificateAuto = async () => {
+  const rpcNode = getRpcNode();
+  const accounts = await window.keplr?.getOfflineSigner(rpcNode.chainId).getAccounts();
+  const walletId = accounts?.[0].address;
+
+  if (!walletId) {
+    throw new Error('Unable to fetch active certificate. Unable to determine wallet ID.');
+  }
+
+  return loadActiveCertificate(walletId);
+};
+
+
+export const loadActiveCertificate = async (walletId: string) => {
   if (!walletId) {
     return { $type: 'Invalid Certificate' } as NoCertificate;
   }

@@ -42,6 +42,7 @@ import { LeaseStatus } from '../../../types';
 import logging from '../../../logging';
 import { getRpcNode } from '../../../hooks/useRpcNode';
 import { retry } from '../../../_helpers/async-utils';
+import { loadActiveCertificateAuto } from '../beta2/certificates';
 
 // 5AKT aka 5000000uakt
 export const defaultInitialDeposit = 5000000;
@@ -134,7 +135,7 @@ export const fetchLease = async (params: { owner: string; dseq: string }) => {
 };
 
 export const fetchLeaseStatus = async (lease: Lease, rpcEndpoint: string) => {
-  const cert = await loadActiveCertificate();
+  const cert = await loadActiveCertificateAuto();
 
   if (!lease || !lease.leaseId || cert.$type !== 'TLS Certificate') return;
 
@@ -176,7 +177,7 @@ export const watchLeaseLogs = async (address: string, provider: any, lease: any,
   const socket = new WebSocket(`${proxyWSS}/${upstream}/${url}?follow=true`, ['log-protocol']);
 
   if (cert.$type !== 'TLS Certificate') {
-    return Promise.reject('No certificate available');
+    return Promise.reject('Unable to watch lease logs. No certificate available');
   }
 
   socket.onopen = () => {
@@ -202,7 +203,7 @@ export const watchLeaseEvents = async (
   const upstream = `upstream/${providerUri.hostname}:${providerUri.port}`;
 
   if (cert.$type !== 'TLS Certificate') {
-    return Promise.reject('No certificate available');
+    return Promise.reject('Unable to watch lease events. No certificate available');
   }
 
   const socket = new WebSocket(`${proxyWSS}/${upstream}/${url}?follow=true`, ['event-protocol']);
@@ -390,7 +391,7 @@ export async function sendManifest(address: string, lease: Lease, sdl: any) {
   const { rpcNode } = getRpcNode();
 
   if (cert.$type !== 'TLS Certificate') {
-    return Promise.reject('No certificate available');
+    return Promise.reject('Unable to send manifest. No certificate available');
   }
 
   const rpc = await getRpc(rpcNode);

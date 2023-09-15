@@ -44,8 +44,8 @@ export const fetchProviderAttributes = async (
   }
 
   return client
-    .ProviderAttributes(QueryProviderAttributesRequest.fromPartial(filter))
-    .catch((err) => ({} as QueryProvidersResponse)); // if there is no value, return empty set
+    .ProviderAttributes(QueryProviderAttributesRequest.fromPartial(filter));
+  // .catch((err) => ({} as QueryProvidersResponse)); // if there is no value, return empty set
 };
 
 export const fetchAuditorAttributes = async (

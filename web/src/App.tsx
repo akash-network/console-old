@@ -83,6 +83,7 @@ export default function App() {
     let timer: NodeJS.Timeout | null = null;
 
     const checkKeplr = async () => {
+
       if (isConnected && window.keplr && keplr.accounts.length > 0 && keplr.accounts[0].address) {
         const wallet = window.keplr.getOfflineSigner('akashnet-2');
 

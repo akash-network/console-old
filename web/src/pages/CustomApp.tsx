@@ -11,7 +11,6 @@ import SelectProvider from './SelectProvider';
 import { transformSdl } from '../_helpers/helpers';
 import {
   initialValues,
-  InitialValuesProps,
   SdlConfigurationType,
   SDLSpec,
 } from '../components/SdlConfiguration/settings';
@@ -20,11 +19,9 @@ import { isError } from '../_helpers/types';
 import { PreflightCheck } from './PreflightCheck';
 import { createDeployment, createLease, sendManifest } from '../api/mutations';
 import { useMutation } from 'react-query';
-import { getRpcNode } from '../hooks/useRpcNode';
 import logging from '../logging';
 
 const CustomApp: React.FC = () => {
-  const { networkType } = getRpcNode();
   const navigate = useNavigate();
   const keplr = useRecoilValue(keplrState);
   const [deploymentId, setDeploymentId] = useState<{ owner: string; dseq: string }>();
@@ -37,8 +34,7 @@ const CustomApp: React.FC = () => {
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
   const { state } = useLocation();
 
-  const { mutate: mxCreateDeployment, isLoading: isCreatingDeployment } =
-    useMutation(createDeployment);
+  const { mutate: mxCreateDeployment, isLoading: isCreatingDeployment } = useMutation(createDeployment);
   const { mutate: mxCreateLease, isLoading: isCreatingLease } = useMutation(createLease);
   const { mutate: mxSendManifest, isLoading: isSendingManifest } = useMutation(sendManifest);
 
@@ -92,10 +88,9 @@ const CustomApp: React.FC = () => {
       <Formik
         enableReinitialize
         initialValues={{ ...initialValues, sdl: transformSdl(state.sdl) }}
-        onSubmit={async (values, { setSubmitting, setFieldValue }) => {
+        onSubmit={async (values) => {
           setCardMessage('Creating deployment');
 
-          setCardMessage('Creating deployment');
           try {
             if (!values.sdl) {
               logging.error('No SDL found');
@@ -130,7 +125,7 @@ const CustomApp: React.FC = () => {
           }
         }}
       >
-        {({ values, submitForm, setFieldValue }) => {
+        {({ values, setFieldValue }) => {
           return (
             <>
               {!progressVisible && activeStep.currentCard === 1 && (
