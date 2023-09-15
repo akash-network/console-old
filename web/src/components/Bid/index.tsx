@@ -10,11 +10,10 @@ import { useNavigate } from 'react-router-dom';
 import moultireLogo from '../../assets/images/moultire-logo.svg';
 import ovrclkLogo from '../../assets/images/overclk-logo.svg';
 import { Hashicon } from '@emeraldpay/hashicon-react';
-import { fetchProviderAttributes, fetchProviderInfo } from '../../recoil/api/providers';
 import { useQuery } from 'react-query';
-import { Bid as TBid } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/bid';
+import { Bid as TBid } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta3/bid';
 import { getRpcNode } from '../../hooks/useRpcNode';
-import { queryProviderInfo } from '../../api/queries';
+import { queryProviderAttributes, queryProviderInfo } from '../../api/queries';
 
 const auditors = {
   akash18qa2a2ltfyvkyj0ggj3hkvuj6twzyumuaru9s4: {
@@ -41,10 +40,7 @@ type BidAuditTagProps = {
 const BidAuditTag: React.FC<BidAuditTagProps> = ({ bid }) => {
   const { rpcNode } = getRpcNode();
 
-  const { data: attributes } = useQuery(['providerAttributes', bid.bidId?.provider], () =>
-    fetchProviderAttributes({ owner: bid.bidId?.provider || '' }, rpcNode)
-  );
-
+  const { data: attributes } = useQuery(['providerAttributes', bid.bidId?.provider], queryProviderAttributes);
   const isAudited = (attributes?.providers?.length || 0) > 0;
 
   return (
@@ -71,11 +67,7 @@ const isValidAuditor = (id: string): id is keyof typeof auditors => {
 };
 
 const BidAuditBadges: React.FC<BidAuditBadgesProps> = ({ bid }) => {
-  const { rpcNode } = getRpcNode();
-
-  const { data: attributes } = useQuery(['providerAttributes', bid.bidId?.provider], () =>
-    fetchProviderAttributes({ owner: bid.bidId?.provider || '' }, rpcNode)
-  );
+  const { data: attributes } = useQuery(['providerAttributes', bid.bidId?.provider], queryProviderAttributes);
 
   return (
     <>
@@ -114,19 +106,18 @@ export interface BidCardProps {
 export const BidCard: React.FC<BidCardProps> = ({ bid, ...props }) => {
   const { onNextButtonClick, bidId, hideIfNotAudited } = props;
   const providerId = bid.bidId?.provider || '';
-  const { rpcNode } = getRpcNode();
-
-  const { data: provider } = useQuery(['provider', providerId], queryProviderInfo);
-
-  const { data: attributes } = useQuery(['providerAttributes', bid.bidId?.provider], () =>
-    fetchProviderAttributes({ owner: bid.bidId?.provider || '' }, rpcNode)
-  );
-
   const akt = useRecoilValue(aktMarketCap);
   const price = getAvgAktCostPerMonth(Number(bid?.price?.amount)) * (akt?.current_price || 0);
   const navigate = useNavigate();
 
+  const { data: provider, isLoading: loadingProvider } = useQuery(['provider', providerId], queryProviderInfo);
+  const { data: attributes, isLoading: loadingAttributes } = useQuery(['providerAttributes', bid.bidId?.provider], queryProviderAttributes);
+
   const handleOpen = () => navigate(`/provider/${provider?.provider?.owner}`);
+
+  if (loadingProvider || loadingAttributes) {
+    return <CircularProgress />;
+  }
 
   if (hideIfNotAudited && !attributes?.providers?.length) {
     console.log('provider not audited', providerId);
@@ -137,8 +128,6 @@ export const BidCard: React.FC<BidCardProps> = ({ bid, ...props }) => {
     console.log('provider not found', providerId);
     return <></>;
   }
-
-  console.log('bid', bid);
 
   return (
     <BidWrapper onClick={props.onClick} checked={props.isSelectedProvider}>

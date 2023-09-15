@@ -76,7 +76,7 @@ export const queryProviderInfo = createQueryFunction((owner: string | undefined)
     .then(result => result);
 });
 
-export const queryProviderAttributes = createQueryFunction((owner: string) => {
+export const queryProviderAttributes = createQueryFunction((owner: string | undefined) => {
   const { networkType, rpcNode } = getRpcNode();
   let ret = null;
 
