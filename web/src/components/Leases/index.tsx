@@ -61,8 +61,6 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus 
             }
           }
 
-          console.table(application);
-
           setProviderDetails([
             { label: 'Name', value: _attributes?.organization },
             { label: 'Region', value: _attributes?.region },
@@ -90,11 +88,15 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus 
             { label: 'OSEQ', value: lease?.lease?.leaseId?.oseq },
             { label: 'DSEQ', value: dseq },
           ]);
-          setCapacity([
-            { label: 'Virtual CPUs', value: application?.cpu },
-            { label: 'Memory', value: application?.memory },
-            { label: 'Storage', value: application?.storage },
-          ]);
+
+          if (application !== null) {
+            setCapacity([
+              { label: 'Virtual CPUs', value: application.cpu },
+              { label: 'Memory', value: application.memory },
+              { label: 'Storage', value: application.storage },
+            ]);
+          }
+
           setInfo([
             { label: 'Email', value: provider?.provider?.info?.email },
             { label: 'Website', value: provider?.provider?.info?.website },
@@ -109,146 +111,146 @@ export const Leases: React.FC<LeaseProps> = ({ dseq, lease, status: leaseStatus 
 
   return (
     <div>
-      {application === null ? (
-        <div className="p-12">
-          <DeploymentMissing dseq={dseq} />
-        </div>
-      ) : (
-        <Box sx={{ flexGrow: 1, backgroundColor: 'pink', padding: 0 }}>
-          <Grid container spacing={0} sx={{ backgroundColor: '#F9FAFB' }}>
-            <Grid item xs={6}>
-              <Item>
-                <Stack
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="stretch"
-                  spacing={0.5}
-                >
-                  <Title>Provider Details</Title>
-                  <Divider />
-                  {providerDetails.map((obj: any, i: number) => {
-                    return (
-                      <div key={i}>
-                        <Label>{obj.label}</Label>
-                        <Value>{obj.value ? obj.value : 'n/a'}</Value>
-                      </div>
-                    );
-                  })}
-                </Stack>
-              </Item>
-            </Grid>
-            <Grid item xs={6}>
-              <Item>
-                <Stack
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="stretch"
-                  spacing={0.5}
-                >
-                  <Title>Provider Details</Title>
-                  <Divider />
-                  {status.map((obj: any, i: number) => {
-                    return (
-                      <div key={i}>
-                        <Label>{obj.label}</Label>
-                        <Value>{obj.value ? obj.value : 'n/a'}</Value>
-                      </div>
-                    );
-                  })}
-                </Stack>
-              </Item>
-            </Grid>
+
+      <Box sx={{ flexGrow: 1, backgroundColor: 'pink', padding: 0 }}>
+        <Grid container spacing={0} sx={{ backgroundColor: '#F9FAFB' }}>
+          <Grid item xs={6}>
+            <Item>
+              <Stack
+                direction="column"
+                justifyContent="center"
+                alignItems="stretch"
+                spacing={0.5}
+              >
+                <Title>Provider Details</Title>
+                <Divider />
+                {providerDetails.map((obj: any, i: number) => {
+                  return (
+                    <div key={i}>
+                      <Label>{obj.label}</Label>
+                      <Value>{obj.value ? obj.value : 'n/a'}</Value>
+                    </div>
+                  );
+                })}
+              </Stack>
+            </Item>
           </Grid>
-          <Grid container spacing={0} sx={{ backgroundColor: '#FFFFFF' }}>
-            <Grid item xs={6}>
-              <Item>
-                <Stack
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="stretch"
-                  spacing={0.5}
-                >
-                  <Title>Attributes</Title>
-                  <Divider />
-                  {dataCenter.map((obj: any, i: number) => {
-                    return (
-                      <div key={i}>
-                        <Label>{obj.label}</Label>
-                        <Value>{obj.value ? obj.value : 'n/a'}</Value>
-                      </div>
-                    );
-                  })}
-                </Stack>
-              </Item>
-            </Grid>
-            <Grid item xs={6}>
-              <Item>
-                <Stack
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="stretch"
-                  spacing={0.5}
-                >
-                  <Title>Network</Title>
-                  <Divider />
-                  {network.map((obj: any, i: number) => {
-                    return (
-                      <div key={i}>
-                        <Label>{obj.label}</Label>
-                        <Value>{obj.value ? obj.value : 'n/a'}</Value>
-                      </div>
-                    );
-                  })}
-                </Stack>
-              </Item>
-            </Grid>
+          <Grid item xs={6}>
+            <Item>
+              <Stack
+                direction="column"
+                justifyContent="center"
+                alignItems="stretch"
+                spacing={0.5}
+              >
+                <Title>Provider Details</Title>
+                <Divider />
+                {status.map((obj: any, i: number) => {
+                  return (
+                    <div key={i}>
+                      <Label>{obj.label}</Label>
+                      <Value>{obj.value ? obj.value : 'n/a'}</Value>
+                    </div>
+                  );
+                })}
+              </Stack>
+            </Item>
           </Grid>
-          <Grid container spacing={0} sx={{ backgroundColor: '#F9FAFB' }}>
-            <Grid item xs={6}>
-              <Item>
-                <Stack
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="stretch"
-                  spacing={0.5}
-                >
-                  <Title>Details</Title>
-                  <Divider />
-                  {details.map((obj: any, i: number) => {
-                    return (
-                      <div key={i}>
-                        <Label>{obj.label}</Label>
-                        <Value>{obj.value ? obj.value : 'n/a'}</Value>
-                      </div>
-                    );
-                  })}
-                </Stack>
-              </Item>
-            </Grid>
-            <Grid item xs={6}>
-              <Item>
-                <Stack
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="stretch"
-                  spacing={0.5}
-                >
-                  <Title>Capacity</Title>
-                  <Divider />
-                  {capacity.map((obj: any, i: number) => {
-                    return (
-                      <div key={i}>
-                        <Label>{obj.label}</Label>
-                        <Value>{obj.value ? obj.value : 'n/a'}</Value>
-                      </div>
-                    );
-                  })}
-                </Stack>
-              </Item>
-            </Grid>
+        </Grid>
+        <Grid container spacing={0} sx={{ backgroundColor: '#FFFFFF' }}>
+          <Grid item xs={6}>
+            <Item>
+              <Stack
+                direction="column"
+                justifyContent="center"
+                alignItems="stretch"
+                spacing={0.5}
+              >
+                <Title>Attributes</Title>
+                <Divider />
+                {dataCenter.map((obj: any, i: number) => {
+                  return (
+                    <div key={i}>
+                      <Label>{obj.label}</Label>
+                      <Value>{obj.value ? obj.value : 'n/a'}</Value>
+                    </div>
+                  );
+                })}
+              </Stack>
+            </Item>
           </Grid>
-        </Box>
-      )}
+          <Grid item xs={6}>
+            <Item>
+              <Stack
+                direction="column"
+                justifyContent="center"
+                alignItems="stretch"
+                spacing={0.5}
+              >
+                <Title>Network</Title>
+                <Divider />
+                {network.map((obj: any, i: number) => {
+                  return (
+                    <div key={i}>
+                      <Label>{obj.label}</Label>
+                      <Value>{obj.value ? obj.value : 'n/a'}</Value>
+                    </div>
+                  );
+                })}
+              </Stack>
+            </Item>
+          </Grid>
+        </Grid>
+        <Grid container spacing={0} sx={{ backgroundColor: '#F9FAFB' }}>
+          <Grid item xs={6}>
+            <Item>
+              <Stack
+                direction="column"
+                justifyContent="center"
+                alignItems="stretch"
+                spacing={0.5}
+              >
+                <Title>Details</Title>
+                <Divider />
+                {details.map((obj: any, i: number) => {
+                  return (
+                    <div key={i}>
+                      <Label>{obj.label}</Label>
+                      <Value>{obj.value ? obj.value : 'n/a'}</Value>
+                    </div>
+                  );
+                })}
+              </Stack>
+            </Item>
+          </Grid>
+          <Grid item xs={6}>
+            <Item>
+              <Stack
+                direction="column"
+                justifyContent="center"
+                alignItems="stretch"
+                spacing={0.5}
+              >
+                <Title>Capacity</Title>
+                <Divider />
+                {application !== null ? (
+                  capacity.map((obj: any, i: number) => {
+                    return (
+                      <div key={i}>
+                        <Label>{obj.label}</Label>
+                        <Value>{obj.value ? obj.value : 'n/a'}</Value>
+                      </div>
+                    );
+                  }))
+                  : <div>
+                    Deployment was made from another tool. Capacity data unavailable.
+                  </div>
+                }
+              </Stack>
+            </Item>
+          </Grid>
+        </Grid>
+      </Box>
     </div>
   );
 };
