@@ -11,6 +11,7 @@ import { getKeplr } from './_helpers/keplr-utils';
 import { loadActiveCertificate } from './recoil/api';
 import { useWallet } from './hooks/useWallet';
 import Loading from './components/Loading';
+import { getRpcNode, useRpcNode } from './hooks/useRpcNode';
 
 // Lazy loading all pages in appropriate time
 const DeploymentStepper = lazy(() => import('./components/DeploymentStepper'));
@@ -78,6 +79,8 @@ export default function App() {
   const [keplr, setKeplr] = useRecoilState(keplrState);
   const [certificate, setCertificate] = useRecoilState(activeCertificate);
   const { isConnected } = useWallet();
+  const [getRpc] = useRpcNode();
+  const rpcNode = getRpc();
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -85,7 +88,7 @@ export default function App() {
     const checkKeplr = async () => {
 
       if (isConnected && window.keplr && keplr.accounts.length > 0 && keplr.accounts[0].address) {
-        const wallet = window.keplr.getOfflineSigner('akashnet-2');
+        const wallet = window.keplr.getOfflineSigner(rpcNode.chainId);
 
         try {
           const accounts = await wallet.getAccounts();
