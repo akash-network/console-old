@@ -1,6 +1,6 @@
 import { getRpcNode } from '../../hooks/useRpcNode';
 
-import { loadActiveCertificate } from '../rpc/beta2/certificates';
+import { loadActiveCertificate } from '../rpc/beta3/certificates';
 
 import * as beta2 from './beta2';
 import * as beta3 from './beta3';
@@ -12,10 +12,12 @@ export async function queryLeaseStatus(
   providerUrl: string
 ) {
   const { networkType } = getRpcNode();
+
+  // TODO: this should be version checked
   const certificate = await loadActiveCertificate(leaseId.owner);
 
   if (certificate.$type !== 'TLS Certificate') {
-    return Promise.reject('No certificate available');
+    return Promise.reject('Unable to fetch lease status. No certificate available');
   }
 
   const pathFn = networkType === 'testnet'

@@ -65,7 +65,7 @@ const MyDeploymentsPlaceholder: React.FC<MyDeploymentsPlaceholderProps> = ({ hid
 const MyDeploymentsTable: React.FC<{ showAll: boolean }> = ({ showAll }) => {
   const keplr = useRecoilValue(keplrState);
   const akt = useRecoilValue(aktMarketCap);
-  const deployments = useDeploymentData(keplr?.accounts[0].address);
+  const deployments = useDeploymentData(keplr?.accounts[0]?.address);
 
   const tableData = useMemo(() => {
     const filtered =

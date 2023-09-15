@@ -1,6 +1,6 @@
 import { atom, AtomEffect, RecoilLoadable } from 'recoil';
 import pkg from '../../package.json';
-import { loadActiveCertificate } from './api';
+import { loadActiveCertificate, loadActiveCertificateAuto } from './api';
 
 import { AccountData, CosmosClient, OfflineSigner } from '@cosmjs/launchpad';
 import { proxyURL } from '../api/rest/mtls';
@@ -20,9 +20,8 @@ export interface KeplrWallet {
 // Deprecated. Use getRpcNode instead.
 export const rpcEndpointBase = 'https://rpc.ny.akash.farm/token/TBWM93ZB';
 export const rpcEndpointURL = new URL(rpcEndpointBase);
-export const rpcProxyEndpoint = `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${
-  rpcEndpointURL.hostname
-}/${rpcEndpointURL.port || '443'}${rpcEndpointURL.pathname}`;
+export const rpcProxyEndpoint = `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname
+  }/${rpcEndpointURL.port || '443'}${rpcEndpointURL.pathname}`;
 
 // Located in this file for backwards compatibility
 // TODO: Move to a more appropriate location
@@ -30,17 +29,17 @@ export const rpcEndpoint = getRpcNode;
 
 export const localStorageEffect: <T>(key: string) => AtomEffect<T> =
   (key: string) =>
-  ({ setSelf, onSet }) => {
-    const savedValue = localStorage.getItem(key);
+    ({ setSelf, onSet }) => {
+      const savedValue = localStorage.getItem(key);
 
-    if (savedValue !== null && savedValue !== 'undefined') {
-      setSelf(JSON.parse(savedValue));
-    }
+      if (savedValue !== null && savedValue !== 'undefined') {
+        setSelf(JSON.parse(savedValue));
+      }
 
-    onSet((newValue, _, isReset) => {
-      isReset ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(newValue));
-    });
-  };
+      onSet((newValue, _, isReset) => {
+        isReset ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(newValue));
+      });
+    };
 
 export const appVersion = atom({
   key: 'appVersion',
@@ -81,7 +80,7 @@ export const aktMarketCap = atom({
 
 export const activeCertificate = atom({
   key: 'activeCertificate',
-  default: RecoilLoadable.of(loadActiveCertificate()),
+  default: RecoilLoadable.of(loadActiveCertificateAuto()),
 });
 
 export const optIntoAnalytics = atom<boolean>({
