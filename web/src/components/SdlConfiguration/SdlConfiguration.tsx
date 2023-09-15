@@ -60,8 +60,6 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
   // hide the GPU section for now
   const showGpu = false;
 
-  console.log('rendering SdlConfiguration');
-
   return (
     <React.Fragment>
       {progressVisible && (

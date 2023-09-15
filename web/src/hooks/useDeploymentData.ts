@@ -69,11 +69,6 @@ export default function useDeploymentData(owner: string) {
         const providerInfo = await fetchProviderInfo({ owner: lease.leaseId?.provider }, rpcEndpoint);
         const providerUrl = providerInfo?.provider?.hostUri;
 
-        const long = new Long(lease.leaseId.dseq);
-
-        console.log(lease.leaseId);
-        console.log(LeaseID.toJSON(lease.leaseId) as any);
-
         return providerUrl && queryLeaseStatus(LeaseID.toJSON(lease.leaseId) as any, providerUrl);
       }
     },
