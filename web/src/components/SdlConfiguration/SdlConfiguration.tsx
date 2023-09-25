@@ -56,6 +56,7 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
   const [getRpcNode] = useRpcNode();
   const forbidEditing = configurationType === SdlConfigurationType.Update;
   const hasGPU = getRpcNode().networkType === 'testnet';
+  const showGPU = false;
 
   return (
     <React.Fragment>
@@ -200,7 +201,7 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
                             disabled={forbidEditing}
                           />
 
-                          {hasGPU && <Gpu currentProfile={profile} disabled={forbidEditing} />}
+                          {hasGPU && showGPU && <Gpu currentProfile={profile} disabled={forbidEditing} />}
 
                           <h1 className="font-medium">Ports</h1>
                           <Ports serviceName={serviceName} services={services} />
