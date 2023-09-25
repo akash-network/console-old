@@ -43,6 +43,7 @@ import logging from '../../../logging';
 import { getRpcNode } from '../../../hooks/useRpcNode';
 import { retry } from '../../../_helpers/async-utils';
 import { loadActiveCertificateAuto } from '../beta2/certificates';
+import Long from 'long';
 
 // 5AKT aka 5000000uakt
 export const defaultInitialDeposit = 5000000;
@@ -138,6 +139,8 @@ export const fetchLeaseStatus = async (lease: Lease, rpcEndpoint: string) => {
   const cert = await loadActiveCertificateAuto();
 
   if (!lease || !lease.leaseId || cert.$type !== 'TLS Certificate') return;
+
+  lease.leaseId.dseq = Long.fromValue(lease.leaseId.dseq);
 
   const leaseId = LeaseID.toJSON(lease.leaseId) as {
     dseq: string;

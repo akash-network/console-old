@@ -69,6 +69,9 @@ export default function useDeploymentData(owner: string) {
         const providerInfo = await fetchProviderInfo({ owner: lease.leaseId?.provider }, rpcEndpoint);
         const providerUrl = providerInfo?.provider?.hostUri;
 
+        // monkey patch the leaseId to avoid [object Object]
+        lease.leaseId.dseq = Long.fromValue(lease.leaseId.dseq);
+
         return providerUrl && queryLeaseStatus(LeaseID.toJSON(lease.leaseId) as any, providerUrl);
       }
     },
@@ -96,9 +99,6 @@ export default function useDeploymentData(owner: string) {
           let name = '';
           let url = '';
           const lease = getDeploymentLease(query.deployment);
-
-          if (!lease) return;
-
           const status = await getLeaseStatus(lease);
           const leaseInfo = leaseCalculator(
             query?.deployment as any,
@@ -127,16 +127,16 @@ export default function useDeploymentData(owner: string) {
 
           if (status === undefined || status === '') {
             console.warn('Unable to resolve lease status for deployment:', dseq);
-            return;
+          } else {
+            const leaseStatus = await status.json() as any;
+
+            if (leaseStatus && leaseStatus.services) {
+              url = Object.values(leaseStatus.services)
+                .map((service) => (service as any).uris[0])
+                .join(', ');
+            }
           }
 
-          const leaseStatus = await status.json() as any;
-
-          if (leaseStatus && leaseStatus.services) {
-            url = Object.values(leaseStatus.services)
-              .map((service) => (service as any).uris[0])
-              .join(', ');
-          }
           if (application !== null && query.deployment?.state === 1 && application.sdl !== undefined) {
             updatable = 1;
           } else {
@@ -156,7 +156,7 @@ export default function useDeploymentData(owner: string) {
         })
     )
       .then(data => data.filter((item) => item !== undefined))
-      .then(data => setDeploymentsData(data as DeploymentData[]));
+      .then(data => setDeploymentsData(data));
   }, [status, deploymentsQuery, getDeploymentLease, getLeaseStatus]);
 
   return deploymentsData;

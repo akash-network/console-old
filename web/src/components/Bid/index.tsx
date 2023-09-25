@@ -12,7 +12,6 @@ import ovrclkLogo from '../../assets/images/overclk-logo.svg';
 import { Hashicon } from '@emeraldpay/hashicon-react';
 import { useQuery } from 'react-query';
 import { Bid as TBid } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta3/bid';
-import { getRpcNode } from '../../hooks/useRpcNode';
 import { queryProviderAttributes, queryProviderInfo } from '../../api/queries';
 
 const auditors = {
@@ -38,8 +37,6 @@ type BidAuditTagProps = {
 };
 
 const BidAuditTag: React.FC<BidAuditTagProps> = ({ bid }) => {
-  const { rpcNode } = getRpcNode();
-
   const { data: attributes } = useQuery(['providerAttributes', bid.bidId?.provider], queryProviderAttributes);
   const isAudited = (attributes?.providers?.length || 0) > 0;
 

@@ -17,6 +17,12 @@ import { QueryLeasesResponse as Beta3LeasesResponse } from '@akashnetwork/akashj
 import { QueryBidsResponse as Beta2QueryBidsResponse } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta2/query';
 import { QueryBidsResponse as Beta3QueryBidsResponse } from '@akashnetwork/akashjs/build/protobuf/akash/market/v1beta3/query';
 
+function getRpc(networkType: 'testnet' | 'mainnet') {
+  return networkType === 'testnet'
+    ? beta3
+    : beta2;
+}
+
 function createQueryFunction<T, R>(fn: (args: T) => Promise<R>): QueryFunction<R, [string, T]> {
   return (context: QueryFunctionContext<[string, T]>) => {
     const {
@@ -58,6 +64,32 @@ export const queryProviders = createQueryFunction(() => {
   // Forces the various returns into a single Promise
   // to keep createQueryFunction happy.
   return Promise.any([ret]);
+});
+
+export const queryProviderGpus = createQueryFunction(async () => {
+  const { networkType, rpcNode } = getRpcNode();
+  const gpus = new Set<{ vendor: string, model: string }>();
+
+  if (networkType === 'testnet') {
+    const providers = await beta3.providers.fetchProvidersList(rpcNode);
+
+    // this is deliberately throttled (not using Promise.all) to avoid hammering the RPC node
+    for (const provider of providers.providers) {
+      const providerInfo = await beta3.providers.fetchProviderInfo(
+        { owner: provider.owner },
+        rpcNode
+      );
+
+      providerInfo.provider?.attributes
+        .map((attr) => attr.key.split('/'))
+        .filter((attr) => attr[0] === 'capabilities')
+        .filter((attr) => attr[1] === 'gpu')
+        .map((attr) => ({ vendor: attr[3], model: attr[5] }))
+        .forEach((gpu) => gpus.add(gpu));
+    }
+  }
+
+  return gpus;
 });
 
 export const queryProviderInfo = createQueryFunction((owner: string | undefined) => {

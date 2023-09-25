@@ -1,38 +1,23 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { Field, useFormikContext } from 'formik';
 import { MeasurementControl } from '../MeasurementControl';
-import { AddNewButton, AddNewButtonWrapper, FieldWrapper, PlusSign, SdlSectionWrapper } from './styling';
-import { Button, Box, Stack, Typography, List, ListItem, OutlinedInput } from '@mui/material';
-import { IconTrash } from '../Icons';
+import { FieldWrapper, Label, SdlSectionWrapper } from './styling';
+import { Box, Stack, Typography, Checkbox } from '@mui/material';
+import { useQuery } from 'react-query';
+import { queryProviderGpus } from '../../api/queries';
+import Loading from '../Loading';
 
-const GPU_VENDORS = [
-  'nvidia',
-  'amd',
-];
+type GpuVendor = 'nvidia' | 'amd' | 'intel';
 
-const GPU_MODELS = {
-  nvidia: [
-    'a100',
-    'a30',
-    'a40',
-    'a6000',
-    'a40',
-  ],
-  amd: [
-    'mi100',
-    'mi50',
-    'mi60',
-    'mi25',
-    'mi8',
-  ]
-};
+type GpuAttributes = {
+  vendor: {
+    [key in GpuVendor]?: {
+      models: Array<string>;
+    }
+  }
+}
 
 type GpuUnitProps = {
-  currentProfile: string;
-  disabled: boolean;
-};
-
-type GpuProps = {
   currentProfile: string;
   disabled: boolean;
 };
@@ -72,89 +57,77 @@ const GpuUnits: React.FC<GpuUnitProps> = ({ currentProfile, disabled }) => {
   );
 };
 
+type GpuAttributesProps = {
+  currentProfile: string;
+  disabled: boolean;
+}
+
 // tag based component for selecting which gpus to allow.
-const GpuAttributes: React.FC<GpuUnitProps> = ({ currentProfile, disabled }) => {
+const GpuAttributes: React.FC<GpuAttributesProps> = ({ currentProfile, disabled }) => {
   const { setFieldValue, values } = useFormikContext<any>();
+  const attributes = values.sdl.profiles.compute[currentProfile].resources.gpu.attributes || {};
+  const { data: gpus, isLoading: loadingGpus } = useQuery(['gpus', 'all'], queryProviderGpus);
 
-  const [attributes, setAttributes] = useState<string[]>(() => {
-    const attributes = values.sdl.profiles.compute[currentProfile].resources.gpu.attributes;
-    if (attributes) {
-      return attributes.map((attr: any) => attr.key);
+  const getModels = (attributes: GpuAttributes, vendor: string) => {
+    if (vendor !== 'nvidia' && vendor !== 'amd' && vendor !== 'intel') {
+      return new Set();
     }
-    return [];
-  });
 
-  const handleSetAttributes = useCallback((attributes: string[]) => {
-    const attrObjs = attributes
-      .filter((attr) => attr !== '')
-      .map((key) => ({ key, value: true }));
+    return new Set(attributes?.vendor[vendor]?.models);
+  };
 
-    setFieldValue(`sdl.profiles.compute.${currentProfile}.resources.gpu.attributes`, attrObjs);
-  }, [currentProfile, setFieldValue]);
+  const updateAttributeModels = (attributes: GpuAttributes, vendor: string, models: Set<string>) => {
+    return null;
+  };
 
-  const addAttribute = useCallback(() => {
-    setAttributes((attributes) => [...attributes, '']);
-  }, []);
+  const addGpuFilter = (model: string, vendor: string) => {
+    attributes.vendor[vendor].models = [...attributes.vendor[vendor].models, model];
+    setFieldValue(`sdl.profiles.compute.${currentProfile}.resources.gpu.attributes`, attributes);
+  };
 
-  const removeAttribute = useCallback((index: number) => {
-    setAttributes((attributes) => attributes.filter((_, i) => i !== index));
-  }, []);
+  const removeGpuFilter = (model: string, vendor: string) => {
+    attributes.vendor[vendor].models = attributes.vendor[vendor].models.filter((m: string) => m !== model);
+    setFieldValue(`sdl.profiles.compute.${currentProfile}.resources.gpu.attributes`, attributes);
+  };
+
+  const handleGpuClick = (vendor: string, model: string) => {
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.checked) {
+        addGpuFilter(model, vendor);
+      } else {
+        removeGpuFilter(model, vendor);
+      }
+    };
+  };
+
+  if (loadingGpus || gpus === undefined || typeof gpus.entries !== 'function') {
+    return <Loading msg="Querying available GPUs" />;
+  }
 
   return (
     <FieldWrapper>
       <Typography variant="body2" color="text.secondary" marginTop={2}>
         Select the GPU vendors/models that you'd like to use for your deployment.
       </Typography>
-      <Stack gap={1}>
-        {attributes.map((attribute, index) => (
-          <Stack direction="row" key={index} gap={1}>
-            <Box
-              flexGrow={1}
-            >
-              <OutlinedInput
-                type="text"
-                placeholder="Enter GPU Filter"
-                value={attribute}
-                fullWidth={true}
-                inputProps={{
-                  style: {
-                    padding: '10px 16px',
-                  }
-                }}
-                onChange={(e) => {
-                  const newAttributes = [...attributes];
-                  newAttributes[index] = e.target.value;
-                  setAttributes(newAttributes);
-                  handleSetAttributes(newAttributes);
-                }}
-              />
-            </Box>
-            <Button onClick={() => removeAttribute(index)}
-              aria-label='delete'
-              variant="outlined">
-              <IconTrash />
-            </Button>
-          </Stack>
+      <Stack gap={1} direction="row">
+        {[...gpus.entries()].map(([entry], index) => (
+          <Box key={index}>
+            <Checkbox onChange={handleGpuClick(entry.vendor, entry.model)} />
+            <Label htmlFor={entry.vendor}>{entry.vendor} {entry.model}</Label>
+          </Box>
         ))}
-
-        {!disabled && (
-          <AddNewButtonWrapper>
-            <AddNewButton
-              startIcon={<PlusSign />}
-              variant="outlined"
-              size="small"
-              onClick={addAttribute}
-            >
-              Add New GPU Filter
-            </AddNewButton>
-          </AddNewButtonWrapper>
-        )}
       </Stack>
     </FieldWrapper >
   );
 };
 
-export const Gpu: React.FC<GpuProps> = ({ currentProfile, disabled }) => {
+type GpuProps = {
+  currentProfile: string;
+  disabled: boolean;
+};
+
+export const Gpu: React.FC<GpuProps> = (props) => {
+  const { currentProfile, disabled } = props;
   const { values } = useFormikContext<any>();
 
   return (
