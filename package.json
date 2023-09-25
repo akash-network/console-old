@@ -15,7 +15,7 @@
         "concurrently": "^7.2.1",
         "path": "^0.12.7"
     },
-    "version": "0.1.305",
+    "version": "0.1.306",
     "devDependencies": {
         "url-loader": "^4.1.1"
     }
