@@ -113,7 +113,7 @@ export const BidCard: React.FC<BidCardProps> = ({ bid, ...props }) => {
   const handleOpen = () => navigate(`/provider/${provider?.provider?.owner}`);
 
   if (loadingProvider || loadingAttributes) {
-    return <CircularProgress />;
+    return <></>;
   }
 
   if (hideIfNotAudited && !attributes?.providers?.length) {
