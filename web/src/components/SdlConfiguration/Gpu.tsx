@@ -68,26 +68,41 @@ const GpuAttributes: React.FC<GpuAttributesProps> = ({ currentProfile, disabled 
   const attributes = values.sdl.profiles.compute[currentProfile].resources.gpu.attributes || {};
   const { data: gpus, isLoading: loadingGpus } = useQuery(['gpus', 'all'], queryProviderGpus);
 
-  const getModels = (attributes: GpuAttributes, vendor: string) => {
-    if (vendor !== 'nvidia' && vendor !== 'amd' && vendor !== 'intel') {
-      return new Set();
-    }
-
-    return new Set(attributes?.vendor[vendor]?.models);
-  };
-
-  const updateAttributeModels = (attributes: GpuAttributes, vendor: string, models: Set<string>) => {
-    return null;
-  };
-
   const addGpuFilter = (model: string, vendor: string) => {
-    attributes.vendor[vendor].models = [...attributes.vendor[vendor].models, model];
-    setFieldValue(`sdl.profiles.compute.${currentProfile}.resources.gpu.attributes`, attributes);
+    const vendorModels: Array<{ model: string }> = attributes?.vendor[vendor] || [];
+    const modelSet = new Set(vendorModels.map((m) => `${m.model}`));
+
+    modelSet.add(model);
+
+    const updatedModels = Array.from(modelSet).map((m) => ({ model: m }));
+    setFieldValue(`sdl.profiles.compute.${currentProfile}.resources.gpu.attributes.vendor.${vendor}`, updatedModels);
+  };
+
+  const removeGpuVendor = (model: string, vendor: string) => {
+    const vendorSet = new Set(Object.keys(attributes.vendor));
+
+    vendorSet.delete(vendor);
+
+    if (vendorSet.size === 0) {
+      setFieldValue(`sdl.profiles.compute.${currentProfile}.resources.gpu`, undefined);
+    } else {
+      const updatedVendors = Array.from(vendorSet).map((v) => ({ [v]: attributes.vendor[v] }));
+      setFieldValue(`sdl.profiles.compute.${currentProfile}.resources.gpu.attributes.vendor`, updatedVendors);
+    }
   };
 
   const removeGpuFilter = (model: string, vendor: string) => {
-    attributes.vendor[vendor].models = attributes.vendor[vendor].models.filter((m: string) => m !== model);
-    setFieldValue(`sdl.profiles.compute.${currentProfile}.resources.gpu.attributes`, attributes);
+    const vendorModels: Array<{ model: string }> = attributes?.vendor[vendor] || [];
+    const modelSet = new Set(vendorModels.map((m) => `${m.model}`));
+
+    modelSet.delete(model);
+
+    if (modelSet.size === 0) {
+      removeGpuVendor(model, vendor);
+    } else {
+      const updatedModels = Array.from(modelSet).map((m) => ({ model: m }));
+      setFieldValue(`sdl.profiles.compute.${currentProfile}.resources.gpu.attributes.vendor.${vendor}`, updatedModels);
+    }
   };
 
   const handleGpuClick = (vendor: string, model: string) => {

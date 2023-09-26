@@ -56,7 +56,7 @@ export const SdlConfiguration: React.FC<SdlConfigurationProps> = ({
   const [getRpcNode] = useRpcNode();
   const forbidEditing = configurationType === SdlConfigurationType.Update;
   const hasGPU = getRpcNode().networkType === 'testnet';
-  const showGPU = false;
+  const showGPU = true;
 
   return (
     <React.Fragment>
