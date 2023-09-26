@@ -132,7 +132,9 @@ export default function useDeploymentData(owner: string) {
 
             if (leaseStatus && leaseStatus.services) {
               url = Object.values(leaseStatus.services)
-                .map((service) => (service as any).uris[0])
+                .map((service) => (service as any).uris)
+                .filter((uri) => uri && uri[0])
+                .map((uri) => uri[0])
                 .join(', ');
             }
           }
