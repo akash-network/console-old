@@ -99,7 +99,6 @@ export default function useDeploymentData(owner: string) {
           let name = '';
           let url = '';
           const lease = getDeploymentLease(query.deployment);
-          const status = await getLeaseStatus(lease);
           const leaseInfo = leaseCalculator(
             query?.deployment as any,
             query?.escrowAccount as any,
@@ -115,9 +114,15 @@ export default function useDeploymentData(owner: string) {
             query.deployment?.deploymentId?.dseq?.unsigned
           )?.toString();
 
-          const appCache = dseq ? localStorage.getItem(dseq) : null;
+          let appCache = null;
+          let application = null;
 
-          const application = appCache ? JSON.parse(appCache) : null;
+          try {
+            appCache = dseq ? localStorage.getItem(dseq) : null;
+            application = appCache ? JSON.parse(appCache) : null;
+          } catch (e) {
+            console.warn('Unable to parse application cache', e);
+          }
 
           if (application !== null && application.name !== '') {
             name = application.name;
@@ -125,17 +130,21 @@ export default function useDeploymentData(owner: string) {
             name = uniqueName(keplr?.accounts[0]?.address, dseq);
           }
 
-          if (status === undefined || status === '') {
-            console.warn('Unable to resolve lease status for deployment:', dseq);
-          } else {
-            const leaseStatus = await status.json() as any;
+          if (query.deployment?.state === 1) {
+            const status = await getLeaseStatus(lease);
 
-            if (leaseStatus && leaseStatus.services) {
-              url = Object.values(leaseStatus.services)
-                .map((service) => (service as any).uris)
-                .filter((uri) => uri && uri[0])
-                .map((uri) => uri[0])
-                .join(', ');
+            if (status === undefined || status === '') {
+              console.warn('Unable to resolve lease status for deployment:', dseq);
+            } else {
+              const leaseStatus = await status.json() as any;
+
+              if (leaseStatus && leaseStatus.services) {
+                url = Object.values(leaseStatus.services)
+                  .map((service) => (service as any).uris)
+                  .filter((uri) => uri && uri[0])
+                  .map((uri) => uri[0])
+                  .join(', ');
+              }
             }
           }
 
