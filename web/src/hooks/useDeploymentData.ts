@@ -136,14 +136,18 @@ export default function useDeploymentData(owner: string) {
             if (status === undefined || status === '') {
               console.warn('Unable to resolve lease status for deployment:', dseq);
             } else {
-              const leaseStatus = await status.json() as any;
+              try {
+                const leaseStatus = await status.json() as any;
 
-              if (leaseStatus && leaseStatus.services) {
-                url = Object.values(leaseStatus.services)
-                  .map((service) => (service as any).uris)
-                  .filter((uri) => uri && uri[0])
-                  .map((uri) => uri[0])
-                  .join(', ');
+                if (leaseStatus && leaseStatus.services) {
+                  url = Object.values(leaseStatus.services)
+                    .map((service) => (service as any).uris)
+                    .filter((uri) => uri && uri[0])
+                    .map((uri) => uri[0])
+                    .join(', ');
+                }
+              } catch (e) {
+                console.warn('Unable to parse lease status', e);
               }
             }
           }

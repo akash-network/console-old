@@ -9,7 +9,6 @@ import { useQuery } from 'react-query';
 import { WordSwitch } from '../components/Switch/WordSwitch';
 import { Timer } from '../components/Timer';
 import { PlaceholderCard } from '../components/PlaceholderCard';
-import { getRpcNode } from '../hooks/useRpcNode';
 
 export interface SelectProviderProps {
   deploymentId: { owner: string; dseq: string };
