@@ -9,10 +9,12 @@ type DeploymentActionButtonProps = {
   children: React.ReactNode;
 } & ButtonProps;
 
-const ConditionalTooltip = ({ children, condition, ...rest }: any) => {
+const ConditionalTooltip = ({ children, condition, title, to, sx }: any) => {
+  console.log('Condition', condition);
+
   return condition
-    ? <Link {...rest}>{children}</Link>
-    : <Tooltip {...rest} placement="top">{children}</Tooltip>;
+    ? <Link href={to} className='w-full'>{children}</Link>
+    : <Tooltip title={title} placement="top" sx={sx}><div className='w-full'>{children}</div></Tooltip>;
 };
 
 
@@ -37,6 +39,7 @@ const DeploymentActionButton: React.FC<DeploymentActionButtonProps> = (props) =>
         fullWidth
         variant="outlined"
         color="secondary"
+        disabled={!condition}
         sx={{
           justifyContent: 'left'
         }}

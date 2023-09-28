@@ -18,12 +18,11 @@ import { uniqueName } from '../../_helpers/unique-name';
 import { Icon } from '../Icons';
 import { useLeaseStatus } from '../../hooks/useLeaseStatus';
 import InfoIcon from '@mui/icons-material/Info';
-import { fetchDeployment as beta2FetchDeployment } from '../../api/rpc/beta2/deployments';
 import { fetchDeployment as beta3FetchDeployment } from '../../api/rpc/beta3/deployments';
 import { getRpcNode } from '../../hooks/useRpcNode';
 
 import { QueryDeploymentResponse as Beta3Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta3/query';
-import { QueryDeploymentResponse as Beta2Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/query';
+
 import DeploymentActionButton from './DeploymentActionButton';
 
 const Deployment: React.FC<any> = () => {
@@ -193,6 +192,8 @@ const Deployment: React.FC<any> = () => {
         }
       }
     }
+
+    console.log('leaseStatus', leaseStatus);
   }, [leaseStatus]);
 
   React.useEffect(() => {
@@ -207,13 +208,15 @@ const Deployment: React.FC<any> = () => {
     navigate(`/configure-deployment/${dseq}`);
   };
 
+  const onUpdateDeployment = () => {
+    navigate(`/my-deployments/${dseq}/update-deployment`);
+  };
+
   // In case that current SDL is deployed from another machine, only show Tooltip and not show re-deploy page
   const ConditionalLinkReDeploy = application !== null ? Link : Tooltip;
 
   // In case that current SDL is deployed from another machine or status closed, only show Tooltip and not show update page
   const canUpdate = application !== null && deployment?.deployment?.state === 1;
-
-  console.log('Can Update', canUpdate);
 
   return (
     <Stack>
@@ -274,7 +277,7 @@ const Deployment: React.FC<any> = () => {
                         : 'This SDL is deployed with another tool and can\'t be updated from here'
                       }
                       tooltip={UpdateDeploymentTooltip}
-                      linkTo={'update-deployment'}
+                      linkTo={`/my-deployments/${dseq}/update-deployment`}
                       aria-label="update deployment"
                       aria-controls="menu-appbar"
                       aria-haspopup="true"
@@ -296,6 +299,7 @@ const Deployment: React.FC<any> = () => {
                           variant="outlined"
                           color="secondary"
                           aria-label="re-deploy"
+                          disabled={!canUpdate}
                           sx={{
                             justifyContent: 'left'
                           }}
