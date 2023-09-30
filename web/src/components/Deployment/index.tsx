@@ -64,7 +64,7 @@ const Deployment: React.FC<any> = () => {
 
   React.useEffect(() => {
     const getDeployment = async () => {
-      const { rpcNode, chainId } = getRpcNode();
+      const { rpcNode } = getRpcNode();
       try {
         if (!dseq) return;
 
@@ -74,10 +74,8 @@ const Deployment: React.FC<any> = () => {
         const owner = keplr?.accounts[0]?.address;
         let getDeployment: any = null;
 
-        // TOOD: this should use the query to avoid having to do a version
-        // check here
+        // TOOD: fix hardcoded fetch call
         getDeployment = await beta3FetchDeployment(owner, dseq, rpcNode);
-        console.log('deploy', JSON.stringify(Beta3Deployment.toJSON(getDeployment.deployment), null, 2));
 
         const deployment = flattenObject(getDeployment.deployment) as any;
         const leases = flattenObject(getDeployment.leases) as any;
@@ -192,8 +190,6 @@ const Deployment: React.FC<any> = () => {
         }
       }
     }
-
-    console.log('leaseStatus', leaseStatus);
   }, [leaseStatus]);
 
   React.useEffect(() => {
@@ -206,10 +202,6 @@ const Deployment: React.FC<any> = () => {
 
   const onCompleteDeployment = () => {
     navigate(`/configure-deployment/${dseq}`);
-  };
-
-  const onUpdateDeployment = () => {
-    navigate(`/my-deployments/${dseq}/update-deployment`);
   };
 
   // In case that current SDL is deployed from another machine, only show Tooltip and not show re-deploy page

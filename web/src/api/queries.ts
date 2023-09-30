@@ -101,7 +101,7 @@ export const queryProviderInfo = createQueryFunction((owner: string | undefined)
       : beta2.providers.fetchProviderInfo;
 
   if (owner === undefined) {
-    return Promise.reject(new Error('No owner provided'));
+    return Promise.resolve(undefined);
   }
 
   return fetchMethod({ owner }, rpcNode)
@@ -193,7 +193,11 @@ export const leaseStatus = createQueryFunction((leaseId: any) => {
     return Promise.resolve(undefined);
   }
 
-  return fetchMethod(leaseId, rpcNode);
+  return fetchMethod(leaseId, rpcNode)
+    .catch((err) => {
+      console.warn(`Error fetching lease status for lease ${leaseId.dseq}`, err);
+      return undefined;
+    });
 });
 
 export const queryBidsList = createQueryFunction<

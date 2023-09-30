@@ -10,8 +10,6 @@ type DeploymentActionButtonProps = {
 } & ButtonProps;
 
 const ConditionalTooltip = ({ children, condition, title, to, sx }: any) => {
-  console.log('Condition', condition);
-
   return condition
     ? <Link href={to} className='w-full'>{children}</Link>
     : <Tooltip title={title} placement="top" sx={sx}><div className='w-full'>{children}</div></Tooltip>;
