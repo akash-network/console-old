@@ -38,7 +38,11 @@ export function useLeaseStatus(lease: Lease) {
     if (hostUri && leaseId && certificate.$type !== 'Invalid Certificate') {
       return queryLeaseStatus(LeaseID.toJSON(leaseId) as any, hostUri)
         .then(response => response.json())
-        .then(response => response as LeaseStatus);
+        .then(response => response as LeaseStatus)
+        .catch(err => {
+          console.warn('Error fetching lease status', err);
+          return undefined;
+        });
     }
 
     return Promise.reject('No lease status available');

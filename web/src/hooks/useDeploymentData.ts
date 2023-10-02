@@ -72,7 +72,11 @@ export default function useDeploymentData(owner: string) {
         // monkey patch the leaseId to avoid [object Object]
         lease.leaseId.dseq = Long.fromValue(lease.leaseId.dseq);
 
-        return providerUrl && queryLeaseStatus(LeaseID.toJSON(lease.leaseId) as any, providerUrl);
+        try {
+          return providerUrl && queryLeaseStatus(LeaseID.toJSON(lease.leaseId) as any, providerUrl);
+        } catch (e) {
+          console.warn('Unable to fetch lease status', e);
+        }
       }
     },
     [certificate]
@@ -131,12 +135,12 @@ export default function useDeploymentData(owner: string) {
           }
 
           if (query.deployment?.state === 1) {
-            const status = await getLeaseStatus(lease);
+            try {
+              const status = await getLeaseStatus(lease);
 
-            if (status === undefined || status === '') {
-              console.warn('Unable to resolve lease status for deployment:', dseq);
-            } else {
-              try {
+              if (status === undefined || status === '') {
+                console.warn('Unable to resolve lease status for deployment:', dseq);
+              } else {
                 const leaseStatus = await status.json() as any;
 
                 if (leaseStatus && leaseStatus.services) {
@@ -146,9 +150,9 @@ export default function useDeploymentData(owner: string) {
                     .map((uri) => uri[0])
                     .join(', ');
                 }
-              } catch (e) {
-                console.warn('Unable to parse lease status', e);
               }
+            } catch (e) {
+              console.warn('Unable to resolve lease status for deployment:', dseq);
             }
           }
 
