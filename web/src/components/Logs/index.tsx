@@ -19,6 +19,10 @@ type LogsProps = {
   lease: Beta2Lease | Beta3Lease;
 }
 
+function trimPodName(name: string) {
+  return name.split('-')[0];
+}
+
 export const Logs: React.FC<LogsProps> = ({ lease }) => {
   const { networkType } = getRpcNode();
   const { data: provider } = useQuery(
@@ -111,9 +115,9 @@ export const Logs: React.FC<LogsProps> = ({ lease }) => {
         <ul>
           {logs.map((log: any, i: number) => (
             <LogList key={`log-line-${i}`}>
-              <span className="mr-3 text-white mw-3">{i}</span>
-              <span className="mr-3 mw-10 text-red-1">{log.name}</span>
-              <span className="text-white">{log.message}</span>
+              <div className="flex-shrink-0 w-4 text-white">{i}</div>
+              <div className="text-red-1">{trimPodName(log.name)}</div>
+              <div className="text-white"><pre>{log.message}</pre></div>
             </LogList>
           ))}
           <span ref={bottomRef} />
@@ -144,9 +148,13 @@ const LogsWrapper = styled.div`
   overflow-y: scroll;
 `;
 
-const LogList = styled(List)`
+const LogList = styled.div`
   font-family: monospace;
-  & span {
+  display: flex;
+  gap: 1rem;
+
+  & div {
     white-space: nowrap;
+    white-space-collapse: keep-all;
   }
 `;
