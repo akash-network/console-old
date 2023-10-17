@@ -5,8 +5,8 @@ import { Formik } from 'formik';
 import { SdlConfiguration } from '../components/SdlConfiguration/SdlConfiguration';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { deploymentSdl, keplrState } from '../recoil/atoms';
-import Keplr from '../components/KeplrLogin';
+import { deploymentSdl, walletState } from '../recoil/atoms';
+import Wallet from '../components/WalletLogin';
 import SelectProvider from './SelectProvider';
 import { transformSdl } from '../_helpers/helpers';
 import {
@@ -23,7 +23,7 @@ import logging from '../logging';
 
 const CustomApp: React.FC = () => {
   const navigate = useNavigate();
-  const keplr = useRecoilValue(keplrState);
+  const wallet = useRecoilValue(walletState);
   const [deploymentId, setDeploymentId] = useState<{ owner: string; dseq: string }>();
   const { intentId, dseq } = useParams();
   const [sdl, setSdl] = useRecoilState(deploymentSdl);
@@ -34,7 +34,8 @@ const CustomApp: React.FC = () => {
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
   const { state } = useLocation();
 
-  const { mutate: mxCreateDeployment, isLoading: isCreatingDeployment } = useMutation(createDeployment);
+  const { mutate: mxCreateDeployment, isLoading: isCreatingDeployment } =
+    useMutation(createDeployment);
   const { mutate: mxCreateLease, isLoading: isCreatingLease } = useMutation(createLease);
   const { mutate: mxSendManifest, isLoading: isSendingManifest } = useMutation(sendManifest);
 
@@ -45,13 +46,13 @@ const CustomApp: React.FC = () => {
       setActiveStep({ currentCard: 2 });
     } else if (dseq) {
       setDeploymentId({
-        owner: keplr.accounts[0].address,
+        owner: wallet.accounts[0].address,
         dseq,
       });
       setActiveStep({ currentCard: 3 });
       return;
     }
-  }, [dseq, intentId, keplr]);
+  }, [dseq, intentId, wallet]);
 
   const handlePreflight = (intentId: string, sdl: SDLSpec | undefined) => {
     if (sdl) {
@@ -68,7 +69,7 @@ const CustomApp: React.FC = () => {
         onSuccess: (lease) => {
           if (lease) {
             setCardMessage('Sending manifest');
-            mxSendManifest({ address: keplr.accounts[0].address, lease, sdl });
+            mxSendManifest({ address: wallet.accounts[0].address, lease, sdl });
           } else {
             setCardMessage('Could not create lease.');
           }
@@ -158,12 +159,12 @@ const CustomApp: React.FC = () => {
                 intentId === 'preflight-check' && <PreflightCheck />}
 
               {!progressVisible && activeStep.currentCard === 3 && deploymentId && (
-                <Keplr>
+                <Wallet>
                   <SelectProvider
                     deploymentId={deploymentId}
                     onNextButtonClick={(bidId: any) => acceptBid(bidId)}
                   />
-                </Keplr>
+                </Wallet>
               )}
             </>
           );

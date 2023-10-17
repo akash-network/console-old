@@ -8,7 +8,7 @@ import {
   UpdateDeploymentAction,
 } from '../components/UpdateDeployment/styling';
 import { useRecoilValue } from 'recoil';
-import { keplrState } from '../recoil/atoms';
+import { walletState } from '../recoil/atoms';
 import { Button } from '@mui/material';
 import { css } from '@emotion/react';
 import { SdlConfiguration } from '../components/SdlConfiguration/SdlConfiguration';

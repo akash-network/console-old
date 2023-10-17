@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, ButtonProps } from '@mui/material';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
-import { KeplrWallet } from '../../recoil/atoms';
+import { Wallet } from '../../recoil/atoms';
 import { IconType, Icon } from '../Icons';
 import { Prompt } from '../Prompt';
 
@@ -9,7 +9,7 @@ export type CloneDeploymentButtonProps = React.PropsWithChildren<
   {
     icon?: IconType;
     deployment: Deployment;
-    wallet: KeplrWallet;
+    wallet: Wallet;
   } & ButtonProps
 >;
 

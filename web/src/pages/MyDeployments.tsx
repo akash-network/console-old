@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
-import { aktMarketCap, keplrState } from '../recoil/atoms';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { aktMarketCap, showConnectWalletModal, walletState } from '../recoil/atoms';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { DeploymentTable } from '../components/DeploymentTable';
 import useDeploymentData from '../hooks/useDeploymentData';
@@ -17,14 +17,15 @@ type MyDeploymentsPlaceholderProps = {
 
 const MyDeploymentsPlaceholder: React.FC<MyDeploymentsPlaceholderProps> = ({ hidden }) => {
   const navigate = useNavigate();
-  const { isConnected, connect } = useWallet();
+  const { isConnected } = useWallet();
+  const setShowConnectWalletModal = useSetRecoilState(showConnectWalletModal);
 
   const handleCreateDeployment = () => {
     navigate('/landing/node-deployment');
   };
 
   const handleConnectWallet = () => {
-    connect();
+    setShowConnectWalletModal(true);
   };
 
   return (
@@ -63,9 +64,9 @@ const MyDeploymentsPlaceholder: React.FC<MyDeploymentsPlaceholderProps> = ({ hid
 };
 
 const MyDeploymentsTable: React.FC<{ showAll: boolean }> = ({ showAll }) => {
-  const keplr = useRecoilValue(keplrState);
+  const wallet = useRecoilValue(walletState);
   const akt = useRecoilValue(aktMarketCap);
-  const deployments = useDeploymentData(keplr?.accounts[0]?.address);
+  const deployments = useDeploymentData(wallet?.accounts[0]?.address);
 
   const tableData = useMemo(() => {
     const filtered =

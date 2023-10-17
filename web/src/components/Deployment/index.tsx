@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { Alert, Button, Grid, Stack, Tooltip, Typography } from '@mui/material';
+import { Alert, Button, Grid, Stack, Tooltip } from '@mui/material';
 import { DeploymentEvents } from '../DeploymentEvents';
-import { activeCertificate, keplrState, rpcEndpoint } from '../../recoil/atoms';
+import { activeCertificate, walletState } from '../../recoil/atoms';
 import { formatCurrency } from '../../_helpers/formatter-currency';
 import { flattenObject } from '../../_helpers/flatten-object';
 import fetchPriceAndMarketCap from '../../recoil/api/akt';
@@ -21,13 +21,11 @@ import InfoIcon from '@mui/icons-material/Info';
 import { fetchDeployment as beta3FetchDeployment } from '../../api/rpc/beta3/deployments';
 import { getRpcNode } from '../../hooks/useRpcNode';
 
-import { QueryDeploymentResponse as Beta3Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta3/query';
-
 import DeploymentActionButton from './DeploymentActionButton';
 
 const Deployment: React.FC<any> = () => {
   const { dseq } = useParams<any>();
-  const keplr = useRecoilValue(keplrState);
+  const wallet = useRecoilValue(walletState);
   const [appName, setAppName] = React.useState('');
   const [info, setInfo] = React.useState<{ label: string; value: string }[]>([]);
   const [costLease, setCostLease] = React.useState<{ label: string; value: string | number }[]>([]);
@@ -71,7 +69,7 @@ const Deployment: React.FC<any> = () => {
         let _lease = {} as any;
         let flatLease = {} as any;
         let image = 'n/a';
-        const owner = keplr?.accounts[0]?.address;
+        const owner = wallet?.accounts[0]?.address;
         let getDeployment: any = null;
 
         // TOOD: fix hardcoded fetch call
@@ -148,8 +146,9 @@ const Deployment: React.FC<any> = () => {
               },
               {
                 label: 'Balance',
-                value: `${formatCurrency.format(leaseCost.balanceUsd)} | ${leaseCost.balanceAkt
-                  } AKT`,
+                value: `${formatCurrency.format(leaseCost.balanceUsd)} | ${
+                  leaseCost.balanceAkt
+                } AKT`,
               },
             ]);
           }
@@ -196,7 +195,7 @@ const Deployment: React.FC<any> = () => {
     if (application !== null && application.name !== '') {
       setAppName(application.name);
     } else if (dseq) {
-      setAppName(uniqueName(keplr?.accounts[0]?.address, dseq));
+      setAppName(uniqueName(wallet?.accounts[0]?.address, dseq));
     }
   }, []);
 
@@ -264,9 +263,10 @@ const Deployment: React.FC<any> = () => {
                 {deployment?.deployment && !deploymentIncomplete && (
                   <React.Fragment>
                     <DeploymentActionButton
-                      tooltipTitle={deployment?.deployment?.state !== 1
-                        ? 'It is not allowed to update closed deployment'
-                        : 'This SDL is deployed with another tool and can\'t be updated from here'
+                      tooltipTitle={
+                        deployment?.deployment?.state !== 1
+                          ? 'It is not allowed to update closed deployment'
+                          : 'This SDL is deployed with another tool and can\'t be updated from here'
                       }
                       tooltip={UpdateDeploymentTooltip}
                       linkTo={`/my-deployments/${dseq}/update-deployment`}
@@ -293,7 +293,7 @@ const Deployment: React.FC<any> = () => {
                           aria-label="re-deploy"
                           disabled={!canUpdate}
                           sx={{
-                            justifyContent: 'left'
+                            justifyContent: 'left',
                           }}
                           startIcon={<Icon type="redeploy" />}
                         >
@@ -304,7 +304,7 @@ const Deployment: React.FC<any> = () => {
                     </Stack>
                     <CloneDeploymentButton
                       icon="clone"
-                      wallet={keplr}
+                      wallet={wallet}
                       deployment={deployment.deployment}
                     >
                       Clone Deployment
@@ -314,7 +314,7 @@ const Deployment: React.FC<any> = () => {
                 {deployment?.deployment && deployment?.deployment?.state === 1 && (
                   <CloseDeploymentButton
                     icon="trash"
-                    wallet={keplr}
+                    wallet={wallet}
                     deployment={deployment.deployment}
                     onDelete={() => setRefresh(true)}
                   >
@@ -370,7 +370,7 @@ const Deployment: React.FC<any> = () => {
                 <FundDeploymentButton
                   icon="money"
                   deployment={deployment.deployment}
-                  wallet={keplr}
+                  wallet={wallet}
                 >
                   Add Funds
                 </FundDeploymentButton>

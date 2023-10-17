@@ -21,7 +21,7 @@ import {
 } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta3/deploymentmsg';
 import { getMsgClient, getRpc } from '@akashnetwork/akashjs/build/rpc';
 import { leaseEventsPath, leaseStatusPath, serviceLogsPath, submitManifestPath } from './paths';
-import { KeplrWallet } from '../../../recoil/atoms';
+import { Wallet } from '../../../recoil/atoms';
 import {
   Lease,
   LeaseID,
@@ -231,7 +231,7 @@ function createCertificateMessage(cert: TLSCertificate): string {
 }
 
 export async function fundDeployment(
-  wallet: KeplrWallet,
+  wallet: Wallet,
   deploymentId: { dseq: number; owner: string },
   quantity: number
 ) {
@@ -264,7 +264,7 @@ export async function fundDeployment(
   );
 }
 
-export async function closeDeployment(wallet: KeplrWallet, deploymentId: { dseq: number, owner: string }) {
+export async function closeDeployment(wallet: Wallet, deploymentId: { dseq: number, owner: string }) {
   const [account] = wallet.accounts;
   const signer = wallet.offlineSigner;
   const { rpcNode } = getRpcNode();
@@ -283,7 +283,7 @@ export async function closeDeployment(wallet: KeplrWallet, deploymentId: { dseq:
 }
 
 export async function createDeployment(
-  wallet: KeplrWallet,
+  wallet: Wallet,
   sdl: any,
   depositor: string | undefined = undefined
 ) {
@@ -332,7 +332,7 @@ export async function createDeployment(
   };
 }
 
-export async function updateDeployment(wallet: KeplrWallet, deploymentId: any, sdl: any) {
+export async function updateDeployment(wallet: Wallet, deploymentId: any, sdl: any) {
   const [account] = wallet.accounts;
   const signer = wallet.offlineSigner;
   const { rpcNode } = getRpcNode();
@@ -360,7 +360,7 @@ export async function updateDeployment(wallet: KeplrWallet, deploymentId: any, s
   };
 }
 
-export async function createLease(wallet: KeplrWallet, bidId: BidID) {
+export async function createLease(wallet: Wallet, bidId: BidID) {
   const [account] = wallet.accounts;
   const signer = wallet.offlineSigner;
   const { rpcNode } = getRpcNode();

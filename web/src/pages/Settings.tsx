@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useCallback, useMemo } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   Alert,
   Box,
@@ -19,7 +19,12 @@ import {
 import styled from '@emotion/styled';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoDisturbOffIcon from '@mui/icons-material/DoDisturbOff';
-import { activeCertificate, keplrState, optIntoAnalytics } from '../recoil/atoms';
+import {
+  activeCertificate,
+  walletState,
+  optIntoAnalytics,
+  showConnectWalletModal,
+} from '../recoil/atoms';
 import {
   TLSCertificate,
   getAvailableCertificates,
@@ -32,7 +37,13 @@ import { useMutation, useQuery } from 'react-query';
 import { useWallet } from '../hooks/useWallet';
 import { queryCertificates } from '../api/queries';
 import { QueryCertificatesResponse } from '@akashnetwork/akashjs/build/protobuf/akash/cert/v1beta2/query';
-import { RpcSettings, defaultRpcSettings, sandboxRpcSettings, testnetRpcSettings, useRpcNode } from '../hooks/useRpcNode';
+import {
+  RpcSettings,
+  defaultRpcSettings,
+  sandboxRpcSettings,
+  testnetRpcSettings,
+  useRpcNode,
+} from '../hooks/useRpcNode';
 import { Input } from '../components/SdlConfiguration/styling';
 import { isRpcNodeStatus } from '../api/rpc/beta2/rpc';
 import testnetChainInfo from '../_helpers/testnet-chain';
@@ -91,7 +102,7 @@ const defaultRpcNodes = [
   },
   {
     rpcNode: sandboxRpcSettings.rpcNode,
-    name: 'Sandbox'
+    name: 'Sandbox',
   },
   {
     rpcNode: '',
@@ -112,8 +123,8 @@ const AddCustomChainButton: React.FC<{ chainId: string }> = ({ chainId }) => {
   const addCustomChain = () => {
     const chainInfo = chainConfigs.get(chainId);
 
-    if (window && window.keplr && window.keplr.experimentalSuggestChain && chainInfo) {
-      window.keplr.experimentalSuggestChain(chainInfo);
+    if (window && window.wallet && window.wallet.experimentalSuggestChain && chainInfo) {
+      window.wallet.experimentalSuggestChain(chainInfo);
     }
   };
 
@@ -125,7 +136,7 @@ const AddCustomChainButton: React.FC<{ chainId: string }> = ({ chainId }) => {
 };
 
 const Settings: React.FC<Record<string, never>> = () => {
-  const keplr = useRecoilValue(keplrState);
+  const _wallet = useRecoilValue(walletState);
   const [currentActiveCertificate, setCurrentActiveCertificate] = useRecoilState(activeCertificate);
   const [certificatesList, setCertificatesList] = React.useState<
     (SortableCertificate & TLSCertificate)[]
@@ -148,22 +159,23 @@ const Settings: React.FC<Record<string, never>> = () => {
   const wallet = useWallet();
   const { mutate: mxCreateCertificate } = useMutation(['createCertificate'], createCertificate);
   const { mutate: mxRevokeCertificate } = useMutation(['revokeCertificate'], revokeCertificate);
+  const setShowConnectWalletModal = useSetRecoilState(showConnectWalletModal);
 
   // this is updated to force a refresh
   const [chainInfo, setChainInfo] = React.useState(getRpcNode());
   const { rpcNode, chainId } = chainInfo;
 
   const handleConnectWallet = (): void => {
-    wallet.connect();
+    setShowConnectWalletModal(true);
   };
 
   const availableCertificates = useMemo(
-    () => getAvailableCertificates(keplr?.accounts[0]?.address),
-    [keplr?.accounts[0]?.address]
+    () => getAvailableCertificates(_wallet?.accounts[0]?.address),
+    [_wallet?.accounts[0]?.address]
   );
 
   const { data: certificates, refetch } = useQuery(
-    ['certificates', keplr?.accounts[0]?.address],
+    ['certificates', _wallet?.accounts[0]?.address],
     queryCertificates
   );
 
@@ -189,7 +201,7 @@ const Settings: React.FC<Record<string, never>> = () => {
     setShowProgress(true);
     // the query doesn't take any arguments, this little hack keeps
     // typescript happy
-    mxCreateCertificate(({} as any), {
+    mxCreateCertificate({} as any, {
       onSuccess: () => {
         refetch();
         setCreateOpen(false);
@@ -197,9 +209,9 @@ const Settings: React.FC<Record<string, never>> = () => {
       onError: (error: any) => {
         logging.error('Failed to create certificate: ' + error);
         setShowProgress(false);
-      }
+      },
     });
-  }, [keplr, rpcNode]);
+  }, [_wallet, rpcNode]);
 
   const handleRevokeCertificate = React.useCallback(async () => {
     setShowProgress(true);
@@ -214,9 +226,9 @@ const Settings: React.FC<Record<string, never>> = () => {
       onError: (error: any) => {
         logging.error('Failed to revoke certificate: ' + error);
         setShowProgress(false);
-      }
+      },
     });
-  }, [keplr, revokeCert, rpcNode]);
+  }, [_wallet, revokeCert, rpcNode]);
 
   const handleVerifyRpcNode = React.useCallback(async () => {
     const rpcNode = candidateRpcNode.trim();
@@ -246,9 +258,7 @@ const Settings: React.FC<Record<string, never>> = () => {
         setCandidateRpcSettings({
           rpcNode: rpcNode,
           chainId: data.result.node_info.network,
-          networkType: data.result.node_info.network === 'akashnet-2'
-            ? 'mainnet'
-            : 'testnet',
+          networkType: data.result.node_info.network === 'akashnet-2' ? 'mainnet' : 'testnet',
         });
         return;
       }
@@ -289,7 +299,7 @@ const Settings: React.FC<Record<string, never>> = () => {
     try {
       // this is somewhat dangerous, as we don't know which version the certificates are
       // but they should be compatible (for now at least)
-      certificateList = (QueryCertificatesResponse.toJSON((certificates as any)) as any).certificates;
+      certificateList = (QueryCertificatesResponse.toJSON(certificates as any) as any).certificates;
     } catch (e) {
       console.error(e, certificates);
       return;
@@ -323,13 +333,13 @@ const Settings: React.FC<Record<string, never>> = () => {
     }
 
     setCertificatesList(result);
-  }, [keplr?.accounts[0]?.address, currentActiveCertificate, certificates]);
+  }, [_wallet?.accounts[0]?.address, currentActiveCertificate, certificates]);
 
   const activateCertificate = useCallback(
     (index: number) => {
-      const newCert = getCertificateByIndex(keplr?.accounts[0]?.address, index);
+      const newCert = getCertificateByIndex(_wallet?.accounts[0]?.address, index);
 
-      saveActiveSerial(keplr?.accounts[0]?.address, index);
+      saveActiveSerial(_wallet?.accounts[0]?.address, index);
       setCurrentActiveCertificate(newCert);
     },
     [saveActiveSerial, setCurrentActiveCertificate]
@@ -348,7 +358,7 @@ const Settings: React.FC<Record<string, never>> = () => {
         subtitle: 'Select your preferred currency',
         value: currency,
         options: ['AKT'],
-      }
+      },
     ];
     setFields(_fields);
   }, [chainId, certificatesList]);
@@ -369,7 +379,6 @@ const Settings: React.FC<Record<string, never>> = () => {
               </Button>
             </Stack>
           </SettingsField>
-
 
           {fields.map((obj: any, i: number) => (
             <SettingsField key={i}>
@@ -395,7 +404,7 @@ const Settings: React.FC<Record<string, never>> = () => {
             </div>
           </SettingsField>
 
-          <SettingsField key='certificates'>
+          <SettingsField key="certificates">
             <div className="flex-none">
               <div className="text-base font-bold text-[#111827]">Certificates</div>
               {certificatesList.length > 0 ? (
@@ -444,57 +453,57 @@ const Settings: React.FC<Record<string, never>> = () => {
 
           {certificatesList.length > 0
             ? certificatesList.sort(byCertificateStatus).map((d: any, i: number) => {
-              if (!showAll) {
-                // eslint-disable-next-line array-callback-return
-                if (d.certificate.state === 'revoked' || !d.available) return;
-              }
-              return (
-                <SettingsField key={i}>
-                  <SettingsCertificateCard>
-                    <div className="flex items-center">
-                      <div className="flex mr-6">
-                        <span className="text-base font-bold text-[#111827] mr-2">Cert:</span>
-                        <Address address={d.certificate.cert} />
-                      </div>
-                      <div className="flex">
-                        <span className="text-base font-bold text-[#111827] mr-2">Pubkey:</span>
-                        <Address address={d.certificate.pubkey} />
-                        {d.available ? 'Available' : 'Unavailable'}
-                      </div>
-                      <div className="ml-6 text-[#FA5757]">
-                        {d.current ? <div>Current</div> : null}
-                      </div>
-                      <div className="grow">{/* spacer */}</div>
-                      <div className="border-r w-[106px] mr-2">
-                        {d.certificate.state === 'revoked' ? (
-                          <DoDisturbOffIcon style={{ color: '#C9CACD' }} />
-                        ) : (
-                          <CheckCircleIcon style={{ color: '#C9CACD' }} />
+                if (!showAll) {
+                  // eslint-disable-next-line array-callback-return
+                  if (d.certificate.state === 'revoked' || !d.available) return;
+                }
+                return (
+                  <SettingsField key={i}>
+                    <SettingsCertificateCard>
+                      <div className="flex items-center">
+                        <div className="flex mr-6">
+                          <span className="text-base font-bold text-[#111827] mr-2">Cert:</span>
+                          <Address address={d.certificate.cert} />
+                        </div>
+                        <div className="flex">
+                          <span className="text-base font-bold text-[#111827] mr-2">Pubkey:</span>
+                          <Address address={d.certificate.pubkey} />
+                          {d.available ? 'Available' : 'Unavailable'}
+                        </div>
+                        <div className="ml-6 text-[#FA5757]">
+                          {d.current ? <div>Current</div> : null}
+                        </div>
+                        <div className="grow">{/* spacer */}</div>
+                        <div className="border-r w-[106px] mr-2">
+                          {d.certificate.state === 'revoked' ? (
+                            <DoDisturbOffIcon style={{ color: '#C9CACD' }} />
+                          ) : (
+                            <CheckCircleIcon style={{ color: '#C9CACD' }} />
+                          )}
+                          <span className="ml-2">{d.certificate.state}</span>
+                        </div>
+                        {d.certificate.state === 'valid' && (
+                          <div className="w-20">
+                            <Button
+                              onClick={() => {
+                                setRevokeCert(d.serial);
+                                setRevokeOpen(true);
+                              }}
+                            >
+                              Revoke
+                            </Button>
+                          </div>
                         )}
-                        <span className="ml-2">{d.certificate.state}</span>
+                        {d.available && (
+                          <div className="w-20">
+                            <Button onClick={() => activateCertificate(d.index)}>Activate</Button>
+                          </div>
+                        )}
                       </div>
-                      {d.certificate.state === 'valid' && (
-                        <div className="w-20">
-                          <Button
-                            onClick={() => {
-                              setRevokeCert(d.serial);
-                              setRevokeOpen(true);
-                            }}
-                          >
-                            Revoke
-                          </Button>
-                        </div>
-                      )}
-                      {d.available && (
-                        <div className="w-20">
-                          <Button onClick={() => activateCertificate(d.index)}>Activate</Button>
-                        </div>
-                      )}
-                    </div>
-                  </SettingsCertificateCard>
-                </SettingsField>
-              );
-            })
+                    </SettingsCertificateCard>
+                  </SettingsField>
+                );
+              })
             : null}
         </SettingsCard>
       </Grid>
@@ -590,7 +599,10 @@ const Settings: React.FC<Record<string, never>> = () => {
                   value={node.rpcNode}
                   control={<Radio />}
                   label={node.name}
-                  checked={candidateRpcNode === node.rpcNode || (node.name === 'Custom' && isCustomRpcNode(candidateRpcNode))}
+                  checked={
+                    candidateRpcNode === node.rpcNode ||
+                    (node.name === 'Custom' && isCustomRpcNode(candidateRpcNode))
+                  }
                   onChange={() => setCandidateRpcNode(node.rpcNode)}
                 />
               ))}
@@ -612,9 +624,11 @@ const Settings: React.FC<Record<string, never>> = () => {
             </div>
           ) : (
             <>
-              {candidateRpcSettings && candidateRpcSettings.networkType !== 'mainnet' && <div className="flex justify-center p-3">
-                <AddCustomChainButton chainId={candidateRpcSettings.chainId} />
-              </div>}
+              {candidateRpcSettings && candidateRpcSettings.networkType !== 'mainnet' && (
+                <div className="flex justify-center p-3">
+                  <AddCustomChainButton chainId={candidateRpcSettings.chainId} />
+                </div>
+              )}
               <div className="flex justify-center">
                 <Button
                   className="w-[180px]"
@@ -647,6 +661,7 @@ const Settings: React.FC<Record<string, never>> = () => {
 
 export default Settings;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SettingOptionText = (props: { initialValue: string; onChange: (newVal: string) => void }) => {
   const updateValue = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

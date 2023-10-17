@@ -16,7 +16,7 @@ import { Formik } from 'formik';
 import {
   deploymentDataStale,
   deploymentSdl,
-  keplrState,
+  walletState,
   myDeployments as myDeploymentsAtom,
 } from '../../recoil/atoms';
 import { Dialog } from '../Dialog';
@@ -33,7 +33,6 @@ import Loading from '../Loading';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { useMutation } from 'react-query';
 import { createDeployment, createLease, sendManifest } from '../../api/mutations';
-import { getRpcNode } from '../../hooks/useRpcNode';
 
 const steps = ['Featured Apps', 'Select', 'Configure', 'Review', 'Deploy'];
 
@@ -43,7 +42,7 @@ export interface DeploymentStepperProps {
 }
 
 const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
-  const keplr = useRecoilValue(keplrState);
+  const wallet = useRecoilValue(walletState);
   const navigate = useNavigate();
   const [deploymentId, setDeploymentId] = React.useState<{ owner: string; dseq: string }>();
   const { folderName, templateId, intentId, dseq } = useParams();
@@ -72,13 +71,13 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
   React.useEffect(() => {
     if (dseq) {
       setDeploymentId({
-        owner: keplr.accounts[0].address,
+        owner: wallet.accounts[0].address,
         dseq,
       });
       setActiveStep({ currentCard: 4 });
       return;
     }
-  }, [dseq, keplr]);
+  }, [dseq, wallet]);
 
   const selectFolder = (folderName: string) => {
     navigate(`/new-deployment/${nameToURI(folderName)}`);
@@ -117,7 +116,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
 
         if (lease) {
           mxSendManifest(
-            { address: keplr.accounts[0].address, lease, sdl: _sdl },
+            { address: wallet.accounts[0].address, lease, sdl: _sdl },
             {
               onSuccess: (result) => {
                 if (result) {
@@ -248,48 +247,48 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
               {activeStep.currentCard === steps.length
                 ? null
                 : !progressVisible && (
-                  <React.Fragment>
-                    {activeStep.currentCard === 0 && (
-                      <FeaturedApps
-                        onDeployNowClick={(folderName) => {
-                          selectFolder(folderName);
-                        }}
-                        callback={(sdl) =>
-                          navigate('/new-deployment/custom-sdl', { state: { sdl: sdl } })
-                        }
-                        setFieldValue={setFieldValue}
-                        onSave={function (sdl: any): void {
-                          throw new Error('Function not implemented.');
-                        }}
-                      />
-                    )}
-                    {activeStep.currentCard === 1 && folderName && (
-                      <SelectApp
-                        folderName={uriToName(folderName)}
-                        setFieldValue={setFieldValue}
-                        onNextButtonClick={selectTemplate}
-                      />
-                    )}
-                    {activeStep.currentCard === 2 && folderName && templateId && (
-                      <ConfigureApp
-                        folderName={uriToName(folderName)}
-                        templateId={uriToName(templateId)}
-                        onNextButtonClick={(intent: string) =>
-                          handlePreflightCheck(intent, values.sdl)
-                        }
-                      />
-                    )}
-                    {activeStep.currentCard === 3 && <PreflightCheck />}
-                    {activeStep.currentCard === 4 && deploymentId && (
-                      <Suspense fallback={<Loading />}>
-                        <SelectProvider
-                          deploymentId={deploymentId}
-                          onNextButtonClick={(bidId: any) => acceptBid(bidId)}
+                    <React.Fragment>
+                      {activeStep.currentCard === 0 && (
+                        <FeaturedApps
+                          onDeployNowClick={(folderName) => {
+                            selectFolder(folderName);
+                          }}
+                          callback={(sdl) =>
+                            navigate('/new-deployment/custom-sdl', { state: { sdl: sdl } })
+                          }
+                          setFieldValue={setFieldValue}
+                          onSave={function (): void {
+                            throw new Error('Function not implemented.');
+                          }}
                         />
-                      </Suspense>
-                    )}
-                  </React.Fragment>
-                )}
+                      )}
+                      {activeStep.currentCard === 1 && folderName && (
+                        <SelectApp
+                          folderName={uriToName(folderName)}
+                          setFieldValue={setFieldValue}
+                          onNextButtonClick={selectTemplate}
+                        />
+                      )}
+                      {activeStep.currentCard === 2 && folderName && templateId && (
+                        <ConfigureApp
+                          folderName={uriToName(folderName)}
+                          templateId={uriToName(templateId)}
+                          onNextButtonClick={(intent: string) =>
+                            handlePreflightCheck(intent, values.sdl)
+                          }
+                        />
+                      )}
+                      {activeStep.currentCard === 3 && <PreflightCheck />}
+                      {activeStep.currentCard === 4 && deploymentId && (
+                        <Suspense fallback={<Loading />}>
+                          <SelectProvider
+                            deploymentId={deploymentId}
+                            onNextButtonClick={(bidId: any) => acceptBid(bidId)}
+                          />
+                        </Suspense>
+                      )}
+                    </React.Fragment>
+                  )}
             </>
           );
         }}
@@ -300,7 +299,7 @@ const DeploymentStepper: React.FC<DeploymentStepperProps> = () => {
         title={errorTitle || ''}
         message={errorMessage || ''}
       />
-    </Box >
+    </Box>
   );
 };
 

@@ -1,9 +1,14 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { Box, Button, Card, Stack, Tooltip, CircularProgress } from '@mui/material';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useFormikContext } from 'formik';
-import { activeCertificate, deploymentSdl, keplrState } from '../recoil/atoms';
+import {
+  activeCertificate,
+  deploymentSdl,
+  showConnectWalletModal,
+  walletState,
+} from '../recoil/atoms';
 import { getAccountBalance } from '../recoil/api/bank';
 import { Icon } from '../components/Icons';
 import Delayed from '../components/Delayed';
@@ -24,7 +29,7 @@ import logging from '../logging';
 import { loadActiveCertificate } from '../api/rpc/beta3/certificates';
 
 export const PreflightCheck: React.FC<Record<string, never>> = () => {
-  const [keplr] = useRecoilState(keplrState);
+  const [_wallet] = useRecoilState(walletState);
   const [balance, setBalance] = React.useState(0);
   const { submitForm, values, setFieldValue } = useFormikContext<{
     depositor: string | undefined;
@@ -32,7 +37,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
   }>();
   const [certificate, setCertificate] = useRecoilState(activeCertificate);
   const { data: accountCertificates, refetch: refetchCertificates } = useQuery(
-    ['certificates', keplr?.accounts[0]?.address],
+    ['certificates', _wallet?.accounts[0]?.address],
     queryCertificates
   );
   const wallet = useWallet();
@@ -41,10 +46,14 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
   const [showVerifiedCert, setShowVerifiedCert] = React.useState(false);
   const [useAuthorizedDepositor, setUseAuthorizedDepositor] = React.useState(false);
   const { networkType } = getRpcNode();
-  const { mutate: mxCreateCertificate, isLoading } = useMutation(['createCertificate'], createCertificate);
+  const { mutate: mxCreateCertificate, isLoading } = useMutation(
+    ['createCertificate'],
+    createCertificate
+  );
   const savedSDL = useRecoilValue(deploymentSdl);
+  const setShowConnectWalletModal = useSetRecoilState(showConnectWalletModal);
 
-  const hasKeplr = window.keplr !== undefined;
+  const hasWallet = window.wallet !== undefined;
   const sdl = values.sdl || savedSDL;
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,16 +72,14 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
 
   const handleConnectWallet = async () => {
     if (!wallet.isConnected) {
-      wallet.connect();
+      setShowConnectWalletModal(true);
     }
   };
 
   /* Attempts to calculate the version of the manifest as a quick validation check */
   React.useEffect(() => {
     const sdlPartial = sdl as unknown;
-    const rpcVersion = networkType === 'testnet'
-      ? 'beta3'
-      : 'beta2';
+    const rpcVersion = networkType === 'testnet' ? 'beta3' : 'beta2';
 
     try {
       // we can safely cast this to v2Sdl because any failure will be caught by the catch block
@@ -101,10 +108,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
         console.warn('Unable to find certificate: ', certificate);
       }
 
-      const isValid = !!(
-        activeCert &&
-        activeCert?.certificate?.state === Certificate_State.valid
-      );
+      const isValid = !!(activeCert && activeCert?.certificate?.state === Certificate_State.valid);
 
       if (!isValid) {
         console.warn('Certificate is not valid: ', activeCert?.certificate?.state);
@@ -121,38 +125,38 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
     }
   }, [showVerifiedCert]);
 
-  /* Automatically connect the wallet if keplr is installed */
+  /* Automatically connect the wallet if the wallet is installed */
   React.useEffect(() => {
     handleConnectWallet();
   }, []);
 
   /* Check the current balance of the wallet */
   React.useEffect(() => {
-    if (!window.keplr) return;
-    if (keplr.isSignedIn && keplr?.accounts[0]?.address) {
-      const account = values.depositor || keplr.accounts[0].address;
+    if (!window.wallet) return;
+    if (_wallet.isSignedIn && _wallet?.accounts[0]?.address) {
+      const account = values.depositor || _wallet.accounts[0].address;
       getAccountBalance(account).then((result) => {
         const akt = uaktToAKT(result);
         setBalance(akt);
       });
     }
-  }, [keplr, values.depositor]);
+  }, [_wallet, values.depositor]);
 
   /* Action handler for creating a certificate */
   const handleCreateCertificate = async () => {
     // the query doesn't take any arguments, this little hack keeps
     // typescript happy
-    mxCreateCertificate(({} as any), {
-      onSuccess: async (result: any) => {
-        setCertificate(await loadActiveCertificate(keplr?.accounts[0]?.address));
+    mxCreateCertificate({} as any, {
+      onSuccess: async () => {
+        setCertificate(await loadActiveCertificate(_wallet?.accounts[0]?.address));
         setShowVerifiedCert(true);
         logging.success('Certificate created successfully');
-        
+
         refetchCertificates();
       },
       onError: (error: any) => {
         logging.error('Couldn\'t create certificate: ' + error);
-      }
+      },
     });
   };
 
@@ -173,24 +177,22 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
             Checking Essentials
           </Title>
           <Delayed>
-            {/* Check Keplr & Login */}
+            {/* Check Wallet & Login */}
             <Stack sx={{ width: '100%' }} spacing="1rem">
-              {!hasKeplr && (
+              {!hasWallet && (
                 <PreflightCheckItemContainer>
                   <div className="flex mb-2">
                     <Icon type="alert" />
                     <Title size={14} className="pl-2">
-                      You will need to install the Keplr wallet extension for Chrome.
+                      You will need to install a wallet extension for Chrome.
                     </Title>
                     <div className="grow">{/* spacer - do not remove */}</div>
-                    <a
-                      href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <PreflightActionButton>Get Keplr</PreflightActionButton>
-                    </a>
-                    <Tooltip title="Sign in to your Keplr wallet" placement="top">
+
+                    <PreflightActionButton onClick={() => setShowConnectWalletModal(true)}>
+                      Get Wallet
+                    </PreflightActionButton>
+
+                    <Tooltip title="Sign in to your wallet" placement="top">
                       <div className="ml-2">
                         <Icon type="infoGray" />
                       </div>
@@ -200,7 +202,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
                 </PreflightCheckItemContainer>
               )}
 
-              {hasKeplr && !keplr.isSignedIn ? (
+              {hasWallet && !_wallet.isSignedIn ? (
                 <PreflightCheckItemContainer>
                   <div className="flex mb-2">
                     <Icon type="alert" />
@@ -211,7 +213,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
                     <PreflightActionButton onClick={handleConnectWallet}>
                       Connect Wallet
                     </PreflightActionButton>
-                    <Tooltip title="Sign in to your Keplr wallet" placement="top">
+                    <Tooltip title="Sign in to your wallet" placement="top">
                       <div className="ml-2">
                         <Icon type="infoGray" />
                       </div>
@@ -220,7 +222,7 @@ export const PreflightCheck: React.FC<Record<string, never>> = () => {
                   <Text size={14}>In order to deploy you will need to connect your wallet.</Text>
                 </PreflightCheckItemContainer>
               ) : null}
-              {hasKeplr && keplr.isSignedIn ? (
+              {hasWallet && _wallet.isSignedIn ? (
                 <PreflightCheckItemContainer>
                   <div className="flex">
                     <Icon type="checkVerified" />

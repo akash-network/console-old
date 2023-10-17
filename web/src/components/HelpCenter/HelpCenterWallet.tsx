@@ -16,13 +16,19 @@ export const HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({
       contentData={[
         {
           type: 'contentBody',
-          contentTitle: 'Why Keplr Wallet?',
+          contentTitle: 'Why Wallet?',
           contentBody:
-            'Deplying workloads on Akash Network requires you to pay in <strong> Akash Token ($AKT) </strong> using a <strong>Keplr Wallet </strong>',
+            'Deplying workloads on Akash Network requires you to pay in <strong> Akash Token ($AKT) </strong> using a <strong>Leap/Keplr Wallet </strong>',
         },
         {
           type: 'card',
-          title: 'Download Extension',
+          title: 'Download Leap Extension',
+          body: 'To use Leap wallet with Akash Console, install the Leap browser plugin for your browser',
+          link: 'https://chrome.google.com/webstore/detail/leap-cosmos-wallet/fcfcfllfndlomdhbehjjcoimbgofdncg',
+        },
+        {
+          type: 'card',
+          title: 'Download Keplr Extension',
           body: 'To use Keplr wallet with Akash Console, install the Keplr browser plugin for your browser',
           link: 'https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap',
         },
@@ -30,7 +36,7 @@ export const HelpCenterWallet: React.FC<HelpCenterWalletProps> = ({
         {
           type: 'contentBody',
           // Make body more consisted with contentBody
-          contentBody: 'There are two main ways to fund your Keplr Wallet with AKT:',
+          contentBody: 'There are two main ways to fund your Leap/Keplr Wallet with AKT:',
         },
         {
           type: 'largeCard',

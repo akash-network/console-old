@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil';
 import styled from '@emotion/styled';
 import { Button, ButtonProps, Input } from '@mui/material';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
-import { deploymentDataStale, KeplrWallet, optIntoAnalytics } from '../../recoil/atoms';
+import { deploymentDataStale, Wallet, optIntoAnalytics } from '../../recoil/atoms';
 import { updateStr } from '../../_helpers/callback-utils';
 import { Icon, IconType } from '../Icons';
 import { Prompt } from '../Prompt';
@@ -22,7 +22,7 @@ export type CloseDeploymentButtonProps = React.PropsWithChildren<
   {
     icon?: IconType;
     deployment: Deployment;
-    wallet: KeplrWallet;
+    wallet: Wallet;
     onDelete: () => any;
   } & ButtonProps
 >;

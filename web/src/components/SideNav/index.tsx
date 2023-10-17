@@ -1,5 +1,5 @@
 import React, { Suspense, useCallback, useState } from 'react';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { startCase, toLower } from 'lodash';
 import { CSSObject, styled as MuiStyled, Theme } from '@mui/material/styles';
@@ -14,12 +14,12 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import AddIcon from '@mui/icons-material/Add';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Stack from '@mui/material/Stack';
-import { appVersion } from '../../recoil/atoms';
+import { appVersion, showConnectWalletModal } from '../../recoil/atoms';
 import { Icon } from '../Icons';
 import { Button, Typography } from '@mui/material';
 import { useWallet } from '../../hooks/useWallet';
 import { HelpCenterSideHelp } from '../../components/HelpCenter/HelpCenterSideHelp';
-import { showKeplrWindow } from '../../recoil/atoms';
+import { showWalletWindow } from '../../recoil/atoms';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Loading from '../Loading';
 
@@ -31,7 +31,8 @@ export default function SideNav(props: any) {
   const pathnames = location.pathname.split('/').filter((x) => x);
   const wallet = useWallet();
   const [isHelpCenterOpen, setIsHelpCenterOpen] = useState(false);
-  const [, setShowKeplrPopup] = useRecoilState(showKeplrWindow);
+  const setShowWalletPopup = useSetRecoilState(showWalletWindow);
+  const setShowConnectWalletModal = useSetRecoilState(showConnectWalletModal);
 
   const toggleHelpCenter = useCallback(() => {
     setIsHelpCenterOpen((prevIsOpen: boolean) => !prevIsOpen);
@@ -60,15 +61,15 @@ export default function SideNav(props: any) {
   };
 
   const handleConnectWallet = () => {
-    wallet.connect();
+    setShowConnectWalletModal(true);
   };
 
   const handleDisconnectWallet = () => {
     wallet.disconnect();
   };
 
-  const handleShowKeplrHelp = () => {
-    setShowKeplrPopup(true);
+  const handleShowWalletHelp = () => {
+    setShowWalletPopup(true);
   };
 
   return (
@@ -104,7 +105,7 @@ export default function SideNav(props: any) {
                 </Box>
                 Disconnect Wallet
               </Button>
-              <StyledHelpIcon onClick={handleShowKeplrHelp} />
+              <StyledHelpIcon onClick={handleShowWalletHelp} />
             </>
           ) : (
             <>
@@ -115,7 +116,7 @@ export default function SideNav(props: any) {
                 Connect Wallet
               </Button>
 
-              <StyledHelpIcon onClick={handleShowKeplrHelp} />
+              <StyledHelpIcon onClick={handleShowWalletHelp} />
             </>
           )}
         </Toolbar>
@@ -179,28 +180,21 @@ export default function SideNav(props: any) {
               </SideNavMenuItem>
             </NavLink>
 
-            <SideNavMenuItem id='link_help'>
+            <SideNavMenuItem id="link_help">
               <IconWrapper onClick={toggleHelpCenter}>
                 <Icon type="help" />
               </IconWrapper>
               <SideNavMenuItemLabel>Help</SideNavMenuItemLabel>
             </SideNavMenuItem>
 
-            <Typography
-              variant="caption"
-              component="p"
-              color="red"
-              marginTop="0.5rem"
-            >
+            <Typography variant="caption" component="p" color="red" marginTop="0.5rem">
               {`v${version}`}
             </Typography>
           </Stack>
         </Suspense>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Suspense fallback={<Loading />}>
-          {children}
-        </Suspense>
+        <Suspense fallback={<Loading />}>{children}</Suspense>
       </Box>
       <HelpCenterSideHelp isOpen={isHelpCenterOpen} onClose={toggleHelpCenter} />
     </Stack>

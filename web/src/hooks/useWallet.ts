@@ -1,19 +1,26 @@
 import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { keplrState, showKeplrWindow } from '../recoil/atoms';
-import { getKeplr } from '../_helpers/keplr-utils';
+import { walletState } from '../recoil/atoms';
+import { getWallet } from '../_helpers/wallet-utils';
 import logging from '../logging';
+import { Keplr } from '@keplr-wallet/types';
+
+export enum Wallets {
+  KEPLR = 'keplr',
+  LEAP = 'leap',
+}
 
 export function useWallet() {
-  const [keplr, setKeplr] = useRecoilState(keplrState);
-  const isConnected = keplr.isSignedIn;
-  const [, setShowKeplrPopup] = useRecoilState(showKeplrWindow);
+  const [wallet, setWallet] = useRecoilState(walletState);
+  const isConnected = wallet.isSignedIn;
 
   useEffect(() => {
     if (isConnected) {
-      getKeplr()
+      window.wallet = window[isConnected as Wallets] as Keplr;
+
+      getWallet()
         .then((res) => {
-          setKeplr(res);
+          setWallet(res);
         })
         .catch(() => {
           disconnectWallet();
@@ -21,19 +28,16 @@ export function useWallet() {
     }
   }, [isConnected]);
 
-  const connectWallet = () => {
-    if (!window.keplr) {
-      setShowKeplrPopup(true);
-      return;
-    }
+  const connectWallet = (walletSource: Wallets) => {
+    window.wallet = window[walletSource] as Keplr;
 
-    getKeplr()
+    getWallet()
       .then((res) => {
-        setKeplr(res);
-        localStorage.setItem('walletConnected', 'true');
+        setWallet(res);
+        localStorage.setItem('walletConnected', walletSource);
       })
       .catch((error: { message: string }) => {
-        logging.error(`Error connecting to Keplr wallet: ${error.message}`);
+        logging.error(`Error connecting to wallet: ${error.message}`);
         console.log(error);
         disconnectWallet();
       });
@@ -41,9 +45,9 @@ export function useWallet() {
 
   const disconnectWallet = () => {
     if (isConnected) {
-      localStorage.setItem('walletConnected', 'false');
-      setKeplr({
-        isSignedIn: false,
+      localStorage.setItem('walletConnected', '');
+      setWallet({
+        isSignedIn: '',
         accounts: [],
       });
     }
@@ -53,5 +57,7 @@ export function useWallet() {
     isConnected,
     connect: connectWallet,
     disconnect: disconnectWallet,
+    isLeapInstalled: !!window.leap,
+    isKeplrInstalled: !!window.keplr,
   };
 }

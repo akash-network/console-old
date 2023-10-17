@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Formik } from 'formik';
 import styled from '@emotion/styled';
@@ -8,7 +8,7 @@ import {
   UpdateDeploymentAction,
 } from '../components/UpdateDeployment/styling';
 import { useRecoilValue } from 'recoil';
-import { keplrState } from '../recoil/atoms';
+import { walletState } from '../recoil/atoms';
 import { Button } from '@mui/material';
 import { css } from '@emotion/react';
 import { SdlConfiguration } from '../components/SdlConfiguration/SdlConfiguration';
@@ -30,7 +30,7 @@ import { sendManifest, updateDeployment } from '../api/mutations';
 const UpdateDeployment: React.FC<any> = () => {
   const navigate = useNavigate();
   const { dseq } = useParams<{ dseq: string }>();
-  const keplr = useRecoilValue(keplrState);
+  const wallet = useRecoilValue(walletState);
   const [reviewSdl, showSdlReview] = useState(false);
   const closeReviewModal = useCallback(() => showSdlReview(false), []);
   const application = useAppCache(dseq);
@@ -38,13 +38,13 @@ const UpdateDeployment: React.FC<any> = () => {
   const { networkType } = getRpcNode();
 
   const deploymentId = {
-    owner: keplr.accounts[0].address,
+    owner: wallet.accounts[0].address,
     dseq: dseq || '0',
   };
   const { data: deploymentResponse } = useQuery(['deployment', deploymentId], deploymentInfo);
 
   const leaseId = {
-    owner: keplr.accounts[0].address,
+    owner: wallet.accounts[0].address,
     dseq: dseq || '0',
   };
   const { data: leaseResponse } = useQuery(['lease', leaseId], queryLease);
@@ -96,7 +96,7 @@ const UpdateDeployment: React.FC<any> = () => {
 
         if (oldVersion === newVersion) {
           mxSendManifest(
-            { address: keplr.accounts[0].address, lease, sdl: value.sdl },
+            { address: wallet.accounts[0].address, lease, sdl: value.sdl },
             {
               onSuccess: () => {
                 logging.success('Manifest successfully updated');
@@ -115,7 +115,7 @@ const UpdateDeployment: React.FC<any> = () => {
           mxUpdateDeployment(
             {
               deploymentId: {
-                owner: keplr.accounts[0].address,
+                owner: wallet.accounts[0].address,
                 dseq,
               },
               sdl: value.sdl,
@@ -126,7 +126,7 @@ const UpdateDeployment: React.FC<any> = () => {
                   setCardMessage('Sending manifest');
 
                   mxSendManifest(
-                    { address: keplr.accounts[0].address, lease, sdl: value.sdl },
+                    { address: wallet.accounts[0].address, lease, sdl: value.sdl },
                     {
                       onSuccess: () => {
                         const sdl = value.sdl as SDLSpec;
