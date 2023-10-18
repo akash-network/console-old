@@ -12,6 +12,7 @@ import { loadActiveCertificate } from './recoil/api';
 import { useWallet } from './hooks/useWallet';
 import Loading from './components/Loading';
 import { getRpcNode, useRpcNode } from './hooks/useRpcNode';
+import { Alert, Button } from '@mui/material';
 
 // Lazy loading all pages in appropriate time
 const DeploymentStepper = lazy(() => import('./components/DeploymentStepper'));
@@ -34,6 +35,28 @@ const Welcome = () => {
   return <></>;
 };
 
+const DepricationNotice = () => {
+  const message = 'joined forces, the Overclock core team is pausing active development and bug fixes for Console. Please use Cloudmos Deploy for your Akash Network deployments';
+  const cloudmosUrl = 'https://deploy.cloudmos.io/';
+
+  const handleCtaClick = () => {
+    window.location.href = cloudmosUrl;
+  };
+
+  return <Alert severity='info'>
+    <Stack alignItems="center">
+      <div>
+        Now that Cloudmos and Overclock labs have&nbsp;
+        <a target="_blank" href="https://akash.network/blog/overclock-labs-joins-forces-with-cloudmos-to-advance-the-akash-supercloud/" rel="noreferrer">joined forces</a>,
+        the Overclock core team is pausing active development and bug fixes for Console. Please use&nbsp;
+        <a href="https://deploy.cloudmos.io/">Cloudmos Deploy</a>
+        &nbsp;for your Akash Network deployments.
+      </div>
+      <div><Button onClick={handleCtaClick}>Go to Cloudmos</Button></div>
+    </Stack>
+  </Alert>;
+};
+
 const Help = () => {
   window.location.href = 'https://docs.akash.network/guides/deploy';
 
@@ -44,6 +67,7 @@ const AppRouter = () => {
   return (
     <Router>
       <div className="console-container">
+        <DepricationNotice />
         <SideNav>
           <Routes>
             <Route path="/landing" element={<Landing />} />
