@@ -2,7 +2,6 @@ import {
   QueryClientImpl as DeploymentClient,
   QueryDeploymentRequest,
   QueryDeploymentsRequest,
-  QueryDeploymentsResponse,
 } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/query';
 import {
   QueryClientImpl as ProviderClient,
@@ -21,8 +20,13 @@ import {
   MsgUpdateDeployment,
 } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deploymentmsg';
 import { getMsgClient, getRpc } from '@akashnetwork/akashjs/build/rpc';
-import { leaseEventsPath, leaseStatusPath, serviceLogsPath, submitManifestPath } from '../../rest/beta2/paths';
-import { KeplrWallet } from '../../../recoil/atoms';
+import {
+  leaseEventsPath,
+  leaseStatusPath,
+  serviceLogsPath,
+  submitManifestPath,
+} from '../../rest/beta2/paths';
+import { Wallet } from '../../../recoil/atoms';
 import {
   Lease,
   LeaseID,
@@ -88,7 +92,10 @@ export const fetchDeploymentCount = async (
   return Number(response?.pagination?.total?.toString());
 };
 
-export const fetchDeploymentList = async ({ owner, state }: { owner: string, state?: string }, rpcNode: string) => {
+export const fetchDeploymentList = async (
+  { owner, state }: { owner: string; state?: string },
+  rpcNode: string
+) => {
   const pagination = { limit: 100 };
   const filters = { owner, state };
 
@@ -227,7 +234,7 @@ function createCertificateMessage(cert: TLSCertificate): string {
 }
 
 export async function fundDeployment(
-  wallet: KeplrWallet,
+  wallet: Wallet,
   deploymentId: { dseq: number; owner: string },
   quantity: number
 ) {
@@ -260,7 +267,10 @@ export async function fundDeployment(
   );
 }
 
-export async function closeDeployment(wallet: KeplrWallet, deploymentId: { dseq: number, owner: string }) {
+export async function closeDeployment(
+  wallet: Wallet,
+  deploymentId: { dseq: number; owner: string }
+) {
   const [account] = wallet.accounts;
   const signer = wallet.offlineSigner;
   const { rpcNode } = getRpcNode();
@@ -279,7 +289,7 @@ export async function closeDeployment(wallet: KeplrWallet, deploymentId: { dseq:
 }
 
 export async function createDeployment(
-  wallet: KeplrWallet,
+  wallet: Wallet,
   sdl: any,
   depositor: string | undefined = undefined
 ) {
@@ -325,7 +335,7 @@ export async function createDeployment(
   };
 }
 
-export async function updateDeployment(wallet: KeplrWallet, deploymentId: any, sdl: any) {
+export async function updateDeployment(wallet: Wallet, deploymentId: any, sdl: any) {
   const [account] = wallet.accounts;
   const signer = wallet.offlineSigner;
   const { rpcNode } = getRpcNode();
@@ -353,7 +363,7 @@ export async function updateDeployment(wallet: KeplrWallet, deploymentId: any, s
   };
 }
 
-export async function createLease(wallet: KeplrWallet, bidId: BidID) {
+export async function createLease(wallet: Wallet, bidId: BidID) {
   const [account] = wallet.accounts;
   const signer = wallet.offlineSigner;
   const { rpcNode } = getRpcNode();
@@ -420,11 +430,10 @@ export async function sendManifest(address: string, lease: Lease, sdl: any) {
     });
   };
 
-  return retry(attemptSend, [1000, 3000, 5000])
-    .catch((error) => {
-      logging.error('Error sending manifest to provider. This is likely an issue with the provider.');
-      console.error(error);
-    });
+  return retry(attemptSend, [1000, 3000, 5000]).catch((error) => {
+    logging.error('Error sending manifest to provider. This is likely an issue with the provider.');
+    console.error(error);
+  });
 }
 
 export async function newDeploymentData(

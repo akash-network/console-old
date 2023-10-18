@@ -1,15 +1,14 @@
 /* eslint-disable quotes */
-import React, { Suspense, useState, useCallback } from 'react';
+import React, {  useState, useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { SdlEditor } from '../../components/SdlConfiguration/SdllEditor';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Box, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
+import {  useNavigate, useParams } from 'react-router-dom';
+import {  Button, } from '@mui/material';
 import styled from '@emotion/styled';
 import { Formik } from 'formik';
 import {
-  deploymentDataStale,
   deploymentSdl,
-  keplrState,
+  walletState,
   myDeployments as myDeploymentsAtom,
 } from '../../recoil/atoms';
 interface Props {
@@ -23,11 +22,11 @@ interface Props {
   };
 }
 
-import { initialValues, InitialValuesProps, SDLSpec } from '../SdlConfiguration/settings';
+import { initialValues, InitialValuesProps, } from '../SdlConfiguration/settings';
 import { myDeploymentFormat } from '../../_helpers/my-deployment-utils';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { useMutation } from 'react-query';
-import { createDeployment, createLease, sendManifest } from '../../api/mutations';
+import { createDeployment,  } from '../../api/mutations';
 
 const steps = ['Featured Apps', 'Select', 'Configure', 'Review', 'Deploy'];
 
@@ -38,7 +37,7 @@ export interface DeploymentStepperProps {
 
 function TileCard(props: Props) {
   const { title, image, description, buttonText, buttonClass } = props.item;
-  const keplr = useRecoilValue(keplrState);
+  const wallet = useRecoilValue(walletState);
   const navigate = useNavigate();
   const [deploymentId, setDeploymentId] = React.useState<{ owner: string; dseq: string }>();
   const { dseq } = useParams();
@@ -59,13 +58,13 @@ function TileCard(props: Props) {
   React.useEffect(() => {
     if (dseq) {
       setDeploymentId({
-        owner: keplr.accounts[0].address,
+        owner: wallet.accounts[0].address,
         dseq,
       });
       setActiveStep({ currentCard: 4 });
       return;
     }
-  }, [dseq, keplr]);
+  }, [dseq, wallet]);
 
   const handleSdlEditorSave = (sdl: any) => {
     navigate('/new-deployment/custom-sdl', { state: { sdl: sdl } });

@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import Long from 'long';
 import { queryDeploymentList, queryLeaseList, queryProviderInfo } from '../api/queries';
 import { queryLeaseStatus } from '../api/rest/lease';
-import { activeCertificate, aktMarketCap, deploymentDataStale, keplrState, rpcEndpoint } from '../recoil/atoms';
+import { activeCertificate, aktMarketCap, deploymentDataStale, walletState, rpcEndpoint } from '../recoil/atoms';
 import { useQuery } from 'react-query';
 import { leaseCalculator } from '../_helpers/lease-calculations';
 import { uniqueName } from '../_helpers/unique-name';
@@ -23,7 +23,7 @@ interface DeploymentData {
 export default function useDeploymentData(owner: string) {
   const { rpcNode: rpcEndpoint } = getRpcNode();
   const akt = useRecoilValue(aktMarketCap);
-  const keplr = useRecoilValue(keplrState);
+  const wallet = useRecoilValue(walletState);
   const [deploymentsData, setDeploymentsData] = useState<Array<DeploymentData>>();
 
   const { status, data: deploymentsQuery } = useQuery(
@@ -131,7 +131,7 @@ export default function useDeploymentData(owner: string) {
           if (application !== null && application.name !== '') {
             name = application.name;
           } else {
-            name = uniqueName(keplr?.accounts[0]?.address, dseq);
+            name = uniqueName(wallet?.accounts[0]?.address, dseq);
           }
 
           if (query.deployment?.state === 1) {

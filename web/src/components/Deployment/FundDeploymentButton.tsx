@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Button, Input } from '@mui/material';
 import { Deployment } from '@akashnetwork/akashjs/build/protobuf/akash/deployment/v1beta2/deployment';
 import { getAccountBalance } from '../../recoil/api/bank';
-import { KeplrWallet } from '../../recoil/atoms';
+import { Wallet } from '../../recoil/atoms';
 import { aktToUakt, uaktToAKT } from '../../_helpers/lease-calculations';
 import { IconType, Icon } from '../Icons';
 import { Prompt } from '../Prompt';
@@ -20,7 +20,7 @@ const InputContainer = styled.div`
 export type FundDeploymentButtonProps = React.PropsWithChildren<{
   icon?: IconType;
   deployment: Deployment;
-  wallet: KeplrWallet;
+  wallet: Wallet;
 }>;
 
 export const FundDeploymentButton: React.FC<FundDeploymentButtonProps> = ({

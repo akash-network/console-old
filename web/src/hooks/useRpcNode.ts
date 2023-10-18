@@ -30,15 +30,14 @@ function isRpcSettings(value: unknown): value is RpcSettings {
   const { rpcNode, chainId, networkType } = value as Record<string, unknown>;
 
   return (
-    typeof rpcNode === 'string' &&
-    typeof chainId === 'string' &&
-    typeof networkType === 'string'
+    typeof rpcNode === 'string' && typeof chainId === 'string' && typeof networkType === 'string'
   );
 }
 
 function hasNetworkUpgraded(settings: RpcSettings) {
-  const config = [defaultRpcSettings, testnetRpcSettings, sandboxRpcSettings]
-    .find((config) => config.chainId === settings.chainId);
+  const config = [defaultRpcSettings, testnetRpcSettings, sandboxRpcSettings].find(
+    (config) => config.chainId === settings.chainId
+  );
 
   return config ? config.networkType !== settings.networkType : false;
 }
@@ -86,8 +85,9 @@ export const [getRpcNode, setRpcNode] = (() => {
   function get(proxy = false): RpcSettings {
     const rpcEndpointURL = new URL(settings.rpcNode);
     const url = proxy
-      ? `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${rpcEndpointURL.port || '443'
-      }${rpcEndpointURL.pathname}`
+      ? `${proxyURL}upstream/${rpcEndpointURL.protocol.slice(0, -1)}/${rpcEndpointURL.hostname}/${
+          rpcEndpointURL.port || '443'
+        }${rpcEndpointURL.pathname}`
       : settings.rpcNode;
 
     return { ...settings, rpcNode: url };

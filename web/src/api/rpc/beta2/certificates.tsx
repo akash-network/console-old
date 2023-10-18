@@ -120,16 +120,17 @@ export const getCertificateByIndex = (
 
 export const loadActiveCertificateAuto = async () => {
   const rpcNode = getRpcNode();
-  const accounts = await window.keplr?.getOfflineSigner(rpcNode.chainId).getAccounts();
+
+  const accounts = await window.wallet?.getOfflineSigner(rpcNode.chainId).getAccounts();
   const walletId = accounts?.[0].address;
 
   if (!walletId) {
-    throw new Error('Unable to fetch active certificate. Unable to determine wallet ID.');
+    // return { $type: 'Invalid Certificate' };
+    // throw new Error('Unable to fetch active certificate. Unable to determine wallet ID.');
   }
 
   return loadActiveCertificate(walletId);
 };
-
 
 export const loadActiveCertificate = async (walletId: string) => {
   if (!walletId) {
