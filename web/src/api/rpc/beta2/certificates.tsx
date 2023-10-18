@@ -124,7 +124,9 @@ export const loadActiveCertificateAuto = async () => {
   const walletId = accounts?.[0].address;
 
   if (!walletId) {
-    throw new Error('Unable to fetch active certificate. Unable to determine wallet ID.');
+    console.log('Unable to fetch active certificate. Unable to determine wallet ID.');
+
+    return { $type: 'Invalid Certificate' } as NoCertificate;
   }
 
   return loadActiveCertificate(walletId);
